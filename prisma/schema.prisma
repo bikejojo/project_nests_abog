@@ -23,6 +23,7 @@ model User {
   password  String
   token     String?  // Optional token for password reset
   type      Int   // CLIENTE, ABOGADO, EMPRESA
+  isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

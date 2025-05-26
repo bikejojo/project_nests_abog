@@ -17,13 +17,22 @@ export class User {
   @Field()
   role: string; // empresa  abogado
 
-  @Field()
-  isActive: boolean;
+  @Field({ nullable: true })
+  token?: string;
 
   @Field()
-  status: boolean;
+  type: number; // 1: empresa, 2: abogado, 3: admin
+
+  @Field()
+  isActive?: boolean;
+
+  @Field()
+  status: number;
 
   @Field()
   createdAt: Date;
 
+  @Field()
+  updatedAt: Date;
+  
 }
