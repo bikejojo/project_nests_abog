@@ -38,6 +38,13 @@ export class CompanyRepository {
     }
 
     deleteCompany(data:any){
+        this.prisma.company.update({
+            where:{id:data},
+            data:{status:0}
+        })
 
+        return this.prisma.company.findFirst({
+            where:{id:data}
+        })
     }
 }
