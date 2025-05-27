@@ -56,6 +56,13 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Migrations
+
+When migrations is perfomered , this commands are executed:
+
+```bash
+$ npx prisma migrate dev --name init
+```
 
 ## Deployment
 
