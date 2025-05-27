@@ -1,6 +1,8 @@
 /*
   Warnings:
 
+  - The primary key for the `User` table will be changed. If it partially fails, the table could be left without primary key constraint.
+  - The `id` column on the `User` table would be dropped and recreated. This will lead to data loss if there is data in the column.
   - Made the column `email` on table `User` required. This step will fail if there are existing NULL values in that column.
   - Made the column `name` on table `User` required. This step will fail if there are existing NULL values in that column.
   - Made the column `role` on table `User` required. This step will fail if there are existing NULL values in that column.
@@ -10,21 +12,26 @@
 
 */
 -- AlterTable
-ALTER TABLE "User" ALTER COLUMN "email" SET NOT NULL,
+ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
+DROP COLUMN "id",
+ADD COLUMN     "id" SERIAL NOT NULL,
+ALTER COLUMN "email" SET NOT NULL,
 ALTER COLUMN "name" SET NOT NULL,
 ALTER COLUMN "role" SET NOT NULL,
 ALTER COLUMN "password" SET NOT NULL,
 ALTER COLUMN "token" SET NOT NULL,
-ALTER COLUMN "status" SET NOT NULL;
+ALTER COLUMN "status" SET NOT NULL,
+ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
 
 -- CreateTable
 CREATE TABLE "Company" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -33,13 +40,14 @@ CREATE TABLE "Company" (
 
 -- CreateTable
 CREATE TABLE "Lawyer" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

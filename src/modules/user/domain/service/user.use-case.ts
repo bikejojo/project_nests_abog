@@ -1,12 +1,10 @@
-import { Injectable , UnauthorizedException} from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../../infraestructura/prisma/user.repository";
 import { CreateUserInput } from "../dto/create-user.input";
 import { PrismaService } from "src/prisma/prisma.service";
 import { LoginUserInput } from "../dto/login-user.input";
 import * as bcrypt from 'bcrypt';
 import { AuthService } from "../../../../auth/auth.service";
-import { RouterModule } from "@nestjs/core";
 
 @Injectable()
 export class UserUseCase {
@@ -17,7 +15,7 @@ export class UserUseCase {
     ) {}
 
     async login(data: LoginUserInput){
-        const user = await this.prisma.user.findFirst({ where: { email: data.email }});
+        const user = await this.userRepository.login(data.email);
         if(!user){
             //throw new UnauthorizedException('El usuario no existe');
             return {
@@ -47,7 +45,7 @@ export class UserUseCase {
         }
 
         let jwtToken = await this.authService.generateToken(user);
-
+        this.userRepository.saveToken(jwtToken.token , user );
         return {
             message: 'Inicio de sesión exitoso',
             status: 200,

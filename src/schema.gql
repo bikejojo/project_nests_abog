@@ -14,11 +14,60 @@ input LoginUserInput {
 }
 
 type Mutation {
+  createCompany(data: createCompanyInput!): createCompanyOutput!
   login(data: LoginUserInput!): LoginResponse!
+  updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
 }
 
 type Query {
   sayHello: String!
+}
+
+type companyData {
+  address: String!
+  email: String!
+  id: Float!
+  name: String!
+  phone: String!
+}
+
+input createCompanyInput {
+  address: String!
+  email: String!
+  name: String!
+  password: String!
+  phone: String!
+  role: String!
+}
+
+type createCompanyOutput {
+  company: companyData
+  message: String!
+  status: Float!
+  user: userDataCompany
+}
+
+type responseUpdateCompanyOutput {
+  message: String!
+  status: Float!
+  updateDataCompany: updateDataCompany
+}
+
+type updateDataCompany {
+  address: String!
+  email: String!
+  name: String!
+  password: String!
+  phone: String!
+  role: String!
+}
+
+input updatedCompanyInput {
+  address: String!
+  email: String!
+  id: Float!
+  name: String!
+  phone: String!
 }
 
 type userData {
@@ -27,4 +76,10 @@ type userData {
   role: String!
   token: String!
   type: Float!
+}
+
+type userDataCompany {
+  email: String!
+  id: Float!
+  token: String!
 }

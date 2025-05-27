@@ -19,13 +19,11 @@ export class createCompanyInput {
 @ObjectType()
 export class companyData {
     @Field()
-    id: string;
+    id: number;
     @Field()
     name: string;
     @Field()
     email: string;
-    @Field()
-    role: string;
     @Field()
     phone: string;
     @Field()
@@ -33,9 +31,24 @@ export class companyData {
 }
 
 @ObjectType()
+export class userDataCompany {
+    @Field()
+    id: number;
+    @Field()
+    email: string;
+    @Field()
+    token: string;
+}
+
+
+@ObjectType()
 export class createCompanyOutput {
     @Field()
     message: string;
     @Field()
     status: number;
+    @Field(() => companyData , { nullable: true })
+    company: companyData | null;
+    @Field(() => userDataCompany , { nullable:true})
+    user: userDataCompany | null;
 }

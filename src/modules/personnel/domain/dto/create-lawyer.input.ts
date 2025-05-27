@@ -1,4 +1,5 @@
 import { ObjectType , InputType , Field } from "@nestjs/graphql";
+import { Lawyer } from "@prisma/client";
 
 @InputType()
 export class createLawyerInput {
@@ -42,4 +43,6 @@ export class createCompanyOutput {
     message: string;
     @Field()
     status: number;
+    @Field(() => lawyerData , { nullable:true})
+    Lawyer: Lawyer | null
 }

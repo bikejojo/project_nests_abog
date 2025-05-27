@@ -8,12 +8,14 @@ import { UserModule } from './modules/user/interfaces/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { CompanyModule } from './modules/personnel/interfaces/company/company.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
     AuthModule,
-    UserModule, 
+    UserModule,
+    CompanyModule, 
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

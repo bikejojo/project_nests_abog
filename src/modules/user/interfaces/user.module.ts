@@ -21,7 +21,10 @@ import { jwtConstants } from "src/auth/constants";
     PrismaService,
     UserUseCase
   ],
-  exports: [UserUseCase]
+  exports: [
+    UserUseCase,
+    UserRepository
+  ]
 })
 
 export class UserModule {}

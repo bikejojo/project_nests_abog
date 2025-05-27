@@ -11,4 +11,28 @@ export class UserRepository {
     login(email:string) {
         return this.prisma.user.findFirst({where:{email}})
     }
+
+    async saveToken(token: string, user: { id: number }) {
+        return this.prisma.user.update({
+            where: { id: user.id },
+            data: { token },
+        });
+    }
+
+    createUser(data:any){
+        return this.prisma.user.create({
+            data: {
+                email: data.email,
+                password: data.password,
+                name: data.name,
+                role: data.role,
+                token: data.token,
+                type: data.type,
+                isActive: data.isActive,
+                status: data.status,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+        })
+    }
 }
