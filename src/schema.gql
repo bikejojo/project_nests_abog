@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LoginResponse {
+  message: String!
+  status: Float!
+  user: userData
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  login(data: LoginUserInput!): LoginResponse!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type userData {
+  email: String!
+  name: String!
+  role: String!
+  token: String!
+  type: Float!
+}

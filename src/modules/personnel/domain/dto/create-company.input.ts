@@ -1,41 +1,41 @@
 import { ObjectType , InputType , Field } from "@nestjs/graphql";
 
 @InputType()
-export class LoginUserInput {
-    @Field()
-    email: string;
-
-    @Field()
-    password: string;
-}
-
-@ObjectType()
-export class userData {
+export class createCompanyInput {
     @Field()
     name: string;
-
     @Field()
     email: string;
-
     @Field()
     role: string;
-
     @Field()
-    type: number; // 1: empresa, 2: abogado, 3: admin
-
+    password: string;
     @Field()
-    token: string;
-    
+    phone: string;
+    @Field()
+    address: string;
 }
 
 @ObjectType()
-export class LoginResponse {
+export class companyData {
+    @Field()
+    id: string;
+    @Field()
+    name: string;
+    @Field()
+    email: string;
+    @Field()
+    role: string;
+    @Field()
+    phone: string;
+    @Field()
+    address: string;
+}
+
+@ObjectType()
+export class createCompanyOutput {
     @Field()
     message: string;
-    
     @Field()
     status: number;
-
-    @Field(() => userData , { nullable: true })
-    user: userData | null;
 }

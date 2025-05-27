@@ -13,20 +13,52 @@ export class UserUseCase {
     constructor(
         private prisma:PrismaService , 
         private authService: AuthService ,
+        private userRepository: UserRepository
     ) {}
 
     async login(data: LoginUserInput){
         const user = await this.prisma.user.findFirst({ where: { email: data.email }});
-        if (!user || !(await bcrypt.compare(data.password , user.password ))){
-            throw new UnauthorizedException('Credenciales inválidas');
+        if(!user){
+            //throw new UnauthorizedException('El usuario no existe');
+            return {
+                message: 'El usuario no existe',
+                status: 401 ,
+                user: null
+            }
+        }
+
+        const validPassword = await bcrypt.compare(data.password, user.password);
+        if (!validPassword) {
+            //throw new UnauthorizedException('Credenciales inválidas');
+            return {
+                message: 'Credenciales inválidas',
+                status: 401,
+                user: null
+            }
         }
 
         if(user.status === 0){
-            throw new UnauthorizedException('Usuario inactivo');
+            //throw new UnauthorizedException('Usuario inactivo');
+            return {
+                message: 'Usuario inactivo',
+                status: 401,
+                user: null
+            }
         }
 
-        return this.authService.generateToken(user);
-    }
+        let jwtToken = await this.authService.generateToken(user);
 
+        return {
+            message: 'Inicio de sesión exitoso',
+            status: 200,
+            user: {
+                name: user.name,
+                email: user.email,
+                type: user.type, // 1: empresa, 2: abogado, 3: admin
+                token: jwtToken,
+                role: user.role,
+            },
+        }
+    }
     
 }

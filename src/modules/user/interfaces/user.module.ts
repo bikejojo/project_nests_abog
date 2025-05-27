@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AuthModule } from "src/auth/auth.module";
 import { UserResolver } from "./user.resolver";
 import { UserRepository } from "../infraestructura/prisma/user.repository";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -8,6 +9,7 @@ import { jwtConstants } from "src/auth/constants";
 
 @Module({
   imports: [
+    AuthModule,
     JwtModule.register({
         secret: jwtConstants.secret,
         signOptions: { expiresIn: 'id' } // Adjust the expiration time as needed

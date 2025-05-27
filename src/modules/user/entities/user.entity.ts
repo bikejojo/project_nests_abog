@@ -11,14 +11,14 @@ export class User {
   @Field()
   email: string;
 
-  @Field()
+  @Field({ nullable: true })
   password: string;
 
   @Field()
   role: string; // empresa  abogado
 
   @Field({ nullable: true })
-  token?: string;
+  token: string;
 
   @Field()
   type: number; // 1: empresa, 2: abogado, 3: admin
