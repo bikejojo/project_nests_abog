@@ -19,10 +19,12 @@ export class deleteCompanyData {
     phone: string;
     @Field()
     address: string;
+    @Field()
+    status: number
 }
 
 @ObjectType()
-export class responseDeleteCompany {
+export class responseDeleteCompanyOutput {
     
     @Field()
     message: string

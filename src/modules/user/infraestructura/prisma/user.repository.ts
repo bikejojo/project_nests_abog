@@ -13,14 +13,14 @@ export class UserRepository {
     }
 
     async saveToken(token: string, user: { id: number }) {
-        return this.prisma.user.update({
+        return await this.prisma.user.update({
             where: { id: user.id },
             data: { token },
         });
     }
 
-    createUser(data:any){
-        return this.prisma.user.create({
+    async createUser(data:any){
+        return await this.prisma.user.create({
             data: {
                 email: data.email,
                 password: data.password,
@@ -32,6 +32,15 @@ export class UserRepository {
                 status: data.status,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+            }
+        })
+    }
+
+    async deleteUserFind(data:any){
+        return await this.prisma.user.update({
+            where:{id:data},
+            data: {
+                status: 0
             }
         })
     }

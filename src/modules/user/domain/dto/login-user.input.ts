@@ -12,6 +12,9 @@ export class LoginUserInput {
 @ObjectType()
 export class userData {
     @Field()
+    id: number
+
+    @Field()
     name: string;
 
     @Field()

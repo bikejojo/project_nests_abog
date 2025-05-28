@@ -6,6 +6,7 @@ import { UseGuards , SetMetadata} from "@nestjs/common";
 import { RolesGuard } from "../../../../guards/roles.guards";
 import { GqlAuthGuard } from "../../../../auth/authentification";
 import { updateDataCompany, responseUpdateCompanyOutput, updatedCompanyInput} from "../../domain/dto/update-company.input";
+import { deleteCompanyData, inputDeleteCompany, responseDeleteCompanyOutput } from "../../domain/dto/delete-company.input";
 
 
 @Resolver(() => Company)
@@ -20,6 +21,11 @@ export class CompanyResolver {
     @Mutation(()=> responseUpdateCompanyOutput )
     async updateCompany(@Args('data') data: updatedCompanyInput ){
         return this.companyUseCase.updateCompany(data);
+    }
+    
+    @Mutation(()=>responseDeleteCompanyOutput )
+    async deleteCompany(@Args('data') data: inputDeleteCompany ){
+        return this.companyUseCase.deleteCompany(data)
     }
     
     @Query(() => String)

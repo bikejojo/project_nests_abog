@@ -20,15 +20,22 @@ export class CompanyRepository {
        });
     }
 
-    updateCompany(data:any){
-        return this.prisma.company.update({
-            where:{id:data.id},
-            data:{
-                name: data.name ,
+    async updateCompany(data:any,userId:number){
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                email: data.email,
+                name: data.name
+            }
+        });
+        return await this.prisma.company.update({
+            where: { id: data.id },
+            data: {
+                name: data.name,
                 email: data.email,
                 phone: data.phone,
                 address: data.address,
-                updatedAt: new Date
+                updatedAt: new Date()
             }
         })
     }
@@ -37,13 +44,16 @@ export class CompanyRepository {
         return this.prisma.company.findFirst({where:{id:data}})
     }
 
-    deleteCompany(data:any){
-        this.prisma.company.update({
+    async deleteCompany(data:any){
+
+        await this.prisma.company.update({
             where:{id:data},
-            data:{status:0}
+            data:{
+                status:0
+            }
         })
 
-        return this.prisma.company.findFirst({
+        return await this.prisma.company.findFirst({
             where:{id:data}
         })
     }

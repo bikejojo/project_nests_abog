@@ -15,8 +15,12 @@ input LoginUserInput {
 
 type Mutation {
   createCompany(data: createCompanyInput!): createCompanyOutput!
+  createLawyer(data: createLawyerInput!): createLawyerOutput!
+  deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
+  deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
   updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
+  updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
 }
 
 type Query {
@@ -44,13 +48,75 @@ type createCompanyOutput {
   company: companyData
   message: String!
   status: Float!
-  user: userDataCompany
+  user: userData
+}
+
+input createLawyerInput {
+  address: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  phone: String!
+  role: String!
+}
+
+type createLawyerOutput {
+  LawyerCreate: lawyerData
+  message: String!
+  status: Float!
+}
+
+type deleteCompanyData {
+  address: String!
+  email: String!
+  id: Float!
+  name: String!
+  phone: String!
+  status: Float!
+}
+
+input deleteLawyerInput {
+  id: Float!
+}
+
+input inputDeleteCompany {
+  id: Float!
+}
+
+type lawyerData {
+  address: String!
+  email: String!
+  firstName: String!
+  id: Float!
+  lastName: String!
+  phone: String!
+  status: Float!
+  userId: Float!
+}
+
+type responseDeleteCompanyOutput {
+  deleteCompany: deleteCompanyData
+  message: String!
+  status: Float!
+}
+
+type responseDeleteLawyerOutPut {
+  deleteLawyer: lawyerData
+  message: String!
+  status: Float!
 }
 
 type responseUpdateCompanyOutput {
   message: String!
   status: Float!
   updateDataCompany: updateDataCompany
+}
+
+type responseUpdateLawyerOutPut {
+  message: String!
+  status: Float!
+  updateLawyer: lawyerData
 }
 
 type updateDataCompany {
@@ -60,6 +126,15 @@ type updateDataCompany {
   password: String!
   phone: String!
   role: String!
+}
+
+input updateLawyerInput {
+  address: String!
+  email: String!
+  firstName: String!
+  id: Float!
+  lastName: String!
+  phone: String!
 }
 
 input updatedCompanyInput {
@@ -72,14 +147,9 @@ input updatedCompanyInput {
 
 type userData {
   email: String!
+  id: Float!
   name: String!
   role: String!
   token: String!
   type: Float!
-}
-
-type userDataCompany {
-  email: String!
-  id: Float!
-  token: String!
 }
