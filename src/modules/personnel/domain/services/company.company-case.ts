@@ -20,7 +20,7 @@ export class CompanyUseCase {
                 password: hashedPassword,
                 name: data.name,
                 token: '',
-                role: 'Company',
+                role: data.role,
                 type: 1, // 1: empresa, 2: abogado, 3: admin
                 isActive: true,
                 status: 1, // 1: activo, 0: inactivo
@@ -87,7 +87,7 @@ export class CompanyUseCase {
             }
         } catch (err) {
             return {
-                message: 'Los errores UpC son los siguientes: ' , err
+                message: 'Los errores UpC son los siguientes: ' + err.message
             }
         }
     }
@@ -114,9 +114,56 @@ export class CompanyUseCase {
             }
         } catch (err) {
             return {
-                message: 'Los errores DelC son los siguientes: ' , err
+                message: 'Los errores DelC son los siguientes: ' + err.message
             }
         }
     }
 
+    async findCompanyId(data:any){
+        try {
+            const findCompany = await this.CompanyRepository.findCompany(data.id);
+            
+            if(!findCompany){
+                return{
+                    message:'No existen los recursos de compañia',
+                    status: 402
+                }
+            }
+
+            if(findCompany.status === 0 ){
+                // handle inactive company if needed
+                return {
+                    message: 'La cuenta de la compañia esta deshabilitado' , 
+                    status: 301
+                }
+            }
+
+            return {
+                message:'Se encontro los datos.',
+                status:201,
+                companyId:findCompany
+            }
+
+        }catch(err){
+            return {
+                message:'Los errores FnC son los siguientes' + err.message
+            }
+        }
+    }
+    async allStatusCompany(){
+        try {
+            const companyAll =  await this.CompanyRepository.allCompanyStatus()
+            //console.log('[LOG] resultado :' + companyAll);
+            return {
+                message:'Contenido retornado',
+                status:201,
+                allCompanys:companyAll
+            }
+        } catch(err){
+            console.log('[LOG] errores ' + err.message)
+            return {
+                message:'Los errores AllCom son' + err.message
+            }
+        } 
+    }
 }

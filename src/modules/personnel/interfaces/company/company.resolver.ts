@@ -5,8 +5,11 @@ import { Company } from "../../entities/company.entity";
 import { UseGuards , SetMetadata} from "@nestjs/common";
 import { RolesGuard } from "../../../../guards/roles.guards";
 import { GqlAuthGuard } from "../../../../auth/authentification";
-import { updateDataCompany, responseUpdateCompanyOutput, updatedCompanyInput} from "../../domain/dto/update-company.input";
-import { deleteCompanyData, inputDeleteCompany, responseDeleteCompanyOutput } from "../../domain/dto/delete-company.input";
+import { responseUpdateCompanyOutput, updatedCompanyInput} from "../../domain/dto/update-company.input";
+import { inputDeleteCompany, responseDeleteCompanyOutput } from "../../domain/dto/delete-company.input";
+import { inputCompanyId , responseFindCompanyOutPut } from "../../domain/dto/findId-company.input";
+import { responseAllStatusCompanyOutPut } from "../../domain/dto/all-company.input";
+
 
 
 @Resolver(() => Company)
@@ -32,4 +35,15 @@ export class CompanyResolver {
     sayHello(): string {
         return 'Hello from CompanyResolver';
     }
+
+    @Query(()=> responseFindCompanyOutPut )
+    async findIdCompany(@Args('data') data: inputCompanyId ){
+        return this.companyUseCase.findCompanyId(data)
+    }
+    
+    @Query(()=> responseAllStatusCompanyOutPut)
+    async allStatusCompany(){
+        return this.companyUseCase.allStatusCompany();
+    }
+    //@Query(()=> )
 }

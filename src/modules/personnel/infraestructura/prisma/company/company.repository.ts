@@ -44,6 +44,11 @@ export class CompanyRepository {
         return this.prisma.company.findFirst({where:{id:data}})
     }
 
+    async allCompanyStatus(){
+        //console.log('[LOG] contenido  '+ this.prisma.company.findMany({where:{status:1}}) )
+        return await this.prisma.company.findMany({where:{status:1}})
+    }
+
     async deleteCompany(data:any){
 
         await this.prisma.company.update({

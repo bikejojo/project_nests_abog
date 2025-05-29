@@ -24,6 +24,10 @@ type Mutation {
 }
 
 type Query {
+  allStatusCompany: responseAllStatusCompanyOutPut!
+  allStatusLawyer: responseAllStatusLawyerOutPut!
+  findIdCompany(data: inputCompanyId!): responseFindCompanyOutPut!
+  findIdLawyer(data: findLawyerInput!): responseFindIdLawyerOutPut!
   sayHello: String!
 }
 
@@ -31,6 +35,14 @@ type companyData {
   address: String!
   email: String!
   id: Float!
+  name: String!
+  phone: String!
+}
+
+type companyDatas {
+  address: String!
+  email: String!
+  id: ID!
   name: String!
   phone: String!
 }
@@ -65,6 +77,7 @@ type createLawyerOutput {
   LawyerCreate: lawyerData
   message: String!
   status: Float!
+  user: userData
 }
 
 type deleteCompanyData {
@@ -77,6 +90,14 @@ type deleteCompanyData {
 }
 
 input deleteLawyerInput {
+  id: Float!
+}
+
+input findLawyerInput {
+  id: Float!
+}
+
+input inputCompanyId {
   id: Float!
 }
 
@@ -95,6 +116,18 @@ type lawyerData {
   userId: Float!
 }
 
+type responseAllStatusCompanyOutPut {
+  allCompanys: [companyDatas!]
+  message: String!
+  status: Float!
+}
+
+type responseAllStatusLawyerOutPut {
+  allLawyer: [lawyerData!]
+  message: String!
+  status: Float!
+}
+
 type responseDeleteCompanyOutput {
   deleteCompany: deleteCompanyData
   message: String!
@@ -103,6 +136,18 @@ type responseDeleteCompanyOutput {
 
 type responseDeleteLawyerOutPut {
   deleteLawyer: lawyerData
+  message: String!
+  status: Float!
+}
+
+type responseFindCompanyOutPut {
+  companyId: companyData
+  message: String!
+  status: Float!
+}
+
+type responseFindIdLawyerOutPut {
+  lawyerFind: lawyerData
   message: String!
   status: Float!
 }

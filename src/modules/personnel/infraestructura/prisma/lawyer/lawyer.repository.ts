@@ -25,6 +25,10 @@ export class LawyerRepository {
         return this.prisma.lawyer.findFirst({ where:{ id:data }})
     }
 
+    allLawyer(){
+        return this.prisma.lawyer.findMany({ where:{ status: 1 }});
+    }
+
     async updateLawyer(data:any, userId:number){
         await this.prisma.user.update({
             where: { id: userId },

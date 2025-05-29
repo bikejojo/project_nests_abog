@@ -1,4 +1,5 @@
 import { ObjectType , InputType , Field } from "@nestjs/graphql";
+import { userData } from "src/modules/user/domain/dto/login-user.input";
 
 @InputType()
 export class createLawyerInput {   
@@ -47,4 +48,7 @@ export class createLawyerOutput {
     status: number;
     @Field(() => lawyerData , { nullable:true})
     LawyerCreate: lawyerData | null
+    @Field(()=> userData , { nullable:true})
+    user: userData | null
+    
 }

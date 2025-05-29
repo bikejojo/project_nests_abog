@@ -4,6 +4,7 @@ import { AuthService } from "src/auth/auth.service";
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer/lawyer.repository";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import * as bcrypt from 'bcrypt';
+import { isStringObject } from "util/types";
 
 @Injectable()
 export class LawyerUseCase {
@@ -21,8 +22,8 @@ export class LawyerUseCase {
                 password: hashedPassword,
                 name: `${data.firstName} ${data.lastName}`,//data.firstName + ' ' + data.lastName,
                 token: '',
-                role: 'Company',
-                type: 1, // 1: empresa, 2: abogado, 3: admin
+                role: data.role,
+                type: this.valueRol(data.role), // 1: empresa, 2: abogado, 3: admin
                 isActive: true,
                 status: 1, // 1: activo, 0: inactivo
             })
@@ -49,13 +50,29 @@ export class LawyerUseCase {
             return {
                 message: 'Creacion de Abogado exitosa',
                 status: 201,
-                LawyerCreate: lawyer
+                LawyerCreate: lawyer,
+                user:user
             }
         }catch(err){
             return {
-                message:'Los errores de CrL son: ' + err.message
+                message:'Los errores de CrL son: ' + err.message,
+                status: 501
             }
 
+        }
+    }
+
+    valueRol(data:string){
+        switch(data){
+            case 'compania':
+                return 1;
+                break;
+            case 'abogado':
+                return 2;
+                break;
+            default:
+                return 3;
+                break;
         }
     }
 
@@ -91,13 +108,15 @@ export class LawyerUseCase {
             const lawyerExists = await this.LawyerRepository.findLawyer(data.id);
             if(!lawyerExists){
                 return {
-                    message:'No se encontro al abogado'
+                    message:'No se encontro al abogado',
+                    status: 502
                 }
             }
 
             if(lawyerExists.status === 0){
                 return {
-                    message:'El abogado ya tiene una cuenta desactivada'
+                    message:'El abogado ya tiene una cuenta desactivada',
+                    status: 301
                 }
             }
             const lawyer = await this.LawyerRepository.deleteLawyer(lawyerExists.id)
@@ -116,5 +135,52 @@ export class LawyerUseCase {
 
         }
     }
+    //================   Querys   =================================
 
+    async findIdLawyer(data:any){
+        try {
+            const findLawyer = await this.LawyerRepository.findLawyer(data.id)
+
+            if(!findLawyer){
+                return {
+                    message:'No existe contenido de la compañia',
+                    status : 401
+                }
+            }
+            if(findLawyer.status === 0 ){
+                return {
+                    message:'La compalia se encuentra deshabilitada',
+                    status : 301
+                }
+            }
+
+            return {
+                message: 'Se encontro los datos de la abogado escogida. ',
+                status: 201,
+                lawyerFind: findLawyer
+            }
+            
+        }catch(err){
+            return {
+                message : 'Los errores de FnLw son: ' + err.message,
+                status  : 501
+            }
+        }
+    }
+
+    async allStatusLawyer(){
+        try{
+            const allLawyer = await this.LawyerRepository.allLawyer();
+            return {
+                message: 'Resultados enviados.',
+                status: 201 ,
+                allLawyer: allLawyer
+            }
+        }catch(err){
+            console.log('[LOG] errores de AlStaLaw' + err.message)
+            return{
+                message: 'Los siguientes errores AlStaLaw son errores : ' + err.message 
+            }
+        }
+    }
 }
