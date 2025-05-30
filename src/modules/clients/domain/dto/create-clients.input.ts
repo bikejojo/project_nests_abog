@@ -49,6 +49,6 @@ export class createClientsOutPut {
     status: number
 
     @Field(() => clientsData ,{nullable:true})
-    createClients: clientsData | null
+    createClient: clientsData | null
 }
 

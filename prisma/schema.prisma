@@ -58,3 +58,28 @@ model Lawyer {
   user      User     @relation(fields: [userId], references: [id])
 }
 
+model Provider {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName  String
+  NIT       String
+  phone     String
+  email     String
+  address   String
+  typeProvider  String?
+  isActive  Boolean
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Clients {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName  String
+  phone     String
+  email     String
+  NIT       String
+  isActive  Boolean
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+} 

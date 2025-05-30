@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
 import { AuthService } from "src/auth/auth.service";
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer/lawyer.repository";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import * as bcrypt from 'bcrypt';
-import { isStringObject } from "util/types";
 
 @Injectable()
 export class LawyerUseCase {

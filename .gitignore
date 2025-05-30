@@ -45,6 +45,7 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+./api_de_nests+graphql.txt
 
 # Runtime data
 pids
