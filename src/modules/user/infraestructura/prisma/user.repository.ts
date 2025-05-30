@@ -3,13 +3,18 @@ import { PrismaService } from "../../../../prisma/prisma.service"
 import { CreateUserInput } from "../../domain/dto/create-user.input";
 import { UpdateUserInput } from "../../domain/dto/update-user.input";
 import { LoginUserInput } from "../../domain/dto/login-user.input";
+import { Token } from "graphql";
 
 @Injectable()
 export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
-    login(email:string) {
-        return this.prisma.user.findFirst({where:{email}})
+    async login(email:string) {
+        return await this.prisma.user.findFirst({where:{email}})
+    }
+
+    async logout(userId:number){
+        return await this.prisma.user.update({where:{id:userId}, data:{ token:''}})
     }
 
     async saveToken(token: string, user: { id: number }) {
@@ -44,4 +49,6 @@ export class UserRepository {
             }
         })
     }
+
+    
 }

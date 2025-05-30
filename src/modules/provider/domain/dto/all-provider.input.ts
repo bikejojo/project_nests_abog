@@ -2,7 +2,7 @@ import { Field , ObjectType } from "@nestjs/graphql";
 import { providerData } from "./create-provider.input";
 
 @ObjectType()
-export class allProviderStatus {
+export class allProviderStatusOutPut {
     @Field()
     message: string
 

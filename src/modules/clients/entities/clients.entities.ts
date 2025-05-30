@@ -24,6 +24,9 @@ export class Clients {
     isActive: boolean
 
     @Field()
+    status: number
+
+    @Field()
     createAt: Date;
 
     @Field()

@@ -30,7 +30,7 @@ export class UserUseCase {
             //throw new UnauthorizedException('Credenciales inválidas');
             return {
                 message: 'Credenciales inválidas',
-                status: 401,
+                status: 402,
                 user: null
             }
         }
@@ -39,7 +39,15 @@ export class UserUseCase {
             //throw new UnauthorizedException('Usuario inactivo');
             return {
                 message: 'Usuario inactivo',
-                status: 401,
+                status: 403,
+                user: null
+            }
+        }
+
+        if(user.token !== null ){
+            return {
+                message: 'Usuario inicio sesion en otro dipositivo',
+                status: 404,
                 user: null
             }
         }
@@ -59,4 +67,21 @@ export class UserUseCase {
         }
     }
     
+    async logout (data:any){
+        try {
+                        
+            const user = this.userRepository.logout(data.id);
+            //console.log(user);
+            return{
+                message: 'Logout exitoso',
+                status: 201 ,
+                logoutData: user
+            }
+        }catch(err){
+            return {
+                message: 'Fallas en el logout' + err.message ,
+                status: 501
+            }
+        }
+    }
 }

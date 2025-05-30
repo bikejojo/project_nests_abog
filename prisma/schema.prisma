@@ -68,6 +68,7 @@ model Provider {
   address   String
   typeProvider  String?
   isActive  Boolean
+  status    Int
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
@@ -80,6 +81,7 @@ model Clients {
   email     String
   NIT       String
   isActive  Boolean
+  status    Int
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 } 

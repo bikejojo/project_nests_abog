@@ -13,12 +13,19 @@ input LoginUserInput {
   password: String!
 }
 
+type LogoutUserOutPut {
+  logoutData: userData
+  message: String!
+  status: Float!
+}
+
 type Mutation {
   createCompany(data: createCompanyInput!): createCompanyOutput!
   createLawyer(data: createLawyerInput!): createLawyerOutput!
   deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
   deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
+  logout: LogoutUserOutPut!
   updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
   updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
 }

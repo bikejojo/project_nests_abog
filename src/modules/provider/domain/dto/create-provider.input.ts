@@ -1,7 +1,7 @@
 import { ID , InputType , ObjectType , Field} from "@nestjs/graphql";
 
 @InputType()
-export class inputCreateProvider{
+export class createProviderInpu{
     @Field()
     name: string
    

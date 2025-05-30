@@ -2,7 +2,7 @@ import { ObjectType , InputType , Field  } from "@nestjs/graphql";
 import { providerData } from "./create-provider.input";
 
 @InputType()
-export class findIdProvider {
+export class findIdProviderInput {
     @Field()
     id: number
 }

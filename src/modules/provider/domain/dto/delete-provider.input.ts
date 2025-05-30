@@ -2,7 +2,7 @@ import { ObjectType , InputType , Field } from "@nestjs/graphql";
 import { providerData } from "./create-provider.input";
 
 @InputType()
-export class inputDeleteProvider {
+export class deleteProviderInput {
     @Field()
     id: number
 }

@@ -27,11 +27,14 @@ export class Provider {
     typeProvider: string
 
     @Field()
+    status: number
+
+    @Field()
     isActive: boolean
-    
+
     @Field()
     createAt: Date
-
+    
     @Field()
     updateAt: Date
     
