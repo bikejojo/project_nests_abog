@@ -23,12 +23,29 @@ export class ProviderRepository {
         })
     }
     async updateProvider(data:any){
-
+        return await this.prisma.provider.update({where:{id:data.id},
+            data:{
+              firstName: data.firstName,
+                lastName:data.lastName,
+                NIT: data.NIT ,
+                phone: data.phone,
+                email: data.email,
+                address: data.address,
+                typeProvider: data.typeProvider,
+                status: data.status,
+                isActive: data.isActive,
+                updateAt: new Date()
+            }
+        });
     }
     async deleteProvider(data:any){
-
+        return await this.prisma.provider.update({where:{id:data},data:{status:0 , isActive:false}})
     }
     //query
-    async findIdProvider(data:any){}
-    async allStatusProvider(data:any){}
-}
+    async findIdProvider(data:any){
+        return await this.prisma.provider.findFirst({where:{id:data}})
+    }
+    async allStatusProvider(data:any){
+        return await this.prisma.provider.findMany({where:{status:1}})
+    }
+}   

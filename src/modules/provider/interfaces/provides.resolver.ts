@@ -4,6 +4,9 @@ import { ProviderUseCase } from "../domain/service/provider.use-case";
 import { createProviderInpu, createProviderOutPut } from "../domain/dto/create-provider.input";
 import { updateProviderInput, updateProviderOutPut } from "../domain/dto/update-provider.input";
 import { deleteProviderInput, deleteProviderOutPut } from "../domain/dto/delete-provider.input";
+import { findIdClientInput, findIdClientOutPut } from "src/modules/clients/domain/dto/findId-clients.input";
+import { findIdProviderInput } from "../domain/dto/findId-provider.input";
+import { allProviderStatusOutPut } from "../domain/dto/all-provider.input";
 
 @Resolver(()=> Provider)
 export class ProviderResolver {
@@ -24,7 +27,14 @@ export class ProviderResolver {
         return await this.providerUseCase.deleteProvider(data)
     }
     
-
+    @Query(()=> findIdClientOutPut)
+    async findIdProvider(@Args('data') data:findIdProviderInput ){
+        return await this.providerUseCase.findInProvider(data);
+    }
+    @Query(()=> allProviderStatusOutPut)
+    async allProvider(){
+        return await this.providerUseCase.allProviderStatus();
+    }
     @Query(()=> String)
     sayHello():string {
         return 'HELLO';
