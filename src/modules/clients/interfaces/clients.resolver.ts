@@ -2,6 +2,10 @@ import { Resolver , Mutation ,  Args , Query} from "@nestjs/graphql";
 import { Clients } from "../entities/clients.entities";
 import { ClientsUseCase } from "../domain/service/clients.use-case";
 import { createClientsInput, createClientsOutPut } from "../domain/dto/create-clients.input";
+import { updateClientInput , updateClientOutPut } from "../domain/dto/update-clients.input";
+import { deleteClientInput ,  daleteClientOutPut } from "../domain/dto/delete-clients.input";
+import { findIdClientInput , findIdClientOutPut } from "../domain/dto/findId-clients.input";
+import { allClientOutPut } from "../domain/dto/all-clients.input";
 
 @Resolver(()=>Clients)
 export class ClientsRepository {
@@ -12,4 +16,18 @@ export class ClientsRepository {
         return await this.clientsUseCase.createClient(data)
     }
 
+    @Mutation(()=> updateClientOutPut)
+    async updateClients(@Args('data') data:updateClientInput ){
+        return await this.clientsUseCase.updateClient(data)
+    }
+
+    @Query(()=>findIdClientOutPut)
+    async findIdClients(@Args('data') data:findIdClientOutPut){
+        return await this.clientsUseCase.findIdClient(data)
+    }
+    
+    @Query(()=>allClientOutPut)
+    async allClients(){
+        return await this.clientsUseCase.allClient();
+    }
 }

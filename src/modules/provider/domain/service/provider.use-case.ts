@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import * as bcrypt from 'bcrypt'
 import { AuthService } from "src/auth/auth.service";
 import { ProviderRepository } from "../../infraestructur/prisma/provider.repository";
 
@@ -29,6 +27,12 @@ export class ProviderUseCase {
                     message:'Surgio un problema al crear al provedor.',
                     status:301
                 }
+            }
+
+            return{
+                message:'Se creo con exito!',
+                status:201,
+                provider: provider
             }
         }catch(err){
             return {
