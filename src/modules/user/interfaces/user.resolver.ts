@@ -1,7 +1,4 @@
 import { Resolver , Mutation ,  Args , Query} from "@nestjs/graphql";
-import { UserRepository } from "../infraestructura/prisma/user.repository";
-import { CreateUserInput  } from "../domain/dto/create-user.input";
-import { UpdateUserInput } from "../domain/dto/update-user.input";
 import { LoginResponse, LoginUserInput } from "../domain/dto/login-user.input";
 import { UserUseCase } from "../domain/service/user.use-case";
 import { User } from "../entities/user.entity";

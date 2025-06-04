@@ -10,6 +10,7 @@ import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { CompanyModule } from './modules/personnel/interfaces/company/company.module';
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
+import { RolesModule } from './modules/roles/interfaces/roles.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.modul
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
-    })
+    }),
+    RolesModule
   ],
   controllers: [AppController],
   providers: [AppService],

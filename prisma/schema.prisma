@@ -19,7 +19,7 @@ model User {
   id        Int   @id @default(autoincrement())
   email     String   
   name      String
-  role      String   // EMPRESA , ABOGADO
+  //rolsId    Int//String   // EMPRESA , ABOGADO
   password  String
   token     String  // Optional token for password reset
   type      Int   // CLIENTE, ABOGADO, EMPRESA
@@ -28,7 +28,19 @@ model User {
   company   Company?
   lawyer    Lawyer?
   admin     Admin?
-  rols      RolsUser[] // Relación con tabla pivote
+  rols      RolsUser? // Relación con tabla pivote
+  userPermissions UserPermissions[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RolsUser {
+  id        Int @id @default(autoincrement())
+  rolId     Int @unique
+  userId    Int @unique
+  status    Int 
+  rol       Rols @relation(fields: [rolId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -39,7 +51,7 @@ model Rols {
   status      Int  @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  users       RolsUser[]
+  users       RolsUser?
   permissions PermissionsRol[]
 }
 
@@ -50,29 +62,33 @@ model Permissions {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   roles       PermissionsRol[] 
+  permissionsUser UserPermissions[]
 }
 
-model RolsUser {
-  id        Int @id @default(autoincrement())
-  rolId     Int
-  userId    Int
-  status    Int
-  rol       Rols @relation(fields: [rolId], references: [id])
-  user      User @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 model PermissionsRol {
   id            Int @id @default(autoincrement())
-  permissionId  Int
-  rolId         Int
+  permissionId  Int[]
+  rolId         Int @unique
   status        Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   permission    Permissions @relation( fields: [permissionId], references: [id])
   rol           Rols        @relation( fields: [rolId], references: [id])
 }
+
+
+model UserPermissions {
+  id            Int @id @default(autoincrement())
+  userId        Int 
+  permissionsId Int
+  status        Int @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User @relation( fields: [userId] , references: [id])
+  permissions   Permissions @relation( fields: [permissionsId] , references: [id])
+}
+//-------------------------------------------------------------------------------------
 
 model Company {
   id        Int   @id @default(autoincrement())

@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type LoginResponse {
   message: String!
   status: Float!
@@ -22,8 +27,10 @@ type LogoutUserOutPut {
 type Mutation {
   createCompany(data: createCompanyInput!): createCompanyOutput!
   createLawyer(data: createLawyerInput!): createLawyerOutput!
+  createRol(data: createRolesInput!): createRolesOutPut!
   deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
   deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
+  deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
@@ -31,11 +38,43 @@ type Mutation {
 }
 
 type Query {
+  allRoles: allRolOutPut!
   allStatusCompany: responseAllStatusCompanyOutPut!
   allStatusLawyer: responseAllStatusLawyerOutPut!
   findIdCompany(data: inputCompanyId!): responseFindCompanyOutPut!
   findIdLawyer(data: findLawyerInput!): responseFindIdLawyerOutPut!
   sayHello: String!
+}
+
+type RolUser {
+  createdAt: DateTime!
+  id: ID!
+  rol: roles
+  rolId: Float!
+  status: Float!
+  updatedAt: DateTime!
+  user: User
+  userId: Float!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  password: String
+  rols: RolUser
+  status: Float!
+  token: String
+  type: Float!
+  updatedAt: DateTime!
+}
+
+type allRolOutPut {
+  message: String!
+  roleData: [rolesData!]
+  status: Float!
 }
 
 type companyData {
@@ -87,6 +126,16 @@ type createLawyerOutput {
   user: userData
 }
 
+input createRolesInput {
+  description: String!
+}
+
+type createRolesOutPut {
+  message: String!
+  rolesDatas: rolesData!
+  status: Float!
+}
+
 type deleteCompanyData {
   address: String!
   email: String!
@@ -98,6 +147,16 @@ type deleteCompanyData {
 
 input deleteLawyerInput {
   id: Float!
+}
+
+input deleteRoleInput {
+  rolId: ID!
+}
+
+type deleteRoleOutPut {
+  message: String!
+  roleDatas: rolesData
+  status: Float!
 }
 
 input findLawyerInput {
@@ -169,6 +228,23 @@ type responseUpdateLawyerOutPut {
   message: String!
   status: Float!
   updateLawyer: lawyerData
+}
+
+type roles {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  rolUser: RolUser
+  status: Float!
+  updatedAt: DateTime!
+}
+
+type rolesData {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  status: Float!
+  updatedAt: DateTime!
 }
 
 type updateDataCompany {

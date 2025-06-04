@@ -1,4 +1,5 @@
 import { ObjectType , Field , ID } from "@nestjs/graphql";
+import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
 
 @ObjectType()
 export class User {
@@ -14,8 +15,8 @@ export class User {
   @Field({ nullable: true })
   password: string;
 
-  @Field()
-  role: string; // empresa  abogado
+  //@Field()
+  //rolsId: number//string; // empresa  abogado
 
   @Field({ nullable: true })
   token: string;
@@ -34,5 +35,8 @@ export class User {
 
   @Field()
   updatedAt: Date;
+
+  @Field(()=> RolUser , {nullable:true})
+  rols: RolUser | null
   
 }

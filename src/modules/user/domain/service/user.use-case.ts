@@ -62,7 +62,7 @@ export class UserUseCase {
                 email: user.email,
                 type: user.type, // 1: empresa, 2: abogado, 3: admin
                 token: jwtToken,
-                role: user.role,
+                //role: user.rols,
             },
         }
     }

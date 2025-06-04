@@ -10,7 +10,7 @@ export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
     async login(email:string) {
-        return await this.prisma.user.findFirst({where:{email}})
+        return await this.prisma.user.findFirst({where:{email},include:{rols:{include:{rol:true}}}})
     }
 
     async logout(userId:number){
@@ -30,7 +30,7 @@ export class UserRepository {
                 email: data.email,
                 password: data.password,
                 name: data.name,
-                role: data.role,
+                //role: data.role,
                 token: data.token,
                 type: data.type,
                 isActive: data.isActive,
