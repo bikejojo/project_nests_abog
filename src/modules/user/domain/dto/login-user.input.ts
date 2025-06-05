@@ -23,8 +23,8 @@ export class userData {
     //@Field()
     //role: string;
 
-    @Field()
-    type: number; // 1: empresa, 2: abogado, 3: admin
+    //@Field()
+    //type: number; // 1: empresa, 2: abogado, 3: admin
 
     @Field()
     token: string;

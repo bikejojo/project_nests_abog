@@ -11,6 +11,7 @@ import { join } from 'path';
 import { CompanyModule } from './modules/personnel/interfaces/company/company.module';
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { RolesModule } from './modules/roles/interfaces/roles.module';
+import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RolesModule } from './modules/roles/interfaces/roles.module';
     CompanyModule,
     LawyerModule, 
     PrismaModule,
+    RoleUserModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

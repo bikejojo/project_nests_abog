@@ -32,7 +32,6 @@ export class UserRepository {
                 name: data.name,
                 //role: data.role,
                 token: data.token,
-                type: 1,
                 isActive: data.isActive,
                 status: data.status,
                 createdAt: new Date(),

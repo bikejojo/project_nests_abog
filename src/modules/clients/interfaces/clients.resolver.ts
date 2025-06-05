@@ -22,7 +22,7 @@ export class ClientsRepository {
     }
 
     @Query(()=>findIdClientOutPut)
-    async findIdClients(@Args('data') data:findIdClientOutPut){
+    async findIdClients(@Args('data') data:findIdClientInput){
         return await this.clientsUseCase.findIdClient(data)
     }
     
