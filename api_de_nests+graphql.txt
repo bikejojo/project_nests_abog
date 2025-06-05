@@ -1,0 +1,197 @@
+api de nests + graphql
+======================
+user
+
+mutation{
+    login(data: {
+	email:"",
+	password:""
+    }){
+      message
+      status	
+    }
+}
+===================================
+company
+-----------------------------------
+créate
+
+# Write your query or mutation here
+mutation {
+  createCompany(data: {
+    name: "Test Company1234",
+    email: "test@example.com",
+    role: "Company",
+    password: "secret123",
+    phone: "555-5555",
+    address: "Avenida Siempre Viva"
+  }) {
+    message
+    status
+    company {
+      id
+      name
+      email
+      phone
+      address
+    }
+    user {
+      email
+      role
+      name
+      
+    }
+  }
+}
+-------------------------------
+update
+
+mutation {
+updateCompany(data: {
+    id:1,
+    name:"Compañia XXX",
+    email:"compania_xxx@example.com",
+    phone:"79836202",
+    address:"Zona Norte Av Beni"
+  }){
+    message
+    status
+    updateDataCompany {
+      name
+    }
+  }
+}
+-------------------------------
+delete
+
+mutation {
+	deleteCompany(data: {
+    id:1
+  }){
+    message
+    status
+ 
+  }
+}
+
+------------------------------
+
+# Write your query or mutation here
+query {
+	findIdCompany(data: {
+    id:2
+  }){
+    message
+    status
+    companyId {
+      name
+      phone
+      address
+    }
+  }
+}
+
+------------------------------
+
+query {
+	allStatusCompany{
+    message
+    status
+    allCompanys {
+      id
+      name 
+      address
+      phone
+    }
+  }
+}
+
+==============================
+Lawyer
+------------------------------
+
+créate
+mutation {
+  createLawyer(data: {
+    email: "test@example.com",
+    role: "abogado",
+    password: "123",
+    firstName:"EDUARDO ZACARIAS",
+    lastName:"ROCA VALVERDE",
+    phone: "555-5555",
+    address: "Avenida Siempre Viva ORIENTE !!!"
+  }) {
+    message
+    status
+    LawyerCreate {
+      id
+      firstName
+      lastName
+      email
+      phone
+      address
+    }
+    user {
+      email
+      role
+      name
+      
+    }
+  }
+}
+
+------------------------------
+
+update
+mutation {
+updateLawyer(data: {
+    id:2,
+    firstName:"Compañia XXX",
+  	lastName:"Santa Cruz | Bo",
+    email:"compania_xxx@example.com",
+    phone:"79836202",
+    address:"Zona Norte Av Beni"
+  }){
+    message
+    status
+    updateLawyer {
+      firstName
+      lastName
+      phone
+      userId
+    }
+  }
+}
+
+
+------------------------------
+
+delete
+
+# Write your query or mutation here
+mutation {
+	deleteLawyer(data: {
+    id:3
+  }){
+    message
+    status
+  }
+}
+---------------------------
+
+query {
+	findIdLawyer(data: {
+    id:2
+  }){
+    message
+    status
+    lawyerFind {
+      firstName
+      lastName
+      phone
+      address
+    }
+  }
+}
+
+======================
