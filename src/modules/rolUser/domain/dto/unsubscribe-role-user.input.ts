@@ -7,7 +7,7 @@ export class unsubcribeRoleUserInput{
     userId: number
 
     @Field()
-    roleId: number
+    rolId: number
 
 }
 

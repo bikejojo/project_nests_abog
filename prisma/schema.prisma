@@ -22,7 +22,7 @@ model User {
   //rolsId    Int//String   // EMPRESA , ABOGADO
   password  String
   token     String  // Optional token for password reset
-  type      Int?   // CLIENTE, ABOGADO, EMPRESA
+  type      Int?   @default(0)// CLIENTE, ABOGADO, EMPRESA
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   company   Company?
@@ -36,7 +36,7 @@ model User {
 
 model RolsUser {
   id        Int @id @default(autoincrement())
-  rolId     Int @unique
+  rolId     Int
   userId    Int @unique
   status    Int 
   rol       Rols @relation(fields: [rolId], references: [id])
@@ -51,7 +51,7 @@ model Rols {
   status      Int  @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  users       RolsUser?
+  users       RolsUser[]
   permissions PermissionsRol[]
 }
 
@@ -68,7 +68,7 @@ model Permissions {
 
 model PermissionsRol {
   id            Int @id @default(autoincrement())
-  permissionId  Int[]
+  permissionId  Int
   rolId         Int @unique
   status        Int
   createdAt     DateTime @default(now())

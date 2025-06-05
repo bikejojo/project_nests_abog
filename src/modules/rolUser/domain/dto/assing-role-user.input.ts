@@ -3,7 +3,7 @@ import { ObjectType , InputType , Field  } from "@nestjs/graphql";
 @InputType()
 export class assingRolUserInput{
     @Field()
-    roleId: number
+    rolId: number
 
     @Field()
     userId: number

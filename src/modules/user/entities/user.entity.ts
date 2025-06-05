@@ -1,4 +1,4 @@
-import { ObjectType , Field , ID } from "@nestjs/graphql";
+import { ObjectType , Field , ID, Int } from "@nestjs/graphql";
 import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
 
 @ObjectType()
@@ -21,8 +21,8 @@ export class User {
   @Field({ nullable: true })
   token: string;
 
-  @Field()
-  type: number; // 1: empresa, 2: abogado, 3: admin
+  @Field(()=> Int,{nullable:true})
+  type: number | null; // 1: empresa, 2: abogado, 3: admin
 
   @Field()
   isActive?: boolean;

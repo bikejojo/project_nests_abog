@@ -25,6 +25,7 @@ type LogoutUserOutPut {
 }
 
 type Mutation {
+  assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
   createCompany(data: createCompanyInput!): createCompanyOutput!
   createLawyer(data: createLawyerInput!): createLawyerOutput!
   createRol(data: createRolesInput!): createRolesOutPut!
@@ -33,6 +34,7 @@ type Mutation {
   deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
+  unsubcribreRolUser(data: unsubcribeRoleUserInput!): unsubcribeRoleUserOutPut!
   updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
   updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
 }
@@ -67,7 +69,7 @@ type User {
   rols: RolUser
   status: Float!
   token: String
-  type: Float!
+  type: Int
   updatedAt: DateTime!
 }
 
@@ -75,6 +77,25 @@ type allRolOutPut {
   message: String!
   roleData: [rolesData!]
   status: Float!
+}
+
+input assingRolUserInput {
+  rolId: Float!
+  userId: Float!
+}
+
+type assingRolUserOutPut {
+  assingRole: assingRoleUserData
+  message: String!
+  status: Float!
+}
+
+type assingRoleUserData {
+  roleId: Float!
+  roleName: String!
+  status: Float!
+  userId: Float!
+  userName: String!
 }
 
 type companyData {
@@ -246,6 +267,17 @@ type rolesData {
   updatedAt: DateTime!
 }
 
+input unsubcribeRoleUserInput {
+  rolId: Float!
+  userId: Float!
+}
+
+type unsubcribeRoleUserOutPut {
+  message: String!
+  status: Float!
+  unsubcribeRolUser: assingRoleUserData
+}
+
 type updateDataCompany {
   address: String!
   email: String!
@@ -277,5 +309,4 @@ type userData {
   id: Float!
   name: String!
   token: String!
-  type: Float!
 }
