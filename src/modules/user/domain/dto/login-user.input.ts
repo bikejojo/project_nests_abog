@@ -20,8 +20,8 @@ export class userData {
     @Field()
     email: string;
 
-    @Field()
-    role: string;
+    //@Field()
+    //role: string;
 
     @Field()
     type: number; // 1: empresa, 2: abogado, 3: admin

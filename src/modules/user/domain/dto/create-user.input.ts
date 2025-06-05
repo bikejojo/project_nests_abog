@@ -8,8 +8,8 @@ export class CreateUserInput {
   @Field()
   email: string;
 
-  @Field()
-  role: string;
+  //@Field()
+  //role: string;
 
   @Field()
   password: string;

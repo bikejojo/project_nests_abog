@@ -20,8 +20,8 @@ export class LawyerUseCase {
                 password: hashedPassword,
                 name: `${data.firstName} ${data.lastName}`,//data.firstName + ' ' + data.lastName,
                 token: '',
-                role: data.role,
-                type: this.valueRol(data.role), // 1: empresa, 2: abogado, 3: admin
+                //role: data.role,
+                //type: this.valueRol(data.role), // 1: empresa, 2: abogado, 3: admin
                 isActive: true,
                 status: 1, // 1: activo, 0: inactivo
             })
@@ -52,6 +52,7 @@ export class LawyerUseCase {
                 user:user
             }
         }catch(err){
+            console.log('Los errores de CrL son: ' + err.message);
             return {
                 message:'Los errores de CrL son: ' + err.message,
                 status: 501

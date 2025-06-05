@@ -116,7 +116,6 @@ input createLawyerInput {
   lastName: String!
   password: String!
   phone: String!
-  role: String!
 }
 
 type createLawyerOutput {
@@ -277,7 +276,6 @@ type userData {
   email: String!
   id: Float!
   name: String!
-  role: String!
   token: String!
   type: Float!
 }

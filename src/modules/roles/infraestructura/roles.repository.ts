@@ -9,7 +9,7 @@ export class RolesRepository{
         return await this.prisma.rols.create({
             data:{
                 description:data.description,
-                status:data.description,
+                status:data.status,
                 createdAt:data.createdAt,
                 updatedAt:data.updatedAt
             }

@@ -22,7 +22,7 @@ model User {
   //rolsId    Int//String   // EMPRESA , ABOGADO
   password  String
   token     String  // Optional token for password reset
-  type      Int   // CLIENTE, ABOGADO, EMPRESA
+  type      Int?   // CLIENTE, ABOGADO, EMPRESA
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   company   Company?

@@ -32,7 +32,7 @@ export class UserRepository {
                 name: data.name,
                 //role: data.role,
                 token: data.token,
-                type: data.type,
+                type: 1,
                 isActive: data.isActive,
                 status: data.status,
                 createdAt: new Date(),
@@ -50,5 +50,11 @@ export class UserRepository {
         })
     }
 
+
+    async findIdUsers(data:any){
+        return await this.prisma.user.findFirst({
+            where:{id:data.id}
+        })
+    }
     
 }

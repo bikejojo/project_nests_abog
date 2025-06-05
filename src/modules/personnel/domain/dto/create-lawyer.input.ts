@@ -5,8 +5,8 @@ import { userData } from "src/modules/user/domain/dto/login-user.input";
 export class createLawyerInput {   
     @Field()
     email: string;
-    @Field()
-    role: string;
+    //@Field()
+    //role: string;
     @Field()
     password: string;
     @Field()
