@@ -20,7 +20,7 @@ export class UserRepository {
     async saveToken(token: string, user: { id: number }) {
         return await this.prisma.user.update({
             where: { id: user.id },
-            data: { token },
+            data: { token }, //---- cambios yayaya
         });
     }
 
