@@ -11,7 +11,7 @@ export class RoleUserResolver{
 
     @Mutation(()=>assingRolUserOutPut)
     async assingRolUse(@Args('data') data:assingRolUserInput){
-        return await this.roleUserResolver.assingRolUser(data)
+        return await this.roleUserResolver.assingRolUser(data) // }}}}}ssad
     }
     @Mutation(()=>unsubcribeRoleUserOutPut)
     async unsubcribreRolUser(@Args('data') data:unsubcribeRoleUserInput){
