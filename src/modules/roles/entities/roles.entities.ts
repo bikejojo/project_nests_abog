@@ -1,5 +1,5 @@
 import { ObjectType, ID , Field } from "@nestjs/graphql";
-import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
+import { PermissionsRols } from "src/modules/permissionsRol/entities/permissionsRols.entity";
 
 @ObjectType()
 export class roles {
@@ -19,7 +19,7 @@ export class roles {
     @Field()
     updatedAt: Date
 
-    @Field(()=> RolUser,{nullable:true})
-    rolUser?: RolUser | null
+    @Field(() => [PermissionsRols], { nullable: true })
+    permissions?: PermissionsRols[] | null;
     
 }

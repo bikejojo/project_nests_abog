@@ -12,6 +12,8 @@ import { CompanyModule } from './modules/personnel/interfaces/company/company.mo
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { RolesModule } from './modules/roles/interfaces/roles.module';
 import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
+import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
+import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permissionsRols.module';
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
     AuthModule,
     UserModule,
     CompanyModule,
+    PermissionsModule,
     LawyerModule, 
     PrismaModule,
     RoleUserModule,
+    PermissionsRolsModule ,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

@@ -15,4 +15,10 @@ export class PermissionsRepository {
             }
         })
     }
+
+    async findPermission(data:any){
+        return await this.prisma.permissions.findFirst({
+            where:{id:data.id}
+        })
+    }
 }

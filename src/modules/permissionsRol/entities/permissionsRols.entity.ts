@@ -11,14 +11,20 @@ export class PermissionsRols {
     status: number
 
     @Field()
+    rolId: number
+
+    @Field()
+    permissionId:number
+
+    @Field()
     createdAt: Date
 
     @Field()
     updatedAt: Date
 
     @Field(()=>roles)
-    rol: roles
+    rol: roles;
 
     @Field(()=> Permissions)
-    permission:Permissions
+    permission:Permissions;
 }

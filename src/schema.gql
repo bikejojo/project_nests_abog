@@ -25,9 +25,11 @@ type LogoutUserOutPut {
 }
 
 type Mutation {
+  assignPermissionsRol(data: assingPermissionsRolInput!): assingPermissionsRolOutPut!
   assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
   createCompany(data: createCompanyInput!): createCompanyOutput!
   createLawyer(data: createLawyerInput!): createLawyerOutput!
+  createPermission(data: createPermissionsInput!): createPermisionsOutPut!
   createRol(data: createRolesInput!): createRolesOutPut!
   deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
   deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
@@ -35,8 +37,29 @@ type Mutation {
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   unsubcribreRolUser(data: unsubcribeRoleUserInput!): unsubcribeRoleUserOutPut!
+  unsubcriptionPermissionsRol(data: unsubcriptionPermissionRolInput!): unsubcriptionPermissionRolOutPut!
   updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
   updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
+}
+
+type Permissions {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  roles: [PermissionsRols!]
+  status: Float!
+  updatedAt: DateTime!
+}
+
+type PermissionsRols {
+  createdAt: DateTime!
+  id: ID!
+  permission: Permissions!
+  permissionId: Float!
+  rol: roles!
+  rolId: Float!
+  status: Float!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -45,6 +68,7 @@ type Query {
   allStatusLawyer: responseAllStatusLawyerOutPut!
   findIdCompany(data: inputCompanyId!): responseFindCompanyOutPut!
   findIdLawyer(data: findLawyerInput!): responseFindIdLawyerOutPut!
+  findPermissionsRols(data: findIdPermissonsRolInput!): findIdPermissionsRolOutPut!
   sayHello: String!
 }
 
@@ -76,6 +100,24 @@ type User {
 type allRolOutPut {
   message: String!
   roleData: [rolesData!]
+  status: Float!
+}
+
+type assingPermissionsRolData {
+  permissionId: Float!
+  permissionsName: String!
+  rolId: Float!
+  rolName: String!
+}
+
+input assingPermissionsRolInput {
+  permissionsId: Float!
+  rolId: Float!
+}
+
+type assingPermissionsRolOutPut {
+  message: String!
+  permissionsData: assingPermissionsRolData
   status: Float!
 }
 
@@ -146,6 +188,16 @@ type createLawyerOutput {
   user: userData
 }
 
+type createPermisionsOutPut {
+  dataPermissions: dataPermissions
+  message: String!
+  status: Float!
+}
+
+input createPermissionsInput {
+  description: String!
+}
+
 input createRolesInput {
   description: String!
 }
@@ -154,6 +206,14 @@ type createRolesOutPut {
   message: String!
   rolesDatas: rolesData!
   status: Float!
+}
+
+type dataPermissions {
+  createdAt: DateTime!
+  description: String!
+  id: Float!
+  status: Float!
+  updatedAt: DateTime!
 }
 
 type deleteCompanyData {
@@ -179,6 +239,22 @@ type deleteRoleOutPut {
   status: Float!
 }
 
+type findIdPermissionsRolData {
+  permissions: [permissionsDataObj!]!
+  rolId: Int!
+  rolName: String!
+}
+
+type findIdPermissionsRolOutPut {
+  message: String!
+  permissionsRolOutPut: findIdPermissionsRolData
+  status: Float!
+}
+
+input findIdPermissonsRolInput {
+  rolId: Int!
+}
+
 input findLawyerInput {
   id: Float!
 }
@@ -200,6 +276,11 @@ type lawyerData {
   phone: String!
   status: Float!
   userId: Float!
+}
+
+type permissionsDataObj {
+  description: String!
+  permissionId: Int!
 }
 
 type responseAllStatusCompanyOutPut {
@@ -254,7 +335,7 @@ type roles {
   createdAt: DateTime!
   description: String!
   id: ID!
-  rolUser: RolUser
+  permissions: [PermissionsRols!]
   status: Float!
   updatedAt: DateTime!
 }
@@ -276,6 +357,17 @@ type unsubcribeRoleUserOutPut {
   message: String!
   status: Float!
   unsubcribeRolUser: assingRoleUserData
+}
+
+input unsubcriptionPermissionRolInput {
+  permissionId: Float!
+  roleId: Float!
+}
+
+type unsubcriptionPermissionRolOutPut {
+  message: String!
+  permissRole: [assingPermissionsRolData!]
+  status: Float!
 }
 
 type updateDataCompany {
