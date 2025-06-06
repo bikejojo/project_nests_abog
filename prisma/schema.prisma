@@ -69,7 +69,7 @@ model Permissions {
 model PermissionsRol {
   id            Int @id @default(autoincrement())
   permissionId  Int
-  rolId         Int @unique
+  rolId         Int
   status        Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
