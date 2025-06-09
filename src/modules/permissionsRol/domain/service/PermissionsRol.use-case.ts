@@ -132,7 +132,7 @@ export class PermissionsRolsUseCase {
         return {
             message:'Asignación exitosa entre el rol y el permiso',
             status:2,
-            permissionsData:rolePermissions   
+            permissionsData:rolePermissions    
         }
     }
 
@@ -142,12 +142,12 @@ export class PermissionsRolsUseCase {
 
             if (!relations || relations.length === 0) {
                 return {
-                    message: 'No se encontraron permisos para este rol',
+                    message: 'EL rol no cuenta con permisos.',
                     status: 1,
                     permissionsRolOutPut: null,
                 };
             }
-            console.log('1234' , relations);
+            //console.log('1234' , relations);
             const { rol } = relations[0];
             const permissions = relations.map((rel) => ({
                 permissionId: rel.permission.id,

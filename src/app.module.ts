@@ -14,6 +14,7 @@ import { RolesModule } from './modules/roles/interfaces/roles.module';
 import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
 import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
 import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permissionsRols.module';
+import { PermissionsUserModule } from './modules/userPermissions/interfaces/permissionsUser.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permi
     PrismaModule,
     RoleUserModule,
     PermissionsRolsModule ,
+    PermissionsUserModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

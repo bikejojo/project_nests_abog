@@ -26,6 +26,7 @@ type LogoutUserOutPut {
 
 type Mutation {
   assignPermissionsRol(data: assingPermissionsRolInput!): assingPermissionsRolOutPut!
+  assingPermissionsUser(data: assingPermissionsUserInput!): assingPermissionsUserOutPut!
   assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
   createCompany(data: createCompanyInput!): createCompanyOutput!
   createLawyer(data: createLawyerInput!): createLawyerOutput!
@@ -118,6 +119,17 @@ input assingPermissionsRolInput {
 type assingPermissionsRolOutPut {
   message: String!
   permissionsData: assingPermissionsRolData
+  status: Float!
+}
+
+input assingPermissionsUserInput {
+  permissionsId: [Int!]!
+  userId: Float!
+}
+
+type assingPermissionsUserOutPut {
+  message: String!
+  permissionUserData: permissionsUserData
   status: Float!
 }
 
@@ -281,6 +293,12 @@ type lawyerData {
 type permissionsDataObj {
   description: String!
   permissionId: Int!
+}
+
+type permissionsUserData {
+  permissionData: [permissionsDataObj!]
+  permissionsId: Float!
+  rolName: String!
 }
 
 type responseAllStatusCompanyOutPut {

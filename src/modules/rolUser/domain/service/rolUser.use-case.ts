@@ -49,7 +49,7 @@ export class rolUserUseCase {
                 }
             }
 
-
+            //const safeData = Array.isArray(data) ? data: [data];
             const rolUser = await this.rolUserRepository.assingRoleUser(data);
 
             return {
@@ -117,8 +117,15 @@ export class rolUserUseCase {
 
             const unsubcribeRolUser = await this.rolUserRepository.unsubscribeRoleUser(userRolId)
 
+            if(!unsubcribeRolUser){
+                return {
+                    message:'No se creo el registro',
+                    status:1
+                }
+            }
+
             return {
-                message:'Registro exitoso del rol con el usuario',
+                message:'Registro exitoso del rol al desacoplar con permisos',
                 status:2,
                 unsubcribeRolUser: unsubcribeRolUser
             }

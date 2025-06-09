@@ -15,6 +15,6 @@ export class RoleUserResolver{
     }
     @Mutation(()=>unsubcribeRoleUserOutPut)
     async unsubcribreRolUser(@Args('data') data:unsubcribeRoleUserInput){
-        
+        return await this.roleUserResolver.unsubcribeRolUser(data)
     }    
 }

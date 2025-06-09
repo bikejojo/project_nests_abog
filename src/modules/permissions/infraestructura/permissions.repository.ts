@@ -21,4 +21,16 @@ export class PermissionsRepository {
             where:{id:data.id}
         })
     }
+
+    async arrayFindPermissions(permissionsId:number[]){
+        const existinfPermissions = await this.prisma.permissions.findMany({
+            where:{
+                id: { in:permissionsId },
+                status: 1
+            },
+            select:{id:true}
+        });
+
+        return existinfPermissions.map(p=>p.id);
+    }
 }

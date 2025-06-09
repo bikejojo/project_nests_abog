@@ -40,7 +40,8 @@ export class PermissionRolRepository{
     async findPermissionsByRolId(data:any) {
         return await this.prisma.permissionsRol.findMany({
             where:{
-                rolId:data.rolId , 
+                rolId:data.rolId ,
+                status:1
             },
             
             include: {
