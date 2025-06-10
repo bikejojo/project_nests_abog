@@ -1,5 +1,6 @@
 {
     "conventionalCommits.scopes": [
-        "migrations_employee"
+        "migrations_employee",
+        "code_new_persona"
     ]
 }
