@@ -1,6 +1,6 @@
 variables:
   #NODE_ENV: 'development'  
-  #DATABASE_URL: $DATABASE_URL
+  DATABASE_URL: $DATABASE_URL
   #JWT_SECRET: $JWT_SECRET
   APP_NAME: "app_Nests"
 
