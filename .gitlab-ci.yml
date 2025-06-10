@@ -3,6 +3,7 @@ variables:
   DATABASE_URL: $DATABASE_URL
   #JWT_SECRET: $JWT_SECRET
   APP_NAME: "app_Nests"
+  CI: true
 
 stages:
   - install
