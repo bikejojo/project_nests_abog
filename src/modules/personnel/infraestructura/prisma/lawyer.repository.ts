@@ -16,7 +16,7 @@ export class LawyerRepository {
                 createdAt: data.createdAt ,
                 updatedAt: data.updatedAt ,
                 personId: data.personId ,
-                userId: data.userId
+                userId: data.userId //
             }
         })
     }
