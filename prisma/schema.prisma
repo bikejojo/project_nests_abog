@@ -25,7 +25,7 @@ model User {
   type      Int?   @default(0)// CLIENTE, ABOGADO, EMPRESA
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
-
+  lawyer    Lawyer?
   admin     Admin?
   rols      RolsUser? // Relación con tabla pivote
   userPermissions UserPermissions[]
@@ -99,13 +99,13 @@ model Persona {
   status          Int @default(1)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  lawyers         lawyer[]
-  judges          judge[]
-  natural_persons natural_person[]
-  legal_entity    legal_entity[]
+  lawyers         Lawyer[]
+  judges          Judge[]
+  natural_persons Natural_Person[]
+  legal_entity    Legal_Entity[]
 }
 
-model lawyer {
+model Lawyer {
   id                Int @id @default(autoincrement())
   registrationDate  DateTime
   isActive          Boolean @default(true)
@@ -114,11 +114,13 @@ model lawyer {
   status            Int @default(1)
   createdAt         DateTime @default(now())
   updatedAt         DateTime  @updatedAt
+  userId            Int @unique
   personId          Int
   persona           Persona @relation(fields: [personId] , references: [id])
+  user              User @relation(fields: [userId] ,references: [id])
 }
 
-model judge {
+model Judge {
   id        Int @id @default(autoincrement())
   registratioDate DateTime
   description     String?
@@ -131,7 +133,7 @@ model judge {
   persona         Persona @relation(fields: [personId] , references: [id])
 }
 
-model natural_person {
+model Natural_Person {
   id  Int @id @default(autoincrement())
   registrationDate  DateTime  @default(now())
   description       String?
@@ -142,7 +144,7 @@ model natural_person {
   persona           Persona @relation(fields: [personId] , references: [id])
 }
 
-model legal_entity {
+model Legal_Entity {
   id  Int @id @default(autoincrement())
   NIT               String?
   companyName       String?

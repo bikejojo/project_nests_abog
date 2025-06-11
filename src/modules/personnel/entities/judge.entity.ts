@@ -1,5 +1,4 @@
 import { ObjectType , Field , ID } from "@nestjs/graphql";
-import { BlobOptions } from "buffer";
 import { Persona } from "./persona.entity";
 
 @ObjectType()

@@ -30,7 +30,6 @@ export class UserRepository {
                 email: data.email,
                 password: data.password,
                 name: data.name,
-                //role: data.role,
                 token: data.token,
                 isActive: data.isActive,
                 status: data.status,

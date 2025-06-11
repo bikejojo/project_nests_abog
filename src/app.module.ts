@@ -8,8 +8,6 @@ import { UserModule } from './modules/user/interfaces/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { CompanyModule } from './modules/personnel/interfaces/company/company.module';
-import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { RolesModule } from './modules/roles/interfaces/roles.module';
 import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
 import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
@@ -21,9 +19,7 @@ import { PermissionsUserModule } from './modules/userPermissions/interfaces/perm
     ConfigModule.forRoot({isGlobal: true}),
     AuthModule,
     UserModule,
-    CompanyModule,
     PermissionsModule,
-    LawyerModule, 
     PrismaModule,
     RoleUserModule,
     PermissionsRolsModule ,

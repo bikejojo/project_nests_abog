@@ -3,7 +3,7 @@ import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
 
 @ObjectType()
 export class User {
-@Field(() => ID)
+  @Field(() => ID)
   id: number;
 
   @Field()
@@ -14,9 +14,6 @@ export class User {
 
   @Field({ nullable: true })
   password: string;
-
-  //@Field()
-  //rolsId: number//string; // empresa  abogado
 
   @Field({ nullable: true })
   token: string;

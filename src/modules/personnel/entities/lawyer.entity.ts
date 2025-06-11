@@ -1,4 +1,5 @@
 import { Field , ID , ObjectType } from "@nestjs/graphql";
+import { Persona } from "./persona.entity";
 
 @ObjectType()
 export class Lawyer {
@@ -27,5 +28,11 @@ export class Lawyer {
     updatedAt : Date
 
     @Field()
+    userId: number
+
+    @Field()
     personId: number
+
+    @Field(()=>Persona)
+    persona: Persona
 }

@@ -2,6 +2,7 @@ import { Field , ObjectType , ID } from "@nestjs/graphql";
 import { Natural_Person } from "./natural_person.entity";
 import { Judge } from "./judge.entity";
 import { Lawyer } from "./lawyer.entity";
+import { Legal_Entity } from "./legal_entity.entity";
 
 @ObjectType()
 export class Persona {
@@ -40,4 +41,8 @@ export class Persona {
 
     @Field(()=>Lawyer , {nullable:true})
     lawyers?: Lawyer | null
+
+    @Field(()=>Legal_Entity,{nullable:true})
+    legal_Entity?: Legal_Entity | null
+    
 }
