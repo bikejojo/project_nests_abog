@@ -1,7 +1,7 @@
 import { ObjectType , InputType , Field , ID } from "@nestjs/graphql";
 
 @InputType()
-export class updateUserPersonLawyerInput {
+export class updatePersonLawyerInput {
     @Field(()=>ID)
     id: number
 
@@ -15,7 +15,7 @@ export class updateUserPersonLawyerInput {
     lastName: string
 
     @Field()
-    email: string
+    cityId: number
 
     @Field()
     phone: string
