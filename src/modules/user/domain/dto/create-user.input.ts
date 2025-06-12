@@ -1,21 +1,23 @@
-import { InputType , Field , PartialType } from "@nestjs/graphql";
+import { InputType , Field , ObjectType } from "@nestjs/graphql";
 
 @InputType()
 export class CreateUserInput { 
-  @Field()
-  name: string;
-
-  @Field()
-  email: string;
-
-  //@Field()
-  //role: string;
 
   @Field()
   password: string;
 
   @Field()
-  type: number
+  lawyerId: number
+  
+}
 
+@ObjectType()
+export class createUserLawyerOutPut{
+
+  @Field(()=> String , {nullable:true})
+  message: string | null
+  
+  @Field()
+  status: number
   
 }

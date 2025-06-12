@@ -69,4 +69,39 @@ export class LawyerUseCase {
             }
         }
     }
+
+     //querys
+    async allLawyerStatus(){
+        //console.log(1);
+        try {
+            const listLawyer = await this.lawyerRepository.allLawyerByUser()
+            
+            if(!listLawyer){
+                return {
+                    message: 'Problemas de creacion de listado' ,
+                    status: 1
+                }
+            }
+
+            if( listLawyer.length === 0){
+                return {
+                    message: 'No existen listado de abogados.',
+                    status: 1
+                }
+            }
+
+            return {
+                message: 'Objeto devuelvo exitoso !!' ,
+                status: 2 ,
+                allPersLaw: listLawyer
+            }
+
+        }catch(err){
+            console.log('Se presentaron fallas en AllLawSt y son: '+err.message)
+            return {
+                message: 'Se presentaron fallas en AllLawSt y son: '+ err.message ,
+                status:3
+            }
+        }
+    }
 }

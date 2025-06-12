@@ -7,11 +7,12 @@ import { jwtConstants } from "src/auth/constants";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserModule } from "src/modules/user/interfaces/user.module";
 import { PersonModule } from "../persona/persona.module";
+import { LawyerResolver } from "./lawyer.resolver";
 
 @Module({
   imports: [
     AuthModule ,
-    UserModule ,
+    forwardRef(() => UserModule),   
     forwardRef(()=> PersonModule ),
     JwtModule.register({
         secret: jwtConstants.secret,
@@ -21,6 +22,7 @@ import { PersonModule } from "../persona/persona.module";
   providers: [
     LawyerRepository,
     LawyerUseCase ,
+    LawyerResolver ,
     PrismaService,
   ],
   exports: [

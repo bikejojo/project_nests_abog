@@ -1,6 +1,5 @@
 import { InputType , ObjectType , Field , ID } from "@nestjs/graphql";
 import { userData } from "src/modules/user/domain/dto/login-user.input";
-import { User } from "src/modules/user/entities/user.entity";
 import { lawyerData } from "../lawyer/create-lawyer.input";
 
 @InputType()

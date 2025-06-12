@@ -17,7 +17,7 @@ datasource db {
 // ======== USER MODEL ========
 model User {
   id        Int   @id @default(autoincrement())
-  email     String   
+  email     String?   
   name      String
   ci        String?
   password  String
@@ -99,6 +99,8 @@ model Persona {
   status          Int @default(1)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  cityId          Int?
+  city            City?  @relation(fields: [cityId] , references: [id])
   lawyers         Lawyer[]
   judges          Judge[]
   natural_persons Natural_Person[]
@@ -118,6 +120,7 @@ model Lawyer {
   personId          Int
   persona           Persona @relation(fields: [personId] , references: [id])
   user              User? @relation(fields: [userId] ,references: [id])
+  
 }
 
 model Judge {
@@ -164,6 +167,12 @@ model Admin {
   email    String
   userId   Int   @unique 
   user     User   @relation(fields: [userId], references: [id])
+}
+
+model City {
+  id          Int @id   @default(autoincrement())
+  description String
+  person      Persona[]
 }
 
 //-------------------------------------------------------------------

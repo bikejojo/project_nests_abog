@@ -8,10 +8,5 @@ export class PersonaResolver {
     constructor(
         private readonly personaUseCase:personaUseCase
     ){}
-
-    @Mutation(()=>persLawUserOutPut)
-    async createUserPersLawyer(@Args('data') data:create_person_input ){
-        return await this.personaUseCase.createPersonLawyer(data);
-    }
     
 }

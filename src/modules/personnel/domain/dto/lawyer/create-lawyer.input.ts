@@ -28,9 +28,6 @@ export class createLawyerInput {
     lastName: string
 
     @Field()
-    email: string
-
-    @Field()
     phone: string
 
     @Field()
@@ -56,9 +53,6 @@ export class lawyerDatas {
 
     @Field()
     lastName: string
-
-    @Field()
-    email: string
 
     @Field()
     phone: string
