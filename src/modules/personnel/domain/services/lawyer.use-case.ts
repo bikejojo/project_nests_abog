@@ -6,7 +6,6 @@ import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository
 @Injectable()
 export class LawyerUseCase {
     constructor(
-        private userRepository:UserRepository ,
         private personRepository:PersonRepository ,
         private lawyerRepository:LawyerRepository
     ){}
@@ -14,6 +13,53 @@ export class LawyerUseCase {
     async createLawyer(data:any){
         try {
             
+            if(data.phone < 8 ){
+                return {
+                    message:'El numero es incorrecto.' , 
+                    status: 1
+                }
+            }
+
+            const person = await this.personRepository.createPerson({
+                ci:data.ci ,
+                firstName: data.firstName ,
+                lastName: data.lastName ,
+                phone: data.phone ,
+                address: data.address , 
+                status: 1,
+                createdAt: new Date ,
+                updatedAt: new Date
+            })
+
+            if(!person){
+                return {
+                    message:'Surgio un problema de creacion del modelo'
+                }
+            }
+
+            const lawyer = await this.lawyerRepository.createLawyer({
+                userId: null ,
+                personId: person.id ,
+                registrationDate: new Date ,
+                isActive: true,
+                isFiscal: data.isFiscal ,
+                isIntern: data.isIntern ,
+                status: 1 ,
+                createdAt: new Date ,
+                updatedAt: new Date ,
+            })
+
+            if(!lawyer){
+                return {
+                    message:'Surgieron problemas al crear el modelo de Abogado'
+                }
+            }
+
+            return {
+                message:'Registro exitoso del abogado.',
+                status:2
+            }
+
         }catch(err){
             console.log('Fallas detectadas en CrLaw y son:' + err.message)
             return {

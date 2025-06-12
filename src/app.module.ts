@@ -13,12 +13,16 @@ import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
 import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
 import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permissionsRols.module';
 import { PermissionsUserModule } from './modules/userPermissions/interfaces/permissionsUser.module';
+import { PersonModule } from './modules/personnel/interfaces/persona/persona.module';
+import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
     AuthModule,
     UserModule,
+    LawyerModule,
+    PersonModule,
     PermissionsModule,
     PrismaModule,
     RoleUserModule,

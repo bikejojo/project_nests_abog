@@ -19,10 +19,10 @@ model User {
   id        Int   @id @default(autoincrement())
   email     String   
   name      String
-  //rolsId    Int//String   // EMPRESA , ABOGADO
+  ci        String?
   password  String
   token     String  // Optional token for password reset
-  type      Int?   @default(0)// CLIENTE, ABOGADO, EMPRESA
+  type      Int?   @default(1)// ABOGADO 1  ADMIN 0
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   lawyer    Lawyer?
@@ -114,10 +114,10 @@ model Lawyer {
   status            Int @default(1)
   createdAt         DateTime @default(now())
   updatedAt         DateTime  @updatedAt
-  userId            Int @unique
+  userId            Int? @unique
   personId          Int
   persona           Persona @relation(fields: [personId] , references: [id])
-  user              User @relation(fields: [userId] ,references: [id])
+  user              User? @relation(fields: [userId] ,references: [id])
 }
 
 model Judge {

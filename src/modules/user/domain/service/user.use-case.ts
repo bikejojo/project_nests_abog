@@ -15,7 +15,8 @@ export class UserUseCase {
     ) {}
 
     async login(data: LoginUserInput){
-        const user = await this.userRepository.login(data.email);
+        const user = await this.userRepository.login(data.ci);
+        console.log(user);
         if(!user){
             //throw new UnauthorizedException('El usuario no existe');
             return {
@@ -44,7 +45,7 @@ export class UserUseCase {
             }
         }
 
-        if(user.token !== null ){
+        if(user.token != '' ){
             return {
                 message: 'Usuario inicio sesion en otro dipositivo',
                 status: 404,
@@ -59,9 +60,9 @@ export class UserUseCase {
             status: 200,
             user: {
                 name: user.name,
-                email: user.email,
+                ci: user.ci,
                 type: user.type, // 1: empresa, 2: abogado, 3: admin
-                token: jwtToken,
+                token: jwtToken.token,
                 //role: user.rols,
             },
         }

@@ -7,6 +7,48 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Judge {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  isActive: Boolean!
+  isIntern: Boolean!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
+}
+
+type Lawyer {
+  createdAt: DateTime!
+  id: ID!
+  isActive: Boolean!
+  isFiscal: Boolean!
+  isIntern: Boolean!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
+  userId: Float!
+}
+
+type Legal_Entity {
+  NIT: Float!
+  address: String!
+  companyName: String!
+  createdAt: DateTime!
+  id: ID!
+  legalRepresentive: String!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  typeCompany: String!
+  updatedAt: DateTime!
+}
+
 type LoginResponse {
   message: String!
   status: Float!
@@ -14,7 +56,7 @@ type LoginResponse {
 }
 
 input LoginUserInput {
-  email: String!
+  ci: String!
   password: String!
 }
 
@@ -28,19 +70,25 @@ type Mutation {
   assignPermissionsRol(data: assingPermissionsRolInput!): assingPermissionsRolOutPut!
   assingPermissionsUser(data: assingPermissionsUserInput!): assingPermissionsUserOutPut!
   assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
-  createCompany(data: createCompanyInput!): createCompanyOutput!
-  createLawyer(data: createLawyerInput!): createLawyerOutput!
   createPermission(data: createPermissionsInput!): createPermisionsOutPut!
   createRol(data: createRolesInput!): createRolesOutPut!
-  deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
-  deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
+  createUserPersLawyer(data: create_person_input!): persLawUserOutPut!
   deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   unsubcribreRolUser(data: unsubcribeRoleUserInput!): unsubcribeRoleUserOutPut!
   unsubcriptionPermissionsRol(data: unsubcriptionPermissionRolInput!): unsubcriptionPermissionRolOutPut!
-  updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
-  updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
+}
+
+type Natural_Person {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
 }
 
 type Permissions {
@@ -63,12 +111,24 @@ type PermissionsRols {
   updatedAt: DateTime!
 }
 
+type Persona {
+  address: String!
+  ci: String
+  createdAt: DateTime!
+  firstName: String
+  id: ID!
+  judges: Judge
+  lastName: String
+  lawyers: Lawyer
+  legal_Entity: Legal_Entity
+  natural_persons: Natural_Person
+  phone: String
+  status: Float!
+  updatedAt: DateTime!
+}
+
 type Query {
   allRoles: allRolOutPut!
-  allStatusCompany: responseAllStatusCompanyOutPut!
-  allStatusLawyer: responseAllStatusLawyerOutPut!
-  findIdCompany(data: inputCompanyId!): responseFindCompanyOutPut!
-  findIdLawyer(data: findLawyerInput!): responseFindIdLawyerOutPut!
   findPermissionsRols(data: findIdPermissonsRolInput!): findIdPermissionsRolOutPut!
   sayHello: String!
 }
@@ -152,54 +212,6 @@ type assingRoleUserData {
   userName: String!
 }
 
-type companyData {
-  address: String!
-  email: String!
-  id: Float!
-  name: String!
-  phone: String!
-}
-
-type companyDatas {
-  address: String!
-  email: String!
-  id: ID!
-  name: String!
-  phone: String!
-}
-
-input createCompanyInput {
-  address: String!
-  email: String!
-  name: String!
-  password: String!
-  phone: String!
-  role: String!
-}
-
-type createCompanyOutput {
-  company: companyData
-  message: String!
-  status: Float!
-  user: userData
-}
-
-input createLawyerInput {
-  address: String!
-  email: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  phone: String!
-}
-
-type createLawyerOutput {
-  LawyerCreate: lawyerData
-  message: String!
-  status: Float!
-  user: userData
-}
-
 type createPermisionsOutPut {
   dataPermissions: dataPermissions
   message: String!
@@ -220,25 +232,24 @@ type createRolesOutPut {
   status: Float!
 }
 
+input create_person_input {
+  address: String!
+  ci: String!
+  email: String!
+  firstName: String!
+  isFiscal: Boolean!
+  isInterno: Boolean!
+  lastName: String!
+  password: String!
+  phone: String!
+}
+
 type dataPermissions {
   createdAt: DateTime!
   description: String!
   id: Float!
   status: Float!
   updatedAt: DateTime!
-}
-
-type deleteCompanyData {
-  address: String!
-  email: String!
-  id: Float!
-  name: String!
-  phone: String!
-  status: Float!
-}
-
-input deleteLawyerInput {
-  id: Float!
 }
 
 input deleteRoleInput {
@@ -267,27 +278,11 @@ input findIdPermissonsRolInput {
   rolId: Int!
 }
 
-input findLawyerInput {
-  id: Float!
-}
-
-input inputCompanyId {
-  id: Float!
-}
-
-input inputDeleteCompany {
-  id: Float!
-}
-
 type lawyerData {
-  address: String!
-  email: String!
-  firstName: String!
-  id: Float!
-  lastName: String!
-  phone: String!
-  status: Float!
-  userId: Float!
+  id: ID!
+  isFiscal: Boolean!
+  isIntern: Boolean!
+  registratioDate: DateTime!
 }
 
 type permissionsDataObj {
@@ -301,52 +296,24 @@ type permissionsUserData {
   rolName: String!
 }
 
-type responseAllStatusCompanyOutPut {
-  allCompanys: [companyDatas!]
+type persLawUserData {
+  lawyerData: lawyerData
+  personData: personData
+  userData: userData
+}
+
+type persLawUserOutPut {
   message: String!
+  personLawyUser: persLawUserData
   status: Float!
 }
 
-type responseAllStatusLawyerOutPut {
-  allLawyer: [lawyerData!]
-  message: String!
-  status: Float!
-}
-
-type responseDeleteCompanyOutput {
-  deleteCompany: deleteCompanyData
-  message: String!
-  status: Float!
-}
-
-type responseDeleteLawyerOutPut {
-  deleteLawyer: lawyerData
-  message: String!
-  status: Float!
-}
-
-type responseFindCompanyOutPut {
-  companyId: companyData
-  message: String!
-  status: Float!
-}
-
-type responseFindIdLawyerOutPut {
-  lawyerFind: lawyerData
-  message: String!
-  status: Float!
-}
-
-type responseUpdateCompanyOutput {
-  message: String!
-  status: Float!
-  updateDataCompany: updateDataCompany
-}
-
-type responseUpdateLawyerOutPut {
-  message: String!
-  status: Float!
-  updateLawyer: lawyerData
+type personData {
+  address: String!
+  firstName: String!
+  id: Float!
+  lastName: String!
+  phone: String!
 }
 
 type roles {
@@ -388,34 +355,8 @@ type unsubcriptionPermissionRolOutPut {
   status: Float!
 }
 
-type updateDataCompany {
-  address: String!
-  email: String!
-  name: String!
-  password: String!
-  phone: String!
-  role: String!
-}
-
-input updateLawyerInput {
-  address: String!
-  email: String!
-  firstName: String!
-  id: Float!
-  lastName: String!
-  phone: String!
-}
-
-input updatedCompanyInput {
-  address: String!
-  email: String!
-  id: Float!
-  name: String!
-  phone: String!
-}
-
 type userData {
-  email: String!
+  ci: String!
   id: Float!
   name: String!
   token: String!

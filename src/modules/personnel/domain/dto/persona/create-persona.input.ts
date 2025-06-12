@@ -6,7 +6,7 @@ import { lawyerData } from "../lawyer/create-lawyer.input";
 @InputType()
 export class create_person_input {
     @Field()
-    ci: number
+    ci: string
 
     @Field()
     firstName: string
@@ -27,13 +27,11 @@ export class create_person_input {
     password: string
 
     @Field()
-    isFiscal: number
+    isFiscal: boolean
 
     @Field()
-    isInterno: number
+    isInterno: boolean
     
-    @Field()
-    isActive: number
 }
 
 @ObjectType()

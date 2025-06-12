@@ -9,7 +9,7 @@ export class Persona {
     @Field(()=>ID)
     id:number
 
-    @Field()
+    @Field({nullable:true})
     ci:string
 
     @Field({nullable:true})

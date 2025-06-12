@@ -24,6 +24,6 @@ export class Natural_Person {
     @Field()
     personId:number
 
-    @Field()
+    @Field(()=>Persona)
     persona:Persona
 }
