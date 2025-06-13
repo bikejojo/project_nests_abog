@@ -46,6 +46,7 @@ lerna-debug.log*
 .temp
 .tmp
 ./api_de_nests+graphql.txt
+./endpoint.txt
 
 # Runtime data
 pids
@@ -57,3 +58,4 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+

@@ -38,6 +38,9 @@ export class createLawyerInput {
 
     @Field()
     isInterno: boolean
+
+    @Field()
+    cityId: number
 }
 
 @ObjectType()

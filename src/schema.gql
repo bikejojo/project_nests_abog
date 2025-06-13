@@ -2,9 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AllCityDataOutPut {
+  allCity: [DataCity!]
+  message: String!
+  status: Float!
+}
+
 input CreateUserInput {
   lawyerId: Float!
   password: String!
+}
+
+type DataCity {
+  description: String!
+  id: Float!
 }
 
 """
@@ -134,6 +145,7 @@ type Persona {
 }
 
 type Query {
+  allCityData: AllCityDataOutPut!
   allLawyersStatus: allStatusPersLawyerOutPut!
   allRoles: allRolOutPut!
   findPermissionsRols(data: findIdPermissonsRolInput!): findIdPermissionsRolOutPut!

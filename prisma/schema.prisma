@@ -26,20 +26,7 @@ model User {
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   lawyer    Lawyer?
-  admin     Admin?
-  rols      RolsUser? // Relación con tabla pivote
   userPermissions UserPermissions[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model RolsUser {
-  id        Int @id @default(autoincrement())
-  rolId     Int
-  userId    Int @unique
-  status    Int 
-  rol       Rols @relation(fields: [rolId], references: [id])
-  user      User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -50,7 +37,6 @@ model Rols {
   status      Int  @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  users       RolsUser[]
   permissions PermissionsRol[]
 }
 
@@ -118,9 +104,10 @@ model Lawyer {
   updatedAt         DateTime  @updatedAt
   userId            Int? @unique
   personId          Int
+  branchOfficeId    Int?
   persona           Persona @relation(fields: [personId] , references: [id])
   user              User? @relation(fields: [userId] ,references: [id])
-  
+  branch_office     Branch_Office? @relation(fields: [branchOfficeId] , references: [id])
 }
 
 model Judge {
@@ -161,20 +148,19 @@ model Legal_Entity {
   personId          Int
   persona           Persona @relation(fields: [personId] , references: [id])
 }
-model Admin {
-  id       Int   @id @default(autoincrement())
-  name     String
-  email    String
-  userId   Int   @unique 
-  user     User   @relation(fields: [userId], references: [id])
-}
 
 model City {
   id          Int @id   @default(autoincrement())
-  description String
+  description String  @unique
   person      Persona[]
 }
 
+model Branch_Office {
+  id          Int @id @default(autoincrement())
+  description String @unique
+  status      Int
+  lawyer      Lawyer[]
+}
 //-------------------------------------------------------------------
 model lawyersUnit {
   id          Int @id @default(autoincrement())

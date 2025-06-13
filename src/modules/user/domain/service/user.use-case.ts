@@ -8,10 +8,11 @@ import { AuthService } from "../../../../auth/auth.service";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
 import { LawyerRepository } from "src/modules/personnel/infraestructura/prisma/lawyer.repository";
 import { typeUser } from "src/common/enum/typeUser";
+import { response } from "src/common/enum/typeResp";
+import { status } from "src/common/enum/typeStatus";
 @Injectable()
 export class UserUseCase {
     constructor(
-        private prisma:PrismaService , 
         private authService: AuthService ,
         private userRepository: UserRepository ,
         private personaRepository: PersonRepository ,
@@ -19,13 +20,13 @@ export class UserUseCase {
     ) {}
 
     async login(data: LoginUserInput){
-        const user = await this.userRepository.login(data.ci);
-        console.log(user);
+        const user = await this.userRepository.login(data.username);
+
         if(!user){
             //throw new UnauthorizedException('El usuario no existe');
             return {
                 message: 'El usuario no existe',
-                status: 401 ,
+                status: response.FALL ,
                 user: null
             }
         }
@@ -35,7 +36,7 @@ export class UserUseCase {
             //throw new UnauthorizedException('Credenciales inválidas');
             return {
                 message: 'Credenciales inválidas',
-                status: 402,
+                status: response.FALL ,
                 user: null
             }
         }
@@ -44,7 +45,7 @@ export class UserUseCase {
             //throw new UnauthorizedException('Usuario inactivo');
             return {
                 message: 'Usuario inactivo',
-                status: 403,
+                status: response.FALL ,
                 user: null
             }
         }
@@ -52,7 +53,7 @@ export class UserUseCase {
         if(user.token != '' ){
             return {
                 message: 'Usuario inicio sesion en otro dipositivo',
-                status: 404,
+                status: response.FALL,
                 user: null
             }
         }
@@ -61,7 +62,7 @@ export class UserUseCase {
         this.userRepository.saveToken(jwtToken.token , user );
         return {
             message: 'Inicio de sesión exitoso',
-            status: 200,
+            status: response.NICE ,
             user: {
                 name: user.name,
                 ci: user.ci,
@@ -79,7 +80,7 @@ export class UserUseCase {
             //console.log(user);
             return{
                 message: 'Logout exitoso',
-                status: 201 ,
+                status: response.FALL ,
                 logoutData: user
             }
         }catch(err){
@@ -100,14 +101,14 @@ export class UserUseCase {
             if(!lawyerData){
                 return {
                     message:'Fallas en el obtencion de datos de abogado' ,
-                    status: 1
+                    status: response.FALL
                 }
             }
 
             if(lawyerData.userId){
                 return {
                     message:'El abogado se registro previamente.' ,
-                    status: 1
+                    status: response.FALL
                 }
             }
 
@@ -119,7 +120,7 @@ export class UserUseCase {
                 ci: lawyerData.persona.ci , 
                 password: hashedPassword ,
                 isActive: true,
-                status: 1,
+                status: status.ACTIVE,
                 type: typeUser.LawyerIntern ,
                 token: '' ,
             })
@@ -127,7 +128,7 @@ export class UserUseCase {
             if(!user){
                 return{
                     message:'El registro de user fue incorrecto !!!' ,
-                    status: 1
+                    status: response.FALL
                 }
             }
 
@@ -139,13 +140,13 @@ export class UserUseCase {
             if(!lawyer){
                 return{
                     message:'El registro de Lawyer fue incorrecto !!!' ,
-                    status: 1
+                    status: response.FALL
                 }
             }
             
             return {
                 message: 'registro existoso del usuario abogado. !!!',
-                status: 2,
+                status: response.NICE ,
                 personLawyUser: {
                     userData: user ,
                     lawyerData: lawyer,
@@ -155,7 +156,7 @@ export class UserUseCase {
             console.log('Fallas detectadas en CrPers y son:' + err.message)
             return {
                 message: 'Fallas en CrPers: ' + err.message,
-                status: 3 , 
+                status: response.WARN , 
 
             }
         }

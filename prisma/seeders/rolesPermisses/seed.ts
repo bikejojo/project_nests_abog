@@ -3,22 +3,17 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main(){
-    const admin = await prisma.rols.create({
-        data: {
-            description:'ADMIN' ,
-            status: 1,
-            createdAt: new Date ,
-            updatedAt: new Date
-        },
-    })
-
-    const lawyer = await prisma.rols.create({
-        data: {
-            description:'ABOG_INT' ,
-            status: 1,
-            createdAt: new Date ,
-            updatedAt: new Date
-        },
+    const admin = await prisma.permissions.createMany({
+        data:[
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+            { description:'',status:1 , createdAt:new Date , updatedAt:new Date },
+        ]
     })
 
 }

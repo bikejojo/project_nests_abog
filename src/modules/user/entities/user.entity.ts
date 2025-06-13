@@ -33,7 +33,7 @@ export class User {
   @Field()
   updatedAt: Date;
 
-  @Field(()=> RolUser , {nullable:true})
-  rols: RolUser | null
+  //@Field(()=> RolUser , {nullable:true})
+  //rols: RolUser | null
   
 }

@@ -3,6 +3,8 @@ import { JudgeRepository } from "../../infraestructura/prisma/judge.repository";
 import { PersonRepository } from "../../infraestructura/prisma/persona.repository";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository";
+import { response } from "src/common/enum/typeResp";
+
 
 @Injectable()
 export class JudgeUseCase {
@@ -19,7 +21,7 @@ export class JudgeUseCase {
             console.log('Existen fallas en CrJud y son: ' + err.message)
             return {
                 message: 'Existen fallas en CrJud y son: ' + err.message ,
-                status: 3
+                status: response.WARN
             }
         }
     }

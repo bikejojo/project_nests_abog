@@ -1,3 +1,5 @@
 export enum typeUser {
-    LawyerIntern = 1
+    Admin = 1 ,
+    LawyerIntern = 2
+    
 }

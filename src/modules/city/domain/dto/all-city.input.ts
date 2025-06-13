@@ -10,8 +10,6 @@ export class DataCity {
     description: string
 }
 
-
-
 @ObjectType()
 export class AllCityDataOutPut {
     @Field()

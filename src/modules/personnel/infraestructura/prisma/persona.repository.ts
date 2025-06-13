@@ -20,5 +20,14 @@ export class PersonRepository {
         })
     }
 
+    async updatePersona(data:any){
+        return await this.prisma.persona.update({
+            where:{
+                id:data.id
+            },
+            data:{
 
+            }
+        })
+    }
 }

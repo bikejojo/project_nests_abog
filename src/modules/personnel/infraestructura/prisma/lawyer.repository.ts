@@ -33,12 +33,24 @@ export class LawyerRepository {
             }
         })
     }
+
+    async updateLawyer(data:any){
+        return await this.prisma.lawyer.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                isFiscal:data.isFiscal ,
+                isIntern:data.isIntern ,
+            }
+        })
+    }
     //querys 
 
     async allLawyerByUser(){
         let lawyers =  await this.prisma.lawyer.findMany({
             where:{
-                status:1,
+                status:1 ,
                 userId:null
             },
             include: {

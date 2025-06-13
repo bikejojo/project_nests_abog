@@ -7,9 +7,29 @@ export class CityUseCase {
         private readonly cityRepository: CityRepository
     ){}
 
-    async listCityData(data:any){
+    async listCityData(){
         try {
+            const city = await this.cityRepository.listCity();
 
+            if( !city ){
+                return {
+                    message: 'Error al traer los datos de ciudades.', 
+                    status: 1
+                }
+            }
+
+            if( city.length === 0 ){
+                return {
+                    message: 'No existen datos de ciudades.' ,
+                    status: 1
+                }
+            }
+
+            return {
+                message: 'Retorno valores exitoso. !!',
+                status: 2,
+                allCity: city
+            }
         }catch(err){
             console.log('Las fallas en LstCity son: ' + err.message)
             return {

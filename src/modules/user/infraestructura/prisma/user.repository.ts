@@ -9,9 +9,9 @@ import { Token } from "graphql";
 export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
-    async login(email:string) {
+    async login(name:string) {
         //console.log(email);
-        return await this.prisma.user.findFirst({where:{ci:email},include:{rols:{include:{rol:true}}}})
+        return await this.prisma.user.findFirst({where:{name:name} })
     }
 
     async logout(userId:number){

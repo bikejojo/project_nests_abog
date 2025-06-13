@@ -9,6 +9,9 @@ export class CreateUserInput {
   @Field()
   lawyerId: number
   
+  @Field()
+  name: string
+
 }
 
 @ObjectType()

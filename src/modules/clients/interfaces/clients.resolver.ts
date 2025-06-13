@@ -8,7 +8,7 @@ import { findIdClientInput , findIdClientOutPut } from "../domain/dto/findId-cli
 import { allClientOutPut } from "../domain/dto/all-clients.input";
 
 @Resolver(()=>Clients)
-export class ClientsRepository {
+export class ClientsResolver {
     constructor(private readonly clientsUseCase:ClientsUseCase){}
 
     @Mutation(()=> createClientsOutPut)
