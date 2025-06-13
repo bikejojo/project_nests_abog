@@ -16,6 +16,7 @@ import { PermissionsUserModule } from './modules/userPermissions/interfaces/perm
 import { PersonModule } from './modules/personnel/interfaces/persona/persona.module';
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { CityModule } from './modules/city/interfaces/city.module';
+import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CityModule } from './modules/city/interfaces/city.module';
     AuthModule,
     UserModule,
     LawyerModule,
+    BranchOfficeModule ,
     CityModule ,
     PersonModule,
     PermissionsModule,
