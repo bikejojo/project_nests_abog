@@ -30,4 +30,12 @@ export class PersonRepository {
             }
         })
     }
+
+    async findedPersona(data:any){
+        return await this.prisma.persona.findFirst({
+            where:{
+                id:data.id
+            }
+        })
+    }
 }

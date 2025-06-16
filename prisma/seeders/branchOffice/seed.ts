@@ -4,7 +4,8 @@ const prisma = new PrismaClient();
 
 
 async function main(){
-    await prisma.city.deleteMany({}); // elimina mi contenido en mi tabla manejarlo de manera personal cada rango 
+    await prisma.branch_Office.deleteMany({}); // elimina mi contenido en mi tabla manejarlo de manera personal cada rango 
+    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Branch_Office_id_seq" RESTART WITH 1`);
 
     const cities = [
         { description: 'Sucursal de Santa Cruz' , status:1 },

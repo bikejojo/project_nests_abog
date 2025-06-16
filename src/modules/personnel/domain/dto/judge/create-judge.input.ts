@@ -20,6 +20,8 @@ export class createJudgeInput{
     @Field({nullable:true})
     registrationDate: Date
     
+    @Field({nullable:true})
+    cityId: number
 }
 
 @ObjectType()

@@ -29,6 +29,7 @@ export class LawyerUseCase {
                 phone: data.phone ,
                 address: data.address , 
                 status: status.ACTIVE ,
+                city: data.cityId ,
                 createdAt: new Date ,
                 updatedAt: new Date
             })

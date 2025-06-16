@@ -12,6 +12,8 @@ export class CreateUserInput {
   @Field()
   name: string
 
+  @Field()
+  branchOfficeId: number
 }
 
 @ObjectType()

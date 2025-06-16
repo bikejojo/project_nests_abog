@@ -33,7 +33,7 @@ model User {
 
 model Rols { 
   id          Int @id @default(autoincrement())
-  description String
+  description String @unique
   status      Int  @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -55,7 +55,7 @@ model PermissionsRol {
   id            Int @id @default(autoincrement())
   permissionId  Int
   rolId         Int
-  status        Int
+  status        Int @default(1)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   permission    Permissions @relation( fields: [permissionId], references: [id])

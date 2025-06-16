@@ -134,7 +134,8 @@ export class UserUseCase {
 
             const lawyer = await this.lawyerRepository.updateLawyerUser({
                 userId: user.id ,
-                id: lawyerData.id
+                id: lawyerData.id ,
+                branchOfficeId: data.branchOfficeId
             })
 
             if(!lawyer){
