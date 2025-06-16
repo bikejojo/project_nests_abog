@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer,  NestModule , Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './modules/user/interfaces/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
+import graphqlUploadExpress from 'graphql-upload';
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { RolesModule } from './modules/roles/interfaces/roles.module';
@@ -21,6 +22,12 @@ import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffi
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
+     GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      playground: true,
+    }),
     AuthModule,
     UserModule,
     LawyerModule,
@@ -32,15 +39,15 @@ import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffi
     RoleUserModule,
     PermissionsRolsModule ,
     PermissionsUserModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true,
-      playground: true,
-    }),
     RolesModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 5 }))
+      .forRoutes('graphql');
+  }
+}

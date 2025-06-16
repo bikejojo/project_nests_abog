@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed_rolper" : "ts-node prisma/seeders/rolesPermisses/seed.ts",
-    "seed_city" : "ts-node prisma/seeders/city/seed.ts",
-    "seed_branch" : "ts-node prisma/seeders/branchOffice/seed.ts"
+    "seed_rolper": "ts-node prisma/seeders/rolesPermisses/seed.ts",
+    "seed_city": "ts-node prisma/seeders/city/seed.ts",
+    "seed_branch": "ts-node prisma/seeders/branchOffice/seed.ts"
   },
   "dependencies": {
     "@nestjs/apollo": "^13.1.0",
@@ -36,6 +36,7 @@
     "bcrypt": "^6.0.0",
     "graphql": "^16.11.0",
     "graphql-tools": "^9.0.18",
+    "graphql-upload": "^13.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -50,6 +51,7 @@
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
     "@types/express": "^5.0.0",
+    "@types/graphql-upload": "^17.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
