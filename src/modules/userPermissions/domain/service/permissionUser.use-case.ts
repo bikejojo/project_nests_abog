@@ -38,16 +38,16 @@ export class PermissionsUserUseCase {
             }
 
             // Validar permisos asignables por el rol
-            const permissonsRolesUser = await this.permissionsUserRespository.validationRolesPermissions({ userId: user.id });
-            const rolPermissions = permissonsRolesUser?.rols?.rol?.permissions.map(p => p.permissionId) || [];
+            //const permissonsRolesUser = await this.permissionsUserRespository.validationRolesPermissions({ userId: user.id });
+            //const rolPermissions = permissonsRolesUser?.rols?.rol?.permissions.map(p => p.permissionId) || [];
 
-            const invalidPermissions = data.permissionsId.filter(id => !rolPermissions.includes(id));
-            if (invalidPermissions.length > 0) {
+            //const invalidPermissions = data.permissionsId.filter(id => !rolPermissions.includes(id));
+            /*if (invalidPermissions.length > 0) {
                 return {
                     message: `Los siguientes permisos no están asignados al rol del usuario: ${invalidPermissions.join(', ')}`,
                     status: 3,
                 };
-            }
+            }*/
 
             const assingUserPermissions = await this.permissionsUserRespository.assingPermissionsUser({
                 userId:data.userId,

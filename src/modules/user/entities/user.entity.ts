@@ -1,5 +1,4 @@
 import { ObjectType , Field , ID, Int } from "@nestjs/graphql";
-import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
 
 @ObjectType()
 export class User {

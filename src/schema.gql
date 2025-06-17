@@ -9,7 +9,9 @@ type AllCityDataOutPut {
 }
 
 input CreateUserInput {
+  branchOfficeId: Float!
   lawyerId: Float!
+  name: String!
   password: String!
 }
 
@@ -72,8 +74,8 @@ type LoginResponse {
 }
 
 input LoginUserInput {
-  ci: String!
   password: String!
+  username: String!
 }
 
 type LogoutUserOutPut {
@@ -85,7 +87,7 @@ type LogoutUserOutPut {
 type Mutation {
   assignPermissionsRol(data: assingPermissionsRolInput!): assingPermissionsRolOutPut!
   assingPermissionsUser(data: assingPermissionsUserInput!): assingPermissionsUserOutPut!
-  assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
+  createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
   createPermission(data: createPermissionsInput!): createPermisionsOutPut!
   createRol(data: createRolesInput!): createRolesOutPut!
@@ -93,8 +95,8 @@ type Mutation {
   deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
-  unsubcribreRolUser(data: unsubcribeRoleUserInput!): unsubcribeRoleUserOutPut!
   unsubcriptionPermissionsRol(data: unsubcriptionPermissionRolInput!): unsubcriptionPermissionRolOutPut!
+  updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
 }
 
 type Natural_Person {
@@ -145,6 +147,7 @@ type Persona {
 }
 
 type Query {
+  allBranchOffice: allBranchOfficeOutPut!
   allCityData: AllCityDataOutPut!
   allLawyersStatus: allStatusPersLawyerOutPut!
   allRoles: allRolOutPut!
@@ -152,16 +155,8 @@ type Query {
   sayHello: String!
 }
 
-type RolUser {
-  createdAt: DateTime!
-  id: ID!
-  rol: roles
-  rolId: Float!
-  status: Float!
-  updatedAt: DateTime!
-  user: User
-  userId: Float!
-}
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   createdAt: DateTime!
@@ -170,11 +165,22 @@ type User {
   isActive: Boolean!
   name: String!
   password: String
-  rols: RolUser
   status: Float!
   token: String
   type: Int
   updatedAt: DateTime!
+}
+
+type allBranchOfficeData {
+  description: String!
+  id: Float!
+  status: Float!
+}
+
+type allBranchOfficeOutPut {
+  allBranchOffice: [allBranchOfficeData!]
+  message: String!
+  status: Float!
 }
 
 type allRolOutPut {
@@ -224,28 +230,16 @@ type assingPermissionsUserOutPut {
   status: Float!
 }
 
-input assingRolUserInput {
-  rolId: Float!
-  userId: Float!
-}
-
-type assingRolUserOutPut {
-  assingRole: assingRoleUserData
-  message: String!
-  status: Float!
-}
-
-type assingRoleUserData {
-  roleId: Float!
-  roleName: String!
-  status: Float!
-  userId: Float!
-  userName: String!
+input createDocumentsInput {
+  file: Upload
+  id: ID!
+  type: Float!
 }
 
 input createLawyerInput {
   address: String!
   ci: String!
+  cityId: Float!
   firstName: String!
   isFiscal: Boolean!
   isInterno: Boolean!
@@ -302,6 +296,12 @@ type deleteRoleOutPut {
   status: Float!
 }
 
+type documentsDataOutPut {
+  documents: String
+  message: String
+  status: String
+}
+
 type findIdPermissionsRolData {
   permissions: [permissionsDataObj!]!
   rolId: Int!
@@ -353,17 +353,6 @@ type rolesData {
   updatedAt: DateTime!
 }
 
-input unsubcribeRoleUserInput {
-  rolId: Float!
-  userId: Float!
-}
-
-type unsubcribeRoleUserOutPut {
-  message: String!
-  status: Float!
-  unsubcribeRolUser: assingRoleUserData
-}
-
 input unsubcriptionPermissionRolInput {
   permissionId: Float!
   roleId: Float!
@@ -373,6 +362,26 @@ type unsubcriptionPermissionRolOutPut {
   message: String!
   permissRole: [assingPermissionsRolData!]
   status: Float!
+}
+
+type updateLawyerData {
+  id: ID!
+}
+
+type updateLawyerOutPut {
+  lawyerData: updateLawyerData
+  message: String!
+  status: Float!
+}
+
+input updatelawyerInput {
+  address: String
+  firstName: String
+  id: ID!
+  isFiscal: Boolean
+  isIntern: Boolean
+  lastName: String
+  phone: String
 }
 
 type userData {

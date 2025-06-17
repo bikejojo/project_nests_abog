@@ -21,7 +21,7 @@ export class PermissionsUserRepository{
     }
 
 
-    async validationRolesPermissions(data:any){
+    /*async validationRolesPermissions(data:any){
         return await this.prisma.user.findUnique({
             where:{id:data.userId},
             include: {
@@ -42,7 +42,7 @@ export class PermissionsUserRepository{
             }
         })
     }
-    
+    */
     async unsubcriptionPermissionsUser(data:any){
 
     }

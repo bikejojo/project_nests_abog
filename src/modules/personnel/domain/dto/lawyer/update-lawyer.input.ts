@@ -27,7 +27,8 @@ export class updatelawyerInput {
 
 @ObjectType()
 export class updateLawyerData {
-
+    @Field(()=>ID)
+    id:number
 }
 @ObjectType()
 export class updateLawyerOutPut {

@@ -6,11 +6,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './modules/user/interfaces/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import graphqlUploadExpress from 'graphql-upload';
+const { graphqlUploadExpress } = require('graphql-upload');
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { RolesModule } from './modules/roles/interfaces/roles.module';
-import { RoleUserModule } from './modules/rolUser/interfaces/roleUser.module';
 import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
 import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permissionsRols.module';
 import { PermissionsUserModule } from './modules/userPermissions/interfaces/permissionsUser.module';
@@ -18,6 +17,7 @@ import { PersonModule } from './modules/personnel/interfaces/persona/persona.mod
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { CityModule } from './modules/city/interfaces/city.module';
 import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
+import { DocumentsModule } from './modules/documents/interfaces/documents.module';
 
 @Module({
   imports: [
@@ -33,10 +33,10 @@ import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffi
     LawyerModule,
     BranchOfficeModule ,
     CityModule ,
+    DocumentsModule,
     PersonModule,
     PermissionsModule,
     PrismaModule,
-    RoleUserModule,
     PermissionsRolsModule ,
     PermissionsUserModule,
     RolesModule
@@ -44,8 +44,9 @@ import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffi
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 5 }))
       .forRoutes('graphql');
