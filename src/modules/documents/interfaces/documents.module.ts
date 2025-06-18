@@ -6,7 +6,7 @@ import { jwtConstants } from "src/auth/constants";
 import { documentsUseCase } from "../domain/services/documents.use-case";
 import { documentsResolver } from "./documents.resolver";
 import { PrismaService } from "src/prisma/prisma.service";
-import { filesService } from "../domain/services/files.services";
+import { FilesService } from "../domain/services/files.services";
 import { ValidatorFilesService } from "../domain/services/validatorFiles.services";
 
 @Module({
@@ -21,7 +21,7 @@ import { ValidatorFilesService } from "../domain/services/validatorFiles.service
     documentsResolver,
     documentsUseCase,
     PrismaService,
-    filesService,
+    FilesService,
     ValidatorFilesService,
   ],
   exports: [

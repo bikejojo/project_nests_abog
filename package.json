@@ -18,9 +18,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+
     "seed_rolper": "ts-node prisma/seeders/rolesPermisses/seed.ts",
     "seed_city": "ts-node prisma/seeders/city/seed.ts",
-    "seed_branch": "ts-node prisma/seeders/branchOffice/seed.ts"
+    "seed_branch": "ts-node prisma/seeders/branchOffice/seed.ts",    
+    "seed_rols": "ts-node prisma/seeders/rols/seed.ts",    
+    "seed_user": "ts-node prisma/seeders/user/seed.ts",
+    "seed_menu_permiss": "ts-node prisma/seeders/menuPermisses/seed.ts"
   },
   "dependencies": {
     "@nestjs/apollo": "^13.1.0",
@@ -33,12 +37,15 @@
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.8.2",
     "apollo-server-express": "^3.13.0",
+    "archiver": "^7.0.1",
     "bcrypt": "^6.0.0",
     "graphql": "^16.11.0",
     "graphql-tools": "^9.0.18",
     "graphql-upload": "^13.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pdf-parse": "^1.1.1",
+    "pdf-press": "^1.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.34.2"

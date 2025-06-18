@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { response } from "src/common/enum/typeResp";
-import { filesService } from "./files.services";
+import { FilesService } from "./files.services";
 import { ValidatorFilesService } from "./validatorFiles.services";
 @Injectable()
 export class documentsUseCase {
     constructor(
-        private readonly fileService: filesService,
+        private readonly fileService: FilesService,
         private readonly fileValidator: ValidatorFilesService,
     ) {}
 

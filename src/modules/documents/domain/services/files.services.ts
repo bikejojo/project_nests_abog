@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { FileUpload } from 'graphql-upload';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Readable } from 'stream';
 import sharp from 'sharp';
 
 @Injectable()
-export class filesService {
-    private readonly uploadDir = path.join(__dirname, '..', '..', '..', 'public/documentsCase/');
+export class FilesService {
+    private readonly uploadDir = path.join('public','documentsCase');
     
     async uploadFileService(id: number , file:Promise<FileUpload>, type:number): Promise<string> {
         try { 
             const { filename , mimetype, encoding, createReadStream } = await file;
+
+            if (!filename || filename.trim() === '') {
+                throw new Error('Nombre de archivo inválido');
+            }
 
             const folder = type === 1 ? `${id}/image` : `${id}/documents`;
             const destDir = path.join(process.cwd(), this.uploadDir, folder);
@@ -19,13 +22,14 @@ export class filesService {
 
             const uniqueFilename = `${Date.now()}-${filename}`;
             const fullPath = path.join(destDir, uniqueFilename);
-            console.log(fullPath)
+            //console.log(fullPath)
             const stream = createReadStream() as NodeJS.ReadableStream;
 
             if(type === 1 && mimetype.startsWith('image/')) {
                 const buffer = await this.streamToBuffer(stream);
                 await sharp(buffer)
-                    .jpeg({ quality: 80 }) // puedes ajustar
+                    .resize({ width: 1024 }) 
+                    .png({ compressionLevel: 8 }) // puedes ajustar
                     .toFile(fullPath);
             } else {
                 await new Promise<void>((resolve, reject) => {

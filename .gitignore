@@ -3,6 +3,7 @@
 /node_modules
 /build
 /public
+endpoint.txt
 
 # Logs
 logs
@@ -47,7 +48,7 @@ lerna-debug.log*
 .temp
 .tmp
 ./api_de_nests+graphql.txt
-./endpoint.txt
+
 
 # Runtime data
 pids
