@@ -9,15 +9,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 const { graphqlUploadExpress } = require('graphql-upload');
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { RolesModule } from './modules/roles/interfaces/roles.module';
-import { PermissionsModule } from './modules/permissions/interfaces/permissions.module';
-import { PermissionsRolsModule } from './modules/permissionsRol/interfaces/permissionsRols.module';
-import { PermissionsUserModule } from './modules/userPermissions/interfaces/permissionsUser.module';
 import { PersonModule } from './modules/personnel/interfaces/persona/persona.module';
 import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
 import { CityModule } from './modules/city/interfaces/city.module';
 import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
 import { DocumentsModule } from './modules/documents/interfaces/documents.module';
+import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
 
 @Module({
   imports: [
@@ -35,11 +32,8 @@ import { DocumentsModule } from './modules/documents/interfaces/documents.module
     CityModule ,
     DocumentsModule,
     PersonModule,
-    PermissionsModule,
     PrismaModule,
-    PermissionsRolsModule ,
-    PermissionsUserModule,
-    RolesModule
+    ModuleMenuPermissionModule
   ],
   controllers: [AppController],
   providers: [AppService],

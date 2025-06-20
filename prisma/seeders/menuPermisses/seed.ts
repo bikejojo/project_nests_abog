@@ -1,105 +1,160 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient , Menu } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main(){
+    await prisma.moduleMenu.deleteMany({});
     await prisma.menuPermissions.deleteMany({});
-    await prisma.menu.deleteMany({});
+    await prisma.module.deleteMany({});
     await prisma.permissions.deleteMany({});
+    await prisma.menu.deleteMany({});
     
-    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "MenuPermissions_id_seq" RESTART WITH 1`);
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Menu_id_seq" RESTART WITH 1`);
+    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Module_id_seq" RESTART WITH 1`);
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Permissions_id_seq" RESTART WITH 1`);
+    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "ModuleMenu_id_seq" RESTART WITH 1`);
+    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "MenuPermissions_id_seq" RESTART WITH 1`);
 
-    const permisosPorMenu: Record<string,string[]> = {
-        "Usuario":[
-            "Crear Usuario",
-            "Editar Usuario",
-            "Eliminar Usuario",
-            "Ver Usuario",
-            "Cambiar Estado Usuario"
-        ],
+    const permisosPorMenu: Record<string, Record<string, string[]>> = {
+        "EMPRESA" : {
+            "Usuario": [
+                "Crear usuario",
+                "Editar usuario",
+                "Eliminar usuario"
+            ],
+            "Sucursal":[
+                "Crear sucursal",
+                "Editar sucursal",
+                "Eliminar sucursal",
+            ],
+            "Cargos":[
+                "Crear carog",
+                "Editar cargo",
+                "Eliminar cargo",
+            ],
+            "Abogados":[
+                "Crear abogado",
+                "Editar abogado",
+                "Eliminar abogado",
+            ]
+        },
 
-        "Persona":[
-            "Crear Persona",
-            "Editar Persona",
-            "Eliminar Persona",
-            "Ver Persona",
-            "Cambiar Estado Persona"
-        ],
-        
-        "Documento":[
-            "Crear Documento",
-            "Editar Documento",
-            "Eliminar Documento",
-            "Ver Documento",
-            "Cambiar Estado Documento"
-        ],
+        "PERSONAS" :{
+            "Juez":[
+                "Crear juez",
+                "Editar juez",
+                "Eliminar juez",
+                "Listar jueces",
+            ],
+            "Abogado":[
+                "Crear abogado",
+                "Editar abogado",
+                "Eliminar abogado",
+                "Listar abogado",
+            ],
+            "Cliente":[
+                "Crear cliente",
+                "Editar cliente",
+                "Eliminar cliente",
+                "Listar clientes",
+            ],
+        } ,
+    
+        "PROCESOS JUDICIALES":{
+            "Penal":[
+                "Crear proceso penal",
+                "Listar procesos penales",
+            ],
+            "Civil":[
+                "Crear proceso civil",
+                "Listar procesos civiles",
+            ],
+            "Laboral":[
+                "Crear proceso laboral",
+                "Listar procesos laborales",
+            ],
+            "Tributario":[
+                "Crear proceso tributario",
+                "Listar procesos tributarios",
+            ],
+            "Administrativo":[
+                "Crear proceso administrativo",
+                "Listar procesos administrativos",
+            ],
+            "Ambiental":[
+                "Crear proceso ambiental",
+                "Listar procesos ambientales",
+            ] ,
+            "ACTUADOS":[
+                "Registrar actuado",
+                "Listar actuados",
+            ]
+        },
 
-        "Juicio":[
-            "Crear Juicio",
-            "Editar Juicio",
-            "Eliminar Juicio",
-            "Ver Juicio",
-            "Cambiar Estado Juicio"
-        ]
+        "REPORTES":{
+           "Reportes": [
+                "Ver reportes",
+                "exportar reportes",
+            ]
+        },
     };
 
-    const AllPermDescription = [...new Set(Object.values(permisosPorMenu).flat())];
-    
-    await prisma.permissions.createMany({
-        data: AllPermDescription.map(description => ({
-            description,
-            status: 1
-        }))
-    })
+   // 3. Crea los módulos
+  const modules = await Promise.all(
+    Object.keys(permisosPorMenu).map(name => prisma.module.create({ data: { name } }))
+  );
 
-    const menuPermission = Object.keys(permisosPorMenu);
-    
-    await prisma.menu.createMany({
-        data: menuPermission.map(description => ({
-            name: description,
-            icon: "fa-brands fa-windows", // You can replace this with actual icons if needed
-            description
-        }))
-    })
-
-    const [rols , permissions] = await Promise.all([
-        prisma.menu.findMany(),
-        prisma.permissions.findMany()
-    ])
-
-    const menuPermissionsData: {
-        menuId: number;
-        permissionsId: number;
-        status: number;
-        createdAt: Date;
-        updatedAt: Date;
-    }[] = [];
-
-    for(const [area, permiso] of Object.entries(permisosPorMenu)){
-        const menu = rols.find(r => r.description === area)
-        
-        if(!menu) continue;
-
-        for(const permisos of permiso){
-            const perm = permissions.find(p => p.description === permisos );
-
-            if(!perm) continue;
-
-            menuPermissionsData.push({
-                menuId: menu.id,
-                permissionsId: perm.id,
-                status: 1,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
+  // 4. Crea los menús y asócialos a módulos con ModuleMenu
+  const allMenus: Menu[] = [];
+  for (const [moduleIdx, moduleName] of Object.keys(permisosPorMenu).entries()) {
+    const menus = Object.keys(permisosPorMenu[moduleName]);
+    for (const menuName of menus) {
+      const menu = await prisma.menu.create({
+        data: {
+          name: menuName,
         }
+      });
+      allMenus.push(menu);
+      await prisma.moduleMenu.create({
+        data: {
+          moduleId: modules[moduleIdx].id,
+          menuId: menu.id
+        }
+      });
     }
+  }
 
-    await prisma.menuPermissions.createMany({ data: menuPermissionsData})
-    console.log('Exitoso creacion de datos.')
+  // 5. Crea los permisos únicos
+  const allPerms = Array.from(new Set(
+    Object.values(permisosPorMenu).flatMap(obj => Object.values(obj).flat())
+  ));
+  const permissions = await Promise.all(
+    allPerms.map(name =>
+      prisma.permissions.create({ data: { name } })
+    )
+  );
+
+  // 6. Relaciona permisos a menús
+  for (const moduleName in permisosPorMenu) {
+    for (const menuName in permisosPorMenu[moduleName]) {
+      const menu = allMenus.find(m => m.name === menuName);
+      for (const permDesc of permisosPorMenu[moduleName][menuName]) {
+        const perm = permissions.find(p => p.name === permDesc);
+        if (menu && perm) {
+          await prisma.menuPermissions.create({
+            data: {
+              menuId: menu.id,
+              permissionsId: perm.id
+            }
+          });
+        }
+      }
+    }
+  }
+
+  console.log("✅ Seed terminado.");
 }
+
 
 main()
     .catch((e) => {

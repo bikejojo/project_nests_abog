@@ -8,6 +8,12 @@ type AllCityDataOutPut {
   status: Float!
 }
 
+type AllModuleMenuPermissionDataOutPut {
+  allModuleMenuPermission: [contentModuleMenuPermissions!]
+  message: String!
+  status: Float!
+}
+
 input CreateUserInput {
   branchOfficeId: Float!
   lawyerId: Float!
@@ -85,17 +91,11 @@ type LogoutUserOutPut {
 }
 
 type Mutation {
-  assignPermissionsRol(data: assingPermissionsRolInput!): assingPermissionsRolOutPut!
-  assingPermissionsUser(data: assingPermissionsUserInput!): assingPermissionsUserOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
-  createPermission(data: createPermissionsInput!): createPermisionsOutPut!
-  createRol(data: createRolesInput!): createRolesOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
-  deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
-  unsubcriptionPermissionsRol(data: unsubcriptionPermissionRolInput!): unsubcriptionPermissionRolOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
 }
 
@@ -106,26 +106,6 @@ type Natural_Person {
   personId: Float!
   persona: Persona!
   registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
-}
-
-type Permissions {
-  createdAt: DateTime!
-  description: String!
-  id: ID!
-  roles: [PermissionsRols!]
-  status: Float!
-  updatedAt: DateTime!
-}
-
-type PermissionsRols {
-  createdAt: DateTime!
-  id: ID!
-  permission: Permissions!
-  permissionId: Float!
-  rol: roles!
-  rolId: Float!
   status: Float!
   updatedAt: DateTime!
 }
@@ -150,26 +130,12 @@ type Query {
   allBranchOffice: allBranchOfficeOutPut!
   allCityData: AllCityDataOutPut!
   allLawyersStatus: allStatusPersLawyerOutPut!
-  allRoles: allRolOutPut!
-  findPermissionsRols(data: findIdPermissonsRolInput!): findIdPermissionsRolOutPut!
+  allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
   sayHello: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-type User {
-  createdAt: DateTime!
-  email: String
-  id: ID!
-  isActive: Boolean!
-  name: String!
-  password: String
-  status: Float!
-  token: String
-  type: Int
-  updatedAt: DateTime!
-}
 
 type allBranchOfficeData {
   description: String!
@@ -180,12 +146,6 @@ type allBranchOfficeData {
 type allBranchOfficeOutPut {
   allBranchOffice: [allBranchOfficeData!]
   message: String!
-  status: Float!
-}
-
-type allRolOutPut {
-  message: String!
-  roleData: [rolesData!]
   status: Float!
 }
 
@@ -201,33 +161,21 @@ type allStatusPersLawyerOutPut {
   status: Int
 }
 
-type assingPermissionsRolData {
-  permissionId: Float!
-  permissionsName: String!
-  rolId: Float!
-  rolName: String!
+type contentMenuPermissions {
+  contentPermissions: [contentPermissions!]
+  menuId: Float!
+  menuName: String
 }
 
-input assingPermissionsRolInput {
+type contentModuleMenuPermissions {
+  contentModPermi: [contentMenuPermissions!]
+  moduleId: Float!
+  moduleName: String
+}
+
+type contentPermissions {
   permissionsId: Float!
-  rolId: Float!
-}
-
-type assingPermissionsRolOutPut {
-  message: String!
-  permissionsData: assingPermissionsRolData
-  status: Float!
-}
-
-input assingPermissionsUserInput {
-  permissionsId: [Int!]!
-  userId: Float!
-}
-
-type assingPermissionsUserOutPut {
-  message: String!
-  permissionUserData: permissionsUserData
-  status: Float!
+  permissionsName: String
 }
 
 input createDocumentsInput {
@@ -253,46 +201,8 @@ type createLawyerOutPut {
   status: Float!
 }
 
-type createPermisionsOutPut {
-  dataPermissions: dataPermissions
-  message: String!
-  status: Float!
-}
-
-input createPermissionsInput {
-  description: String!
-}
-
-input createRolesInput {
-  description: String!
-}
-
-type createRolesOutPut {
-  message: String!
-  rolesDatas: rolesData!
-  status: Float!
-}
-
 type createUserLawyerOutPut {
   message: String
-  status: Float!
-}
-
-type dataPermissions {
-  createdAt: DateTime!
-  description: String!
-  id: Float!
-  status: Float!
-  updatedAt: DateTime!
-}
-
-input deleteRoleInput {
-  rolId: ID!
-}
-
-type deleteRoleOutPut {
-  message: String!
-  roleDatas: rolesData
   status: Float!
 }
 
@@ -302,66 +212,11 @@ type documentsDataOutPut {
   status: String
 }
 
-type findIdPermissionsRolData {
-  permissions: [permissionsDataObj!]!
-  rolId: Int!
-  rolName: String!
-}
-
-type findIdPermissionsRolOutPut {
-  message: String!
-  permissionsRolOutPut: findIdPermissionsRolData
-  status: Float!
-}
-
-input findIdPermissonsRolInput {
-  rolId: Int!
-}
-
 type lawyerData {
   id: ID!
   isFiscal: Boolean!
   isIntern: Boolean!
   registratioDate: DateTime!
-}
-
-type permissionsDataObj {
-  description: String!
-  permissionId: Int!
-}
-
-type permissionsUserData {
-  permissionData: [permissionsDataObj!]
-  permissionsId: Float!
-  rolName: String!
-}
-
-type roles {
-  createdAt: DateTime!
-  description: String!
-  id: ID!
-  permissions: [PermissionsRols!]
-  status: Float!
-  updatedAt: DateTime!
-}
-
-type rolesData {
-  createdAt: DateTime!
-  description: String!
-  id: ID!
-  status: Float!
-  updatedAt: DateTime!
-}
-
-input unsubcriptionPermissionRolInput {
-  permissionId: Float!
-  roleId: Float!
-}
-
-type unsubcriptionPermissionRolOutPut {
-  message: String!
-  permissRole: [assingPermissionsRolData!]
-  status: Float!
 }
 
 type updateLawyerData {

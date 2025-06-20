@@ -40,4 +40,80 @@ export class BranchOfficeUseCase {
             }
         }
     }
+
+    async createdBranchOffice(data:any){
+        try{
+            const branchOffice = await this.cityRepository.createBranchOffices({
+                cityId: data.cityId ,
+                name: data.name ,
+                address: data.address ,
+                phone: data.phone ,
+                email: data.email ,
+            })
+
+            if(!branchOffice){
+                return {
+                    message: 'No se creo con exito la sucursal' ,
+                    status: response.FALL
+                }
+            }
+
+            return {
+                message:'Exito en crear la sucursal',
+                status:response.NICE ,
+                dataBranchOffice:branchOffice
+            }
+        }catch(err){
+            console.log("Fallas en CrBrOff" + err.message);
+            return {
+                message:'Fallas en CrBrOff' + err.message ,
+                status: response.WARN ,
+            }
+        }
+    }
+
+
+    async updatedBranchOffice(data:any){
+        try{ 
+            const branchOfficeId = await this.cityRepository.findIdBranchOffices({
+                id:data.id
+            })
+
+            if(!branchOfficeId){
+                return {
+                    message:'Valores null',
+                    status: response.FALL
+                }
+            }
+
+            const updateBranchOffice = this.cityRepository.updateBranchOffices({
+                id:branchOfficeId.id,
+                name: data.name ,
+                address: data.address ,
+                phone: data.phone ,
+                email: data.email ,
+                cityId: data.cityId
+            })
+
+            if(!updateBranchOffice){
+                return {
+                    message:'Valores nulos en sucursales.',
+                    status: response.FALL ,
+                    
+                }
+            }
+
+            return {
+                message:'Actualizacion correcta de sucursal',
+                status:response.NICE ,
+                dataBranchOffice: updateBranchOffice
+            }
+        }catch(err){
+            console.log('Fallas en UpdBrchOff y son: '+err.message)
+            return {
+                message: 'Fallas en UpdBrchOff y son: '+err.message ,
+                status: response.WARN
+            }
+        }
+    }
 }

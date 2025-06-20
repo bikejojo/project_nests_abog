@@ -35,32 +35,50 @@ model User {
 }
 
 model Role {
-  id         Int @id @default(autoincrement())
-  description String?
+  id          Int @id @default(autoincrement())
+  name        String?
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   users       User[]
 }
-
-model Menu {
+model Module {
   id          Int @id @default(autoincrement())
   name        String?
-  description String?
-  icon        String?
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  menuUser    MenuUser?
+  moduleMenu  ModuleMenu[] 
+}
+
+model Menu {
+  id            Int @id @default(autoincrement())
+  name          String?
+  status        Int @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  menuUser      MenuUser?
   menuPermissions MenuPermissions[]
+  moduleMenus   ModuleMenu[]
+}
+
+model ModuleMenu {
+  id          Int @id @default(autoincrement())
+  moduleId    Int
+  menuId      Int
+  status      Int @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  module      Module @relation(fields: [moduleId], references: [id])
+  menu        Menu @relation(fields: [menuId], references: [id])
 }
 
 model Permissions {
-  id          Int @id @default(autoincrement())
-  description String?
-  status      Int @default(1)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int @id @default(autoincrement())
+  name          String?
+  status        Int @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   menuPermissions MenuPermissions[]
   permissionsUser PermissionsUser[]
 }
@@ -88,14 +106,14 @@ model MenuPermissions {
 }
 
 model PermissionsUser {
-  id          Int @id @default(autoincrement())
-  userId      Int
+  id            Int @id @default(autoincrement())
+  userId        Int
   permissionsId Int
-  status      Int @default(1)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User @relation(fields: [userId], references: [id])
-  permissions Permissions @relation(fields: [permissionsId], references: [id])
+  status        Int @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User @relation(fields: [userId], references: [id])
+  permissions   Permissions @relation(fields: [permissionsId], references: [id])
 }
 //-------------------------------------------------------------------------------------
 
@@ -177,95 +195,23 @@ model City {
   id          Int @id   @default(autoincrement())
   description String  @unique
   person      Persona[]
+  branchOffice Branch_Office[]
 }
 
 model Branch_Office {
   id          Int @id @default(autoincrement())
-  description String @unique
+  name        String?
+  address     String?
+  phone       String?
+  email       String?
+  cityId      Int?
+  city        City? @relation(fields: [cityId], references: [id])
   status      Int
   lawyer      Lawyer[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 //-------------------------------------------------------------------
-model lawyersUnit {
-  id          Int @id @default(autoincrement())
-  lawyerId    Int @unique
-  unityId     Int @unique
-  status      Int @default(1)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  unity       Unity @relation(fields: [unityId],references: [id])
-  //lawyer      Lawyer @relation(fields: [lawyerId],references: [id])
-}
-
-
-model Unity {
-  id          Int @id @default(autoincrement())
-  name        String
-  description String?
-  status      Int @default(1)
-  unityDepartaments unityDepartaments?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  lawyerUnit  lawyersUnit?
-
-}
-
-model unityDepartaments {
-  id             Int @id @default(autoincrement())
-  departamentsId Int @unique
-  unityId        Int @unique
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  unity          Unity @relation(fields: [unityId], references: [id])
-  departaments   Departaments @relation(fields: [departamentsId], references: [id])
-
-}
-
-model Departaments {
-  id          Int @id @default(autoincrement())
-  name        String
-  description String?
-  status      Int
-  unityDepartaments unityDepartaments?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  departamentsSubOffice DepartamentsSubOffice?
-}
-
-model DepartamentsSubOffice {
-  id      Int         @id @default(autoincrement())
-  departamentsId      Int @unique
-  subcidiaryOfficeId  Int @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  departaments Departaments @relation(fields: [departamentsId],references: [id])
-  subcidiary_office Subcidiary_office @relation(fields: [subcidiaryOfficeId],references: [id])
-}
-
-model Subcidiary_office {
-  id          Int @id @default(autoincrement())
-  name        String
-  address     String
-  phone       String?
-  status      Int @default(1)
-  departamentsSubOffice DepartamentsSubOffice?
-  openingDate DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Manager {
-  id          Int @id @default(autoincrement())
-  name        String?
-  status      Int @default(1)
-  lawyerId    Int @unique
-  sectorId    Int
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  //lawyer      Lawyer @relation(fields: [lawyerId], references: [id])
-}
-
 
 model Provider {
   id Int @id @default(autoincrement())
@@ -294,19 +240,6 @@ model Clients {
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 } 
-
-
-
-
-
-model Personal_type {
-  id          Int @id @default(autoincrement())
-  code        String
-  description String
-  status      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
 
 model External_personal {
   id        Int @id @default(autoincrement())

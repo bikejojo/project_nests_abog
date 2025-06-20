@@ -23,11 +23,10 @@ async function main(){
 
     await Promise.all(
         cities.map(branch_Office =>
-            prisma.branch_Office.upsert({
-                where: { description: branch_Office.description },
-                update: {}, // No se actualiza nada en este caso
-                create: {
-                    description: branch_Office.description,
+            prisma.branch_Office.createMany({
+               // No se actualiza nada en este caso
+                data: {
+                    name: branch_Office.description,
                     status:1
                 },
             })
