@@ -2,6 +2,8 @@
 /dist
 /node_modules
 /build
+/public
+endpoint.txt
 
 # Logs
 logs
@@ -47,6 +49,7 @@ lerna-debug.log*
 .tmp
 ./api_de_nests+graphql.txt
 
+
 # Runtime data
 pids
 *.pid
@@ -57,3 +60,4 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+

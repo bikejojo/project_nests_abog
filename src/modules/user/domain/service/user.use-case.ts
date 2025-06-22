@@ -5,22 +5,28 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { LoginUserInput } from "../dto/login-user.input";
 import * as bcrypt from 'bcrypt';
 import { AuthService } from "../../../../auth/auth.service";
-
+import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
+import { LawyerRepository } from "src/modules/personnel/infraestructura/prisma/lawyer.repository";
+import { typeUser } from "src/common/enum/typeUser";
+import { response } from "src/common/enum/typeResp";
+import { status } from "src/common/enum/typeStatus";
 @Injectable()
 export class UserUseCase {
     constructor(
-        private prisma:PrismaService , 
         private authService: AuthService ,
-        private userRepository: UserRepository
+        private userRepository: UserRepository ,
+        private personaRepository: PersonRepository ,
+        private lawyerRepository: LawyerRepository 
     ) {}
 
     async login(data: LoginUserInput){
-        const user = await this.userRepository.login(data.email);
+        const user = await this.userRepository.login(data.username);
+
         if(!user){
             //throw new UnauthorizedException('El usuario no existe');
             return {
                 message: 'El usuario no existe',
-                status: 401 ,
+                status: response.FALL ,
                 user: null
             }
         }
@@ -30,7 +36,7 @@ export class UserUseCase {
             //throw new UnauthorizedException('Credenciales inválidas');
             return {
                 message: 'Credenciales inválidas',
-                status: 402,
+                status: response.FALL ,
                 user: null
             }
         }
@@ -39,15 +45,15 @@ export class UserUseCase {
             //throw new UnauthorizedException('Usuario inactivo');
             return {
                 message: 'Usuario inactivo',
-                status: 403,
+                status: response.FALL ,
                 user: null
             }
         }
 
-        if(user.token !== null ){
+        if(user.token != '' ){
             return {
                 message: 'Usuario inicio sesion en otro dipositivo',
-                status: 404,
+                status: response.FALL,
                 user: null
             }
         }
@@ -56,12 +62,12 @@ export class UserUseCase {
         this.userRepository.saveToken(jwtToken.token , user );
         return {
             message: 'Inicio de sesión exitoso',
-            status: 200,
+            status: response.NICE ,
             user: {
                 name: user.name,
-                email: user.email,
+                ci: user.ci,
                 type: user.type, // 1: empresa, 2: abogado, 3: admin
-                token: jwtToken,
+                token: jwtToken.token,
                 //role: user.rols,
             },
         }
@@ -74,13 +80,85 @@ export class UserUseCase {
             //console.log(user);
             return{
                 message: 'Logout exitoso',
-                status: 201 ,
+                status: response.FALL ,
                 logoutData: user
             }
         }catch(err){
             return {
                 message: 'Fallas en el logout' + err.message ,
                 status: 501
+            }
+        }
+    }
+
+    async createPersonLawyerUser(data:any){
+        try {
+            
+            const lawyerData = await this.lawyerRepository.findLawyerId({
+                id: data.lawyerId
+            });
+
+            if(!lawyerData){
+                return {
+                    message:'Fallas en el obtencion de datos de abogado' ,
+                    status: response.FALL
+                }
+            }
+
+            if(lawyerData.userId){
+                return {
+                    message:'El abogado se registro previamente.' ,
+                    status: response.FALL
+                }
+            }
+
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+
+            const user = await this.userRepository.createUser({
+                name:`${lawyerData.persona.firstName}_${lawyerData.persona.lastName}` ,
+                email: '',
+                ci: lawyerData.persona.ci , 
+                password: hashedPassword ,
+                isActive: true,
+                status: status.ACTIVE,
+                type: typeUser.LawyerIntern ,
+                token: '' ,
+            })
+
+            if(!user){
+                return{
+                    message:'El registro de user fue incorrecto !!!' ,
+                    status: response.FALL
+                }
+            }
+
+            const lawyer = await this.lawyerRepository.updateLawyerUser({
+                userId: user.id ,
+                id: lawyerData.id ,
+                branchOfficeId: data.branchOfficeId
+            })
+
+            if(!lawyer){
+                return{
+                    message:'El registro de Lawyer fue incorrecto !!!' ,
+                    status: response.FALL
+                }
+            }
+            
+            return {
+                message: 'registro existoso del usuario abogado. !!!',
+                status: response.NICE ,
+                personLawyUser: {
+                    userData: user ,
+                    lawyerData: lawyer,
+                }
+            }
+        }catch(err){
+            console.log('Fallas detectadas en CrPers y son:' + err.message)
+            return {
+                message: 'Fallas en CrPers: ' + err.message,
+                status: response.WARN , 
+
             }
         }
     }

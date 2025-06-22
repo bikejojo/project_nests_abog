@@ -1,0 +1,33 @@
+variables:
+  #NODE_ENV: 'development'  
+  DATABASE_URL: $DATABASE_URL
+  #JWT_SECRET: $JWT_SECRET
+  APP_NAME: "app_Nests"
+  CI: true
+
+stages:
+  - install
+  - lint
+  - build
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
+  image: node:18
+  script:
+    - npm install
+    
+lint:
+  stage: lint
+  image: node:18
+  script:
+    - npm run lint
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm run build

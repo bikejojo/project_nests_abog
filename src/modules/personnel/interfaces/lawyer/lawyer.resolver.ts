@@ -1,47 +1,31 @@
 import { Resolver , Mutation , Query , Args } from "@nestjs/graphql";
-import { LawyerUseCase } from "../../domain/services/lawyer.lawyer-case";
 import { Lawyer } from "../../entities/lawyer.entity";
-import { UseGuards , SetMetadata } from "@nestjs/common";
-import { RolesGuard } from "src/guards/roles.guards";
-import { GqlAuthGuard } from "src/auth/authentification";
-import { createLawyerInput , createLawyerOutput} from "../../domain/dto/create-lawyer.input";
-import { responseUpdateLawyerOutPut , updateLawyerInput  } from "../../domain/dto/update-lawyer.input";
-import { responseDeleteLawyerOutPut , deleteLawyerInput } from "../../domain/dto/delete-lawyer.input";
-import { responseFindIdLawyerOutPut , findLawyerInput } from "../../domain/dto/findId-lawyer.input";
-import { responseAllStatusLawyerOutPut } from "../../domain/dto/all-lawyer.input";
+import { createLawyerInput , createLawyerOutPut } from "../../domain/dto/lawyer/create-lawyer.input";
+import { LawyerUseCase } from "../../domain/services/lawyer.use-case";
+import { allStatusPersLawyerOutPut } from "../../domain/dto/persona/allStatus-persona.input";
+import { updatelawyerInput, updateLawyerOutPut } from "../../domain/dto/lawyer/update-lawyer.input";
 
-@Resolver(Lawyer)
+@Resolver(()=> Lawyer)
 export class LawyerResolver {
-    constructor( private readonly lawyerUseCase:LawyerUseCase){}
-    
-    @Mutation(()=>createLawyerOutput)
-    async createLawyer(@Args('data') data:createLawyerInput){
-        return this.lawyerUseCase.createdLawye(data);
+    constructor(
+        private readonly lawyerUseCase:LawyerUseCase
+    ){}
+
+    @Mutation(()=>createLawyerOutPut)
+    async createLawyerPer(@Args('data') data:createLawyerInput ){
+        return await this.lawyerUseCase.createLawyer(data);
     }
 
-    @Mutation(()=>responseUpdateLawyerOutPut)
-    async updateLawyer(@Args('data') data:updateLawyerInput){
-        return this.lawyerUseCase.updatedLawyer(data);
+    @Mutation(()=>updateLawyerOutPut)
+    async updatedLawyer(@Args('data') data:updatelawyerInput ){
+        return await this.lawyerUseCase.updateLawyer(data);
     }
     
-    @Mutation(()=>responseDeleteLawyerOutPut)
-    async deleteLawyer(@Args('data') data:deleteLawyerInput){
-        return this.lawyerUseCase.deletedLawye(data);
-    }
     
-    @Query(() => String)
-    sayHello(): string {
-        return 'Hello from CompanyResolver';
-    }
+    
 
-    @Query(()=> responseFindIdLawyerOutPut)
-    async findIdLawyer(@Args('data') data:findLawyerInput){
-        return this.lawyerUseCase.findIdLawyer(data)
+    @Query(()=>allStatusPersLawyerOutPut)
+    async allLawyersStatus(){
+        return await this.lawyerUseCase.allLawyerStatus();
     }
-    
-    @Query(()=> responseAllStatusLawyerOutPut)
-    async allStatusLawyer(){
-        return this.lawyerUseCase.allStatusLawyer()
-    }
-    //@Query(()=> )
 }

@@ -7,6 +7,7 @@ import { RolesGuard } from "../../../guards/roles.guards";
 import { GqlAuthGuard } from "../../../auth/authentification";
 import { LogoutUserOutPut } from "../domain/dto/logout-user.input";
 import { CurrentUser } from "src/common/decorator/current-user.decorator";
+import { CreateUserInput, createUserLawyerOutPut } from "../domain/dto/create-user.input";
 
 @Resolver(() => User)
 //@UseGuards(GqlAuthGuard ,RolesGuard)
@@ -23,6 +24,11 @@ export class UserResolver {
     @UseGuards(GqlAuthGuard)
     async logout( @CurrentUser() user:any){
         return this.loginUser.logout(user);
+    }
+
+    @Mutation(()=> createUserLawyerOutPut)
+    async createUserLawyer(@Args('data') data:CreateUserInput ){
+        return this.loginUser.createPersonLawyerUser(data)
     }
 
     @Query(() => String)

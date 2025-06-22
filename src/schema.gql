@@ -2,10 +2,76 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AllCityDataOutPut {
+  allCity: [DataCity!]
+  message: String!
+  status: Float!
+}
+
+type AllModuleMenuPermissionDataOutPut {
+  allModuleMenuPermission: [contentModuleMenuPermissions!]
+  message: String!
+  status: Float!
+}
+
+input CreateUserInput {
+  branchOfficeId: Float!
+  lawyerId: Float!
+  name: String!
+  password: String!
+}
+
+type DataCity {
+  description: String!
+  id: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Judge {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  isActive: Boolean!
+  isIntern: Boolean!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
+}
+
+type Lawyer {
+  createdAt: DateTime!
+  id: ID!
+  isActive: Boolean!
+  isFiscal: Boolean!
+  isIntern: Boolean!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
+  userId: Float!
+}
+
+type Legal_Entity {
+  NIT: Float!
+  address: String!
+  companyName: String!
+  createdAt: DateTime!
+  id: ID!
+  legalRepresentive: String!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  typeCompany: String!
+  updatedAt: DateTime!
+}
 
 type LoginResponse {
   message: String!
@@ -14,8 +80,8 @@ type LoginResponse {
 }
 
 input LoginUserInput {
-  email: String!
   password: String!
+  username: String!
 }
 
 type LogoutUserOutPut {
@@ -25,287 +91,156 @@ type LogoutUserOutPut {
 }
 
 type Mutation {
-  assingRolUse(data: assingRolUserInput!): assingRolUserOutPut!
-  createCompany(data: createCompanyInput!): createCompanyOutput!
-  createLawyer(data: createLawyerInput!): createLawyerOutput!
-  createRol(data: createRolesInput!): createRolesOutPut!
-  deleteCompany(data: inputDeleteCompany!): responseDeleteCompanyOutput!
-  deleteLawyer(data: deleteLawyerInput!): responseDeleteLawyerOutPut!
-  deleteRol(data: deleteRoleInput!): deleteRoleOutPut!
+  createDocuments(data: createDocumentsInput!): documentsDataOutPut!
+  createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
+  createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
-  unsubcribreRolUser(data: unsubcribeRoleUserInput!): unsubcribeRoleUserOutPut!
-  updateCompany(data: updatedCompanyInput!): responseUpdateCompanyOutput!
-  updateLawyer(data: updateLawyerInput!): responseUpdateLawyerOutPut!
+  updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
+}
+
+type Natural_Person {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  personId: Float!
+  persona: Persona!
+  registrationDate: DateTime!
+  status: Float!
+  updatedAt: DateTime!
+}
+
+type Persona {
+  address: String!
+  ci: String
+  createdAt: DateTime!
+  firstName: String
+  id: ID!
+  judges: Judge
+  lastName: String
+  lawyers: Lawyer
+  legal_Entity: Legal_Entity
+  natural_persons: Natural_Person
+  phone: String
+  status: Float!
+  updatedAt: DateTime!
 }
 
 type Query {
-  allRoles: allRolOutPut!
-  allStatusCompany: responseAllStatusCompanyOutPut!
-  allStatusLawyer: responseAllStatusLawyerOutPut!
-  findIdCompany(data: inputCompanyId!): responseFindCompanyOutPut!
-  findIdLawyer(data: findLawyerInput!): responseFindIdLawyerOutPut!
+  allBranchOffice: allBranchOfficeOutPut!
+  allCityData: AllCityDataOutPut!
+  allLawyersStatus: allStatusPersLawyerOutPut!
+  allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
   sayHello: String!
 }
 
-type RolUser {
-  createdAt: DateTime!
-  id: ID!
-  rol: roles
-  rolId: Float!
-  status: Float!
-  updatedAt: DateTime!
-  user: User
-  userId: Float!
-}
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
-type User {
-  createdAt: DateTime!
-  email: String!
-  id: ID!
-  isActive: Boolean!
-  name: String!
-  password: String
-  rols: RolUser
-  status: Float!
-  token: String
-  type: Int
-  updatedAt: DateTime!
-}
-
-type allRolOutPut {
-  message: String!
-  roleData: [rolesData!]
-  status: Float!
-}
-
-input assingRolUserInput {
-  rolId: Float!
-  userId: Float!
-}
-
-type assingRolUserOutPut {
-  assingRole: assingRoleUserData
-  message: String!
-  status: Float!
-}
-
-type assingRoleUserData {
-  roleId: Float!
-  roleName: String!
-  status: Float!
-  userId: Float!
-  userName: String!
-}
-
-type companyData {
-  address: String!
-  email: String!
+type allBranchOfficeData {
+  description: String!
   id: Float!
-  name: String!
-  phone: String!
+  status: Float!
 }
 
-type companyDatas {
-  address: String!
-  email: String!
-  id: ID!
-  name: String!
-  phone: String!
-}
-
-input createCompanyInput {
-  address: String!
-  email: String!
-  name: String!
-  password: String!
-  phone: String!
-  role: String!
-}
-
-type createCompanyOutput {
-  company: companyData
+type allBranchOfficeOutPut {
+  allBranchOffice: [allBranchOfficeData!]
   message: String!
   status: Float!
-  user: userData
+}
+
+type allStatus {
+  fullName: String!
+  id: ID!
+  status: Float!
+}
+
+type allStatusPersLawyerOutPut {
+  allPersLaw: [allStatus!]
+  message: String
+  status: Int
+}
+
+type contentMenuPermissions {
+  contentPermissions: [contentPermissions!]
+  menuId: Float!
+  menuName: String
+}
+
+type contentModuleMenuPermissions {
+  contentModPermi: [contentMenuPermissions!]
+  moduleId: Float!
+  moduleName: String
+}
+
+type contentPermissions {
+  permissionsId: Float!
+  permissionsName: String
+}
+
+input createDocumentsInput {
+  file: Upload
+  id: ID!
+  type: Float!
 }
 
 input createLawyerInput {
   address: String!
-  email: String!
+  ci: String!
+  cityId: Float!
   firstName: String!
+  isFiscal: Boolean!
+  isInterno: Boolean!
   lastName: String!
-  password: String!
   phone: String!
 }
 
-type createLawyerOutput {
-  LawyerCreate: lawyerData
+type createLawyerOutPut {
+  lawyesData: lawyerData
   message: String!
   status: Float!
-  user: userData
 }
 
-input createRolesInput {
-  description: String!
-}
-
-type createRolesOutPut {
-  message: String!
-  rolesDatas: rolesData!
+type createUserLawyerOutPut {
+  message: String
   status: Float!
 }
 
-type deleteCompanyData {
-  address: String!
-  email: String!
-  id: Float!
-  name: String!
-  phone: String!
-  status: Float!
-}
-
-input deleteLawyerInput {
-  id: Float!
-}
-
-input deleteRoleInput {
-  rolId: ID!
-}
-
-type deleteRoleOutPut {
-  message: String!
-  roleDatas: rolesData
-  status: Float!
-}
-
-input findLawyerInput {
-  id: Float!
-}
-
-input inputCompanyId {
-  id: Float!
-}
-
-input inputDeleteCompany {
-  id: Float!
+type documentsDataOutPut {
+  documents: String
+  message: String
+  status: String
 }
 
 type lawyerData {
-  address: String!
-  email: String!
-  firstName: String!
-  id: Float!
-  lastName: String!
-  phone: String!
-  status: Float!
-  userId: Float!
-}
-
-type responseAllStatusCompanyOutPut {
-  allCompanys: [companyDatas!]
-  message: String!
-  status: Float!
-}
-
-type responseAllStatusLawyerOutPut {
-  allLawyer: [lawyerData!]
-  message: String!
-  status: Float!
-}
-
-type responseDeleteCompanyOutput {
-  deleteCompany: deleteCompanyData
-  message: String!
-  status: Float!
-}
-
-type responseDeleteLawyerOutPut {
-  deleteLawyer: lawyerData
-  message: String!
-  status: Float!
-}
-
-type responseFindCompanyOutPut {
-  companyId: companyData
-  message: String!
-  status: Float!
-}
-
-type responseFindIdLawyerOutPut {
-  lawyerFind: lawyerData
-  message: String!
-  status: Float!
-}
-
-type responseUpdateCompanyOutput {
-  message: String!
-  status: Float!
-  updateDataCompany: updateDataCompany
-}
-
-type responseUpdateLawyerOutPut {
-  message: String!
-  status: Float!
-  updateLawyer: lawyerData
-}
-
-type roles {
-  createdAt: DateTime!
-  description: String!
   id: ID!
-  rolUser: RolUser
-  status: Float!
-  updatedAt: DateTime!
+  isFiscal: Boolean!
+  isIntern: Boolean!
+  registratioDate: DateTime!
 }
 
-type rolesData {
-  createdAt: DateTime!
-  description: String!
+type updateLawyerData {
   id: ID!
-  status: Float!
-  updatedAt: DateTime!
 }
 
-input unsubcribeRoleUserInput {
-  rolId: Float!
-  userId: Float!
-}
-
-type unsubcribeRoleUserOutPut {
+type updateLawyerOutPut {
+  lawyerData: updateLawyerData
   message: String!
   status: Float!
-  unsubcribeRolUser: assingRoleUserData
 }
 
-type updateDataCompany {
-  address: String!
-  email: String!
-  name: String!
-  password: String!
-  phone: String!
-  role: String!
-}
-
-input updateLawyerInput {
-  address: String!
-  email: String!
-  firstName: String!
-  id: Float!
-  lastName: String!
-  phone: String!
-}
-
-input updatedCompanyInput {
-  address: String!
-  email: String!
-  id: Float!
-  name: String!
-  phone: String!
+input updatelawyerInput {
+  address: String
+  firstName: String
+  id: ID!
+  isFiscal: Boolean
+  isIntern: Boolean
+  lastName: String
+  phone: String
 }
 
 type userData {
-  email: String!
+  ci: String!
   id: Float!
   name: String!
   token: String!

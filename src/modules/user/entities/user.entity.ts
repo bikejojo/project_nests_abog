@@ -1,22 +1,18 @@
 import { ObjectType , Field , ID, Int } from "@nestjs/graphql";
-import { RolUser } from "src/modules/rolUser/entities/rolUser.entities";
 
 @ObjectType()
 export class User {
-@Field(() => ID)
+  @Field(() => ID)
   id: number;
 
   @Field()
   name: string;
 
-  @Field()
-  email: string;
+  @Field(() => String ,{nullable:true})
+  email: string | null;
 
   @Field({ nullable: true })
   password: string;
-
-  //@Field()
-  //rolsId: number//string; // empresa  abogado
 
   @Field({ nullable: true })
   token: string;
@@ -36,7 +32,7 @@ export class User {
   @Field()
   updatedAt: Date;
 
-  @Field(()=> RolUser , {nullable:true})
-  rols: RolUser | null
+  //@Field(()=> RolUser , {nullable:true})
+  //rols: RolUser | null
   
 }

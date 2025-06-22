@@ -9,8 +9,9 @@ import { Token } from "graphql";
 export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
-    async login(email:string) {
-        return await this.prisma.user.findFirst({where:{email},include:{rols:{include:{rol:true}}}})
+    async login(name:string) {
+        //console.log(email);
+        return await this.prisma.user.findFirst({where:{name:name} })
     }
 
     async logout(userId:number){
@@ -20,7 +21,7 @@ export class UserRepository {
     async saveToken(token: string, user: { id: number }) {
         return await this.prisma.user.update({
             where: { id: user.id },
-            data: { token },
+            data: { token }, //---- cambios yayaya
         });
     }
 
@@ -30,7 +31,7 @@ export class UserRepository {
                 email: data.email,
                 password: data.password,
                 name: data.name,
-                //role: data.role,
+                ci:data.ci,
                 token: data.token,
                 isActive: data.isActive,
                 status: data.status,

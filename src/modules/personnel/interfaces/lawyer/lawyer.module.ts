@@ -1,34 +1,34 @@
-import { Module } from "@nestjs/common";
+import { forwardRef , Module } from "@nestjs/common";
+import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository";
 import { AuthModule } from "src/auth/auth.module";
-import { PrismaService } from "src/prisma/prisma.service";
-import { LawyerUseCase } from "../../domain/services/lawyer.lawyer-case";
+import { LawyerUseCase } from "../../domain/services/lawyer.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
+import { PrismaService } from "src/prisma/prisma.service";
 import { UserModule } from "src/modules/user/interfaces/user.module";
-import { LawyerRepository } from "../../infraestructura/prisma/lawyer/lawyer.repository";
+import { PersonModule } from "../persona/persona.module";
 import { LawyerResolver } from "./lawyer.resolver";
-import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 
 @Module({
   imports: [
-        AuthModule,
-        UserModule,
-        JwtModule.register({
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: '1h' } // Adjust the expiration time as needed
-        })
-    ],
-    providers: [
-        LawyerRepository,
-        LawyerUseCase,
-        LawyerResolver,
-        PrismaService,
-        UserRepository
-    ],
-    exports: [
-        LawyerUseCase,
-        LawyerRepository
-    ],
+    AuthModule ,
+    forwardRef(() => UserModule),   
+    forwardRef(()=> PersonModule ),
+    JwtModule.register({
+        secret: jwtConstants.secret,
+        signOptions: {expiresIn:'1h'}
+    })
+  ],
+  providers: [
+    LawyerRepository,
+    LawyerUseCase ,
+    LawyerResolver ,
+    PrismaService,
+  ],
+  exports: [
+    LawyerRepository ,
+    LawyerUseCase ,
+  ],
 })
 
-export class LawyerModule {}
+export class LawyerModule{}
