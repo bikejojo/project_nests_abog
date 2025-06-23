@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ModuleMenuPermissionsRepository } from "../../infraestructura/prisma/moduleMenuPermissions.repository";
 import { response } from "src/common/enum/typeResp";
+;
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
@@ -133,6 +134,29 @@ export class ModuleMenuPermissionsUseCase {
                 await this.moduleMenuPermissionsRepository.createMenuUser(menuUserAssing)
             }
 
+
+            const existingPermissionsUser =  this.moduleMenuPermissionsRepository.verificationIfUserHasPermissions({
+                userId: data.userId ,
+                permissionsId: data.permissionsId
+            })
+
+            const existingPermissionsIds = (await existingPermissionsUser).map(mod=>mod.permissionsId);
+
+            const newPermissionsIds = data.permissionsIds.filter((permissionsId:number)=>!existingPermissionsIds.include(permissionsId));
+
+            const permissionsUserAssing = newPermissionsIds.map((permissionsId:number)=> ({
+                userId:data.userId ,
+                permissionsId: data.permissionsId
+            }))
+
+            if(permissionsUserAssing.length > 0 ){
+                await this.moduleMenuPermissionsRepository.createPermissionsUser(permissionsUserAssing);
+            }
+
+            return {
+                message:'Existosa asignacion de permissos',
+                status: response.NICE
+            }
         }catch(err){
             console.log('Fallas en AssignUsPer y son: ' + err.message );
             return {

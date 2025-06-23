@@ -87,6 +87,10 @@ export class ModuleMenuPermissionsRepository {
         })
     }
 
+    async verificationIfUserHasPermissions(data:any){
+
+    }
+
     async createPermissionsUser(data:any){
         return await this.prisma.permissionsUser.createMany({
             data:{
