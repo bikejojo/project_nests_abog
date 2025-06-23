@@ -11,7 +11,7 @@ export class UserRepository {
 
     async login(name:string) {
         //console.log(email);
-        return await this.prisma.user.findFirst({where:{name:name} })
+        return await this.prisma.user.findUnique({where:{name:name} })
     }
 
     async logout(userId:number){
@@ -35,6 +35,7 @@ export class UserRepository {
                 token: data.token,
                 isActive: data.isActive,
                 status: data.status,
+                roleId:data.roleId,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             }
@@ -52,7 +53,7 @@ export class UserRepository {
 
 
     async findIdUsers(data:any){
-        return await this.prisma.user.findFirst({
+        return await this.prisma.user.findUnique({
             where:{id:data.id}
         })
     }

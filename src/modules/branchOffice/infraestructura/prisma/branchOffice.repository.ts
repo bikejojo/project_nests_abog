@@ -29,7 +29,7 @@ export class BranchOfficeRepository {
     }
 
     async findIdBranchOffices(data:any){
-        return await this.prisma.branch_Office.findFirst({
+        return await this.prisma.branch_Office.findUnique({
             where:{
                 id:data.id
             },

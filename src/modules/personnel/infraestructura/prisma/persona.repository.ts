@@ -15,7 +15,8 @@ export class PersonRepository {
                 address: data.address , 
                 status: data.status ,
                 createdAt: data.createdAt ,
-                updatedAt: data.updatedAt
+                updatedAt: data.updatedAt ,
+                cityId:data.cityId
             }
         })
     }
@@ -26,13 +27,27 @@ export class PersonRepository {
                 id:data.id
             },
             data:{
+                firstName: data.firstName ,
+                lastName: data.lastName ,
+                phone: data.phone ,
+                address: data.address
+            }
+        })
+    }
 
+    async deletePersona(data:any){
+        await this.prisma.persona.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                status:data.status
             }
         })
     }
 
     async findedPersona(data:any){
-        return await this.prisma.persona.findFirst({
+        return await this.prisma.persona.findUnique({
             where:{
                 id:data.id
             }

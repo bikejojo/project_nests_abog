@@ -17,7 +17,7 @@ export class NaturalPersonRepository{
   }
 
   async findIdNaturalPerson(data:any){
-    return await this.prisma.natural_Person.findFirst({
+    return await this.prisma.natural_Person.findUnique({
       where: { id: data.id }
     });
   }

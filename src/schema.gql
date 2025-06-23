@@ -24,9 +24,11 @@ type Branch_Office {
 
 input CreateUserInput {
   branchOfficeId: Float!
+  email: String
   lawyerId: String
   name: String!
   password: String!
+  roleId: Float!
 }
 
 type DataCity {
@@ -99,6 +101,7 @@ type LogoutUserOutPut {
 }
 
 type Mutation {
+  assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
@@ -161,6 +164,18 @@ type allStatusPersLawyerOutPut {
   allPersLaw: [allStatus!]
   message: String
   status: Int
+}
+
+input assingUserDataInput {
+  id: ID!
+  menuIds: [Int]
+  moduleIds: [Int]
+  permissionsIds: [Int]
+}
+
+type assingUserDataOutPut {
+  message: String!
+  status: Float!
 }
 
 type contentMenuPermissions {

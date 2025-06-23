@@ -1,6 +1,7 @@
-import { Resolver , Query , Args  } from '@nestjs/graphql';
+import { Resolver , Query , Args , Mutation } from '@nestjs/graphql';
 import { ModuleMenuPermissionsUseCase } from '../domain/services/moduleMenuPermissions.use-case';
 import { AllModuleMenuPermissionDataOutPut } from '../domain/dto/allModuleMenuPermission.input';
+import { assingUserDataInput, assingUserDataOutPut } from '../domain/dto/assingUserModuleMenuPermission.input';
 
 @Resolver()
 export class ModuleMenuPermissionResolver {
@@ -11,5 +12,10 @@ export class ModuleMenuPermissionResolver {
     @Query(() => AllModuleMenuPermissionDataOutPut)
     async allModuloMenuPermissions(){
         return await this.moduleMenuPermissionsUseCase.listAllModuleMenuPermissions();
+    }
+
+    @Mutation(()=> assingUserDataOutPut)
+    async assingUserPermissionMod(@Args('data') data:assingUserDataInput ){
+        return await this.moduleMenuPermissionsUseCase.assignmentUserPermiss(data);
     }
 }

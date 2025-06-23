@@ -20,7 +20,7 @@ export class LegalEntityRepository {
     }
 
     async findIdLegalEntity(data:any){
-        return await this.prisma.legal_Entity.findFirst({
+        return await this.prisma.legal_Entity.findUnique({
             where: {
                 id: data.id
             }

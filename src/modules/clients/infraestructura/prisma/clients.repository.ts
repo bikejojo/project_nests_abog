@@ -35,7 +35,7 @@ export class ClientRepository {
         return this.prisma.clients.update({where:{id : data.id} , data:{ status: 0}})       
     }
     async findIdClients(data:any){
-        return await this.prisma.clients.findFirst({where:{id:data.id}})
+        return await this.prisma.clients.findUnique({where:{id:data.id}})
     }
     async allClients(){
         return this.prisma.clients.findMany({where:{status:1}})

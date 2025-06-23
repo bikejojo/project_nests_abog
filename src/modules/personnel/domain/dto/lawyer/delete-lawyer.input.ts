@@ -5,6 +5,8 @@ export class deletedLawyerInput {
     @Field(()=>ID)
     id:number
 
+    @Field({nullable:true})
+    status: String
 }
 
 @ObjectType()

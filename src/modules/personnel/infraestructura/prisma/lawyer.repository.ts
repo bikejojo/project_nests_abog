@@ -29,7 +29,8 @@ export class LawyerRepository {
                 id:data.id
             },
             data:{
-                userId:data.userId
+                userId:data.userId,
+                branchOfficeId:data.branchOfficeId
             }
         })
     }
@@ -42,6 +43,29 @@ export class LawyerRepository {
             data:{
                 isFiscal:data.isFiscal ,
                 isIntern:data.isIntern ,
+            }
+        })
+    }
+
+    async deleteLawyer(data:any){
+        return await this.prisma.lawyer.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                status:data.status ,
+                isActive:data.isActive
+            }
+        })
+    }
+
+    async inactiveLawyer(data:any){
+        return await this.prisma.lawyer.update({
+            where:{
+                id: data.id
+            },
+            data:{
+                isActive:data.isActive
             }
         })
     }
@@ -66,7 +90,7 @@ export class LawyerRepository {
     }
 
     async findLawyerId(data:any){
-        return await this.prisma.lawyer.findFirst({
+        return await this.prisma.lawyer.findUnique({
             where:{
                 id:data.id
             },

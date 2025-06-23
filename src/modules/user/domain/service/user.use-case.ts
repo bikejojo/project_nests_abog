@@ -20,56 +20,64 @@ export class UserUseCase {
     ) {}
 
     async login(data: LoginUserInput){
-        const user = await this.userRepository.login(data.username);
+        try {
+            const user = await this.userRepository.login(data.username);
 
-        if(!user){
-            //throw new UnauthorizedException('El usuario no existe');
-            return {
-                message: 'El usuario no existe',
-                status: response.FALL ,
-                user: null
+            if(!user){
+                //throw new UnauthorizedException('El usuario no existe');
+                return {
+                    message: 'El usuario no existe',
+                    status: response.FALL ,
+                    user: null
+                }
             }
-        }
 
-        const validPassword = await bcrypt.compare(data.password, user.password);
-        if (!validPassword) {
-            //throw new UnauthorizedException('Credenciales inválidas');
-            return {
-                message: 'Credenciales inválidas',
-                status: response.FALL ,
-                user: null
+            const validPassword = await bcrypt.compare(data.password, user.password);
+            if (!validPassword) {
+                //throw new UnauthorizedException('Credenciales inválidas');
+                return {
+                    message: 'Credenciales inválidas',
+                    status: response.FALL ,
+                    user: null
+                }
             }
-        }
 
-        if(user.status === 0){
-            //throw new UnauthorizedException('Usuario inactivo');
-            return {
-                message: 'Usuario inactivo',
-                status: response.FALL ,
-                user: null
+            if(user.status === 0){
+                //throw new UnauthorizedException('Usuario inactivo');
+                return {
+                    message: 'Usuario inactivo',
+                    status: response.FALL ,
+                    user: null
+                }
             }
-        }
 
-        if(user.token != '' ){
+            if(user.token != '' ){
+                return {
+                    message: 'Usuario inicio sesion en otro dipositivo',
+                    status: response.FALL,
+                    user: null
+                }
+            }
+
+            let jwtToken = await this.authService.generateToken(user);
+            this.userRepository.saveToken(jwtToken.token , user );
             return {
-                message: 'Usuario inicio sesion en otro dipositivo',
+                message: 'Inicio de sesión exitoso',
+                status: response.NICE ,
+                user: {
+                    name: user.name,
+                    ci: user.ci,
+                    type: user.type, // 1: empresa, 2: abogado, 3: admin
+                    token: jwtToken.token,
+                    //role: user.rols,
+                },
+            }
+        }catch(err){
+            console.log('Fallas en Login, son: ' + err.message);
+            return {
+                message: 'Fallas en Login, son: ' + err.message,
                 status: response.FALL,
-                user: null
             }
-        }
-
-        let jwtToken = await this.authService.generateToken(user);
-        this.userRepository.saveToken(jwtToken.token , user );
-        return {
-            message: 'Inicio de sesión exitoso',
-            status: response.NICE ,
-            user: {
-                name: user.name,
-                ci: user.ci,
-                type: user.type, // 1: empresa, 2: abogado, 3: admin
-                token: jwtToken.token,
-                //role: user.rols,
-            },
         }
     }
     
@@ -99,6 +107,8 @@ export class UserUseCase {
                 id: lawyerIds
             });
 
+            //console.log(lawyerData)
+                ;
             if(!lawyerData){
                 return {
                     message:'Fallas en el obtencion de datos de abogado' ,
@@ -116,14 +126,15 @@ export class UserUseCase {
             const hashedPassword = await bcrypt.hash(data.password, 10);
 
             const user = await this.userRepository.createUser({
-                name:`${lawyerData.persona.firstName}_${lawyerData.persona.lastName}` ,
-                email: '',
+                name: data.name ,//`${lawyerData.persona.firstName}_${lawyerData.persona.lastName}` ,
+                email: data.email,
                 ci: lawyerData.persona.ci , 
                 password: hashedPassword ,
                 isActive: true,
                 status: status.ACTIVE,
                 type: typeUser.LawyerIntern ,
                 token: '' ,
+                roleId: data.roleId
             })
 
             if(!user){

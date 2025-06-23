@@ -18,7 +18,7 @@ datasource db {
 model User {
   id        Int   @id @default(autoincrement())
   email     String?   
-  name      String
+  name      String @unique
   ci        String?
   password  String
   token     String  // Optional token for password reset
@@ -26,7 +26,8 @@ model User {
   isActive  Boolean
   status    Int   // 0: Inactivo, 1: Activo
   lawyer    Lawyer?
-  menuUser  MenuUser?
+  menuUser  MenuUser[]
+  moduleUser ModuleUser[]
   permissionsUser PermissionsUser[]
   roleId   Int?
   role     Role? @relation(fields: [roleId], references: [id])
@@ -42,15 +43,27 @@ model Role {
   updatedAt   DateTime @updatedAt
   users       User[]
 }
+
 model Module {
   id          Int @id @default(autoincrement())
   name        String?
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  moduleMenu  ModuleMenu[] 
+  moduleMenu  ModuleMenu[]
+  modeloUsers ModuleUser[] 
 }
 
+model ModuleUser {
+  id        Int @id @default(autoincrement())
+  status    Int @default(1)
+  moduleId  Int? @unique
+  userId    Int? @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  modules   Module? @relation(fields: [moduleId] , references: [id])
+  users     User? @relation(fields: [userId] , references: [id])
+}
 model Menu {
   id            Int @id @default(autoincrement())
   name          String?
@@ -107,7 +120,7 @@ model MenuPermissions {
 
 model PermissionsUser {
   id            Int @id @default(autoincrement())
-  userId        Int
+  userId        Int @unique
   permissionsId Int
   status        Int @default(1)
   createdAt     DateTime @default(now())

@@ -22,7 +22,7 @@ export class LawyerUseCase {
             }
 
             const cityId = parseInt(data.cityId);
-
+            //console.log(cityId);
             const person = await this.personRepository.createPerson({
                 ci:data.ci ,
                 firstName: data.firstName ,
@@ -30,7 +30,7 @@ export class LawyerUseCase {
                 phone: data.phone ,
                 address: data.address , 
                 status: status.ACTIVE ,
-                city: cityId ,
+                cityId: cityId ,
                 createdAt: new Date ,
                 updatedAt: new Date
             })
@@ -76,8 +76,11 @@ export class LawyerUseCase {
 
     async updateLawyer(data:any){
         try { 
+
+            const lawyerIds = parseInt(data.id); 
+
             const lawyerId = await this.lawyerRepository.findLawyerId({
-                id: data.lawyerId
+                id: lawyerIds
             })
 
             if(!lawyerId){
@@ -87,7 +90,9 @@ export class LawyerUseCase {
                 }
             }
 
-            const person = this.personRepository.updatePersona({
+            console.log(lawyerId);
+
+            await this.personRepository.updatePersona({
                 id:lawyerId.persona.id,
                 firstName: data.firstName == null || data.firstName == '' ? lawyerId.persona.firstName : data.firstName ,
                 lastName: data.lastName == null || data.lastName == '' ? lawyerId.persona.lastName : data.lastName , 
@@ -97,12 +102,11 @@ export class LawyerUseCase {
             });
 
 
-            const lawyer = this.lawyerRepository.updateLawyer({
+            await this.lawyerRepository.updateLawyer({
                 id: lawyerId.id ,
-                isFiscal: data.status == null ? data.isFiscal :lawyerId.isFiscal ,
-                isIntern: data.isIntern == null ? data.isIntern : lawyerId.isIntern
+                isFiscal: data.isFiscal ,
+                isIntern: data.isIntern 
             })
-            //data.lawyersFindId(data.lawyerId)
 
             return {
                 message: 'Actualizacion exitosa de abogado. ' ,
@@ -149,6 +153,74 @@ export class LawyerUseCase {
             console.log('Se presentaron fallas en AllLawSt y son: '+err.message)
             return {
                 message: 'Se presentaron fallas en AllLawSt y son: '+ err.message ,
+                status: response.WARN
+            }
+        }
+    }
+
+    async deleteLawyerStatus(data:any){
+        try{
+
+            const lawyerId = await this.lawyerRepository.findLawyerId({
+                id: data.id
+            })
+
+            if(!lawyerId){
+                return {
+                    message:'No existen datos de abogado.',
+                    status: response.FALL
+                }
+            }
+
+            const personId = lawyerId?.persona.id;
+
+            await this.personRepository.deletePersona({
+                id:personId ,
+                status:0
+            })
+
+            await this.lawyerRepository.deleteLawyer({
+                id:lawyerId?.id,
+                isActive: false ,
+                status: 0
+            })
+
+            return {
+                message:'Eliminacion correcta de abogado.',
+                status: response.NICE 
+            }
+
+        }catch(err){
+            console.log('Fallas en DelLaw y son: ' + err.message);
+            return {
+                message: 'Fallas en DelLaw y son: ' + err.message ,
+                status: response.WARN
+            }
+        }
+    }
+
+    async inactiveLawyer(data:any){
+        try {
+            const lawyerId = await this.lawyerRepository.findLawyerId({
+                id:data.id
+            })
+
+            if(!lawyerId){
+                return {
+                    message:'No retorna valores de abogados.',
+                    status:response.FALL
+                }
+            }
+
+            await this.lawyerRepository.inactiveLawyer({
+                id:lawyerId.id ,
+                isActive: data.isActive
+            })
+
+        }catch(err){
+            console.log('Fallas de InAcLw y son: ' + err.message);
+            return {
+                message: 'Fallas de InAcLw y son: ' + err.message ,
                 status: response.WARN
             }
         }

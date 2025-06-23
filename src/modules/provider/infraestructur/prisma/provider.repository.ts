@@ -43,7 +43,7 @@ export class ProviderRepository {
     }
     //query
     async findIdProvider(data:any){
-        return await this.prisma.provider.findFirst({where:{id:data}})
+        return await this.prisma.provider.findUnique({where:{id:data}})
     }
     async allStatusProvider(data:any){
         return await this.prisma.provider.findMany({where:{status:1}})

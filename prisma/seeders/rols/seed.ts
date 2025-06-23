@@ -13,7 +13,7 @@ async function main(){
         { name: "Client",  status: 1 }
     ];
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
         where:{ id: 1 }
     });
     

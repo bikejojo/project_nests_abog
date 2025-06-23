@@ -13,8 +13,13 @@ export class CreateUserInput {
   name: string
 
   @Field()
+  roleId:number
+
+  @Field()
   branchOfficeId: number
 
+  @Field({nullable:true})
+  email: string
 }
 
 @ObjectType()

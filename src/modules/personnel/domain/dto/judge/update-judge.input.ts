@@ -1,8 +1,8 @@
-import { InputType , ObjectType , Field  } from "@nestjs/graphql";
+import { InputType , ObjectType , Field , ID } from "@nestjs/graphql";
 
 @InputType()
 export class updateJudgeInput{
-    @Field()
+    @Field(()=>ID)
     id: number
 
     @Field({nullable:true})

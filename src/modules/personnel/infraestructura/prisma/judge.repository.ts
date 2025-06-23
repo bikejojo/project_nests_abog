@@ -19,7 +19,7 @@ export class JudgeRepository {
     }
 
     async findedJudge(data:any){
-        return await this.prisma.judge.findFirst({
+        return await this.prisma.judge.findUnique({
             where:{id:data.id}
         });
     }
