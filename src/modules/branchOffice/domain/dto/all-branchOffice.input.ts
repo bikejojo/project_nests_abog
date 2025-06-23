@@ -1,4 +1,5 @@
 import { ObjectType , Field , ID } from "@nestjs/graphql";
+import { Branch_Office } from "../../entities/branchOffice.entities";
 
 @ObjectType()
 export class allBranchOfficeData {
@@ -6,7 +7,7 @@ export class allBranchOfficeData {
     id: number
 
     @Field()
-    description: string
+    name: string
 
     @Field()
     status: number
@@ -21,6 +22,6 @@ export class allBranchOfficeOutPut {
     @Field()
     status: number
 
-    @Field(()=> [allBranchOfficeData] , {nullable:true})
-    allBranchOffice: allBranchOfficeData[] | null    
+    @Field(()=> [Branch_Office] , {nullable:true})
+    allBranchOffice: Branch_Office[] | null    
 }

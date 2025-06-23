@@ -6,7 +6,7 @@ export class CreateUserInput {
   @Field()
   password: string;
 
-  @Field()
+  @Field(()=>String , {nullable:true})
   lawyerId: number
   
   @Field()
@@ -14,6 +14,7 @@ export class CreateUserInput {
 
   @Field()
   branchOfficeId: number
+
 }
 
 @ObjectType()

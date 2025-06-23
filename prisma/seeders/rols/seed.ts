@@ -7,10 +7,10 @@ async function main(){
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Role_id_seq" RESTART WITH 1`);
 
     const roles = [
-        { description: "Administrador", status: 1 },
-        { description: "Abogado", status: 1 },
-        { description: "Juez",  status: 1 },
-        { description: "Client",  status: 1 }
+        { name: "Administrador", status: 1 },
+        { name: "Abogado", status: 1 },
+        { name: "Juez",  status: 1 },
+        { name: "Client",  status: 1 }
     ];
 
     const user = await prisma.user.findFirst({

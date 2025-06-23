@@ -8,16 +8,16 @@ async function main(){
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Branch_Office_id_seq" RESTART WITH 1`);
 
     const cities = [
-        { description: 'Sucursal de Santa Cruz' , status:1 },
-        { description: 'Sucursal de Beni'  , status:1},
-        { description: 'Sucursal de Pando'  , status:1},
-        { description: 'Sucursal de Tarija'  , status:1},
-        { description: 'Sucursal de Chuquisaca'  , status:1},
-        { description: 'Sucursal de Cochabamba'  , status:1},
-        { description: 'Sucursal de El Alto'  , status:1},
-        { description: 'Sucursal de La Paz'  , status:1},
-        { description: 'Sucursal de Oruro'  , status:1},
-        { description: 'Sucursal de Potosi'  , status:1},
+        { description: 'Sucursal de Santa Cruz' , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de Beni'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1  },
+        { description: 'Sucursal de Pando'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de Tarija'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de Chuquisaca'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de Cochabamba'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de El Alto'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1 },
+        { description: 'Sucursal de La Paz'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1  },
+        { description: 'Sucursal de Oruro'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1  },
+        { description: 'Sucursal de Potosi'  , status:1 , address: 'Por definir' , phone: 'Por definir' , cityId: 1  },
     ];
 
 
@@ -27,6 +27,9 @@ async function main(){
                // No se actualiza nada en este caso
                 data: {
                     name: branch_Office.description,
+                    address: branch_Office.address ,
+                    phone: branch_Office.phone ,
+                    cityId : branch_Office.cityId ,
                     status:1
                 },
             })

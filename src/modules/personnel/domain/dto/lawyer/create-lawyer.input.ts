@@ -1,4 +1,4 @@
-import { ObjectType , Field , InputType , ID  } from "@nestjs/graphql";
+import { ObjectType , Field , InputType , ID, Int  } from "@nestjs/graphql";
 
 @ObjectType()
 export class lawyerData {
@@ -27,10 +27,10 @@ export class createLawyerInput {
     @Field()
     lastName: string
 
-    @Field()
+    @Field({nullable:true})
     phone: string
 
-    @Field()
+    @Field({nullable:true})
     address: string
 
     @Field()
@@ -39,7 +39,7 @@ export class createLawyerInput {
     @Field()
     isInterno: boolean
 
-    @Field()
+    @Field(()=> String , {nullable:true})
     cityId: number
 }
 

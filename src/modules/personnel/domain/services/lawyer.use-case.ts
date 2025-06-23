@@ -21,6 +21,8 @@ export class LawyerUseCase {
                 }
             }
 
+            const cityId = parseInt(data.cityId);
+
             const person = await this.personRepository.createPerson({
                 ci:data.ci ,
                 firstName: data.firstName ,
@@ -28,7 +30,7 @@ export class LawyerUseCase {
                 phone: data.phone ,
                 address: data.address , 
                 status: status.ACTIVE ,
-                city: data.cityId ,
+                city: cityId ,
                 createdAt: new Date ,
                 updatedAt: new Date
             })

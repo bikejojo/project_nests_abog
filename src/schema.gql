@@ -14,9 +14,17 @@ type AllModuleMenuPermissionDataOutPut {
   status: Float!
 }
 
+type Branch_Office {
+  address: String!
+  id: ID!
+  name: String!
+  phone: String!
+  status: Int
+}
+
 input CreateUserInput {
   branchOfficeId: Float!
-  lawyerId: Float!
+  lawyerId: String
   name: String!
   password: String!
 }
@@ -137,14 +145,8 @@ type Query {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-type allBranchOfficeData {
-  description: String!
-  id: Float!
-  status: Float!
-}
-
 type allBranchOfficeOutPut {
-  allBranchOffice: [allBranchOfficeData!]
+  allBranchOffice: [Branch_Office!]
   message: String!
   status: Float!
 }
@@ -185,14 +187,14 @@ input createDocumentsInput {
 }
 
 input createLawyerInput {
-  address: String!
+  address: String
   ci: String!
-  cityId: Float!
+  cityId: String
   firstName: String!
   isFiscal: Boolean!
   isInterno: Boolean!
   lastName: String!
-  phone: String!
+  phone: String
 }
 
 type createLawyerOutPut {

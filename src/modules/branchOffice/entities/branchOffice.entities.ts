@@ -6,7 +6,13 @@ export class Branch_Office {
     id:number
 
     @Field()
-    description: string
+    name: string
+
+    @Field()
+    address: string
+
+    @Field()
+    phone: string
 
     @Field(()=>Int , {nullable:true})
     status: number

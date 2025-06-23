@@ -93,9 +93,10 @@ export class UserUseCase {
 
     async createPersonLawyerUser(data:any){
         try {
-            
+            const lawyerIds = parseInt(data.lawyerId);
+
             const lawyerData = await this.lawyerRepository.findLawyerId({
-                id: data.lawyerId
+                id: lawyerIds
             });
 
             if(!lawyerData){
