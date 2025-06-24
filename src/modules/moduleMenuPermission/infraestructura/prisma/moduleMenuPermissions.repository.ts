@@ -27,19 +27,19 @@ export class ModuleMenuPermissionsRepository {
     }
 
     async verificationModuleUser(data:any){
-        return await this.prisma.moduleUser.findUnique({
+        return await this.prisma.moduleUser.findMany({
             where:{userId: data.id}
         })
     }
 
     async verificationMenuUser(data:any){
-        return await this.prisma.menuUser.findUnique({
+        return await this.prisma.menuUser.findMany({
             where:{userId: data.id}
         })
     }
 
     async verificationPermissionsUser(data:any){
-        return await this.prisma.permissionsUser.findUnique({
+        return await this.prisma.permissionsUser.findMany({
             where: { userId: data.id }
         })
     }
@@ -69,35 +69,31 @@ export class ModuleMenuPermissionsRepository {
     }
     async createModuleUser(data:any){
         return await this.prisma.moduleUser.createMany({
-            data:{
-                userId:data.userId ,
-                moduleId: data.moduleId ,
-                status: status.ACTIVE
-            }
+            data:data,
+            skipDuplicates: true
         })
     }
 
     async createMenuUser(data:any){
         return await this.prisma.menuUser.createMany({
-            data:{
-                userId: data.userId ,
-                menuId: data.menuId ,
-                status: status.ACTIVE
-            }
+            data:data,
+            skipDuplicates: true
         })
     }
 
     async verificationIfUserHasPermissions(data:any){
-
+        return await this.prisma.permissionsUser.findMany({
+            where:{
+                userId:data.userId,
+                permissionsId:data.permissionsId
+             }
+        })
     }
 
     async createPermissionsUser(data:any){
         return await this.prisma.permissionsUser.createMany({
-            data:{
-                userId:data.userId ,
-                permissionsId:data.permissionsId ,
-                status:status.ACTIVE
-            }
+            data:data,
+            skipDuplicates: true
         })
     }
 }

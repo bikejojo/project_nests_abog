@@ -6,6 +6,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { ModuleMenuPermissionsRepository } from "../infraestructura/prisma/moduleMenuPermissions.repository";
 import { ModuleMenuPermissionsUseCase } from "../domain/services/moduleMenuPermissions.use-case";
 import { ModuleMenuPermissionResolver } from "./moduleMenuPermission.resolver";
+import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 
 @Module({
   imports: [
@@ -19,11 +20,13 @@ import { ModuleMenuPermissionResolver } from "./moduleMenuPermission.resolver";
     ModuleMenuPermissionResolver,
     ModuleMenuPermissionsUseCase,
     ModuleMenuPermissionsRepository,
+    UserRepository ,
     PrismaService
   ],
   exports: [
     ModuleMenuPermissionsUseCase,
     ModuleMenuPermissionsRepository,
+    UserRepository,
   ],
 })
 

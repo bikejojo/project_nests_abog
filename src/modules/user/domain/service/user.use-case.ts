@@ -51,13 +51,38 @@ export class UserUseCase {
                 }
             }
 
-            if(user.token != '' ){
+            /*if(user.token != '' ){
                 return {
                     message: 'Usuario inicio sesion en otro dipositivo',
                     status: response.FALL,
                     user: null
                 }
-            }
+            }*/
+            const module = await this.userRepository.findModuleUsersId({
+                userId: user.id
+            })
+
+            const userModules = module.map(m => ({
+                id: m.modules?.id ,
+                name: m.modules?.name
+            }));
+            
+            const menu = await this.userRepository.findMenuUserId({
+                userId:user.id
+            })
+
+            const userMenu = menu.map(m => ({
+                id: m.menu?.id,
+                name: m.menu?.name,
+            }))
+            const permissions = await this.userRepository.findPermissonsUserId({
+                userId: user.id
+            })
+
+            const userPermissions = permissions.map( p => ({
+                id: p.permissions?.id,
+                name: p.permissions?.name
+            }));
 
             let jwtToken = await this.authService.generateToken(user);
             this.userRepository.saveToken(jwtToken.token , user );
@@ -65,11 +90,15 @@ export class UserUseCase {
                 message: 'Inicio de sesión exitoso',
                 status: response.NICE ,
                 user: {
+                    id:user.id ,
                     name: user.name,
                     ci: user.ci,
                     type: user.type, // 1: empresa, 2: abogado, 3: admin
                     token: jwtToken.token,
                     //role: user.rols,
+                    module:userModules ,
+                    menu: userMenu ,
+                    permissions: userPermissions
                 },
             }
         }catch(err){

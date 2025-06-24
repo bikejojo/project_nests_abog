@@ -1,12 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { ModuleMenuPermissionsRepository } from "../../infraestructura/prisma/moduleMenuPermissions.repository";
 import { response } from "src/common/enum/typeResp";
-;
+import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
+import { status } from "src/common/enum/typeStatus";
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
     constructor(
-        private readonly moduleMenuPermissionsRepository: ModuleMenuPermissionsRepository
+        private readonly moduleMenuPermissionsRepository: ModuleMenuPermissionsRepository ,
+        private readonly userRepository: UserRepository
     ){}
 
     async listAllModuleMenuPermissions() {
@@ -33,9 +35,9 @@ export class ModuleMenuPermissionsUseCase {
                     moduleName: module.name,
                     contentModPermi: module.moduleMenu.map(menu => {
                         return {
-                            menuId: menu.menu.id,
-                            menuName: menu.menu.name,
-                            contentPermissions: menu.menu.menuPermissions.map(permission => {
+                            menuId: menu.menu?.id,
+                            menuName: menu.menu?.name,
+                            contentPermissions: menu.menu?.menuPermissions.map(permission => {
                                 return {
                                     permissionsId: permission.permissions.id,
                                     permissionsName: permission.permissions.name
@@ -65,69 +67,43 @@ export class ModuleMenuPermissionsUseCase {
     async assignmentUserPermiss(data:any){
         try {
             //comprobar si el user esta asociado a algun modulo , menu , permisso
-            const moduleUser = await this.moduleMenuPermissionsRepository.verificationModuleUser({
-                id:data.id
-            })
+            const userId = parseInt(data.id)
+            const user = await this.userRepository.findIdUsers({
+                id: userId
+            });
 
-            if(!moduleUser){
-                return {
-                    message:'usuario no asociado a ningun modulo',
-                    status:response.FALL
-                }
-            }
-
-            const menuUse = await this.moduleMenuPermissionsRepository.verificationMenuUser({
-                id:data.id
-            })
-
-            if(!menuUse){
-                return {
-                    message:'usuario no asociado a ningun menu',
-                    status:response.FALL
-                }
-            }
-
-            const permissionsUse = await this.moduleMenuPermissionsRepository.verificationPermissionsUser({
-                id:data.id
-            })
-
-            if(permissionsUse){
-                return {
-                    message:'usuario no asociado a ningun permiso',
-                    status: response.FALL
-                }
-            }
-
-            const existingModuloUser = this.moduleMenuPermissionsRepository.verificationIfUserHasModule({
-                userId: data.userId,
+            const existingModuloUser = await this.moduleMenuPermissionsRepository.verificationIfUserHasModule({
+                userId: user?.id,
                 moduleId: data.moduleId
             })
 
-            const existingModuleIds = (await existingModuloUser).map(mod => mod.moduleId);
+            const existingModuleIds = existingModuloUser.map(mod => mod.moduleId);
 
             const newModuleIds = data.moduleIds.filter((moduleId:number) => !existingModuleIds.includes(moduleId));
 
             const moduleUserAssing = newModuleIds.map((moduleId:number) => ({
-                userId:data.userId ,
-                moduleId: data.moduleId
+                userId:user?.id ,
+                moduleId: moduleId ,
+                status: status.ACTIVE
             }));
 
             if(moduleUserAssing.length > 0 ){
                 await this.moduleMenuPermissionsRepository.createModuleUser(moduleUserAssing);
             }
 
-            const existingMenuUser = this.moduleMenuPermissionsRepository.verificationIfUserHasMenu({
-                userId: data.userId ,
+            const existingMenuUser = await this.moduleMenuPermissionsRepository.verificationIfUserHasMenu({
+                userId: user?.id ,
                 menuId: data.menuId
             })
 
-            const existingMenuIds = (await existingMenuUser).map(mod=>mod.menuId)
+            const existingMenuIds = existingMenuUser.map(mod=>mod.menuId)
 
             const newMenuIds = data.menuIds.filter((menuId:number) => !existingMenuIds.includes(menuId))
 
             const menuUserAssing = newMenuIds.map((menuId:number) => ({
-                userId: data.userId ,
-                menuId: data.menuId
+                userId: user?.id ,
+                menuId: menuId ,
+                status: status.ACTIVE
             }));
 
             if(menuUserAssing.length > 0 ){
@@ -135,18 +111,19 @@ export class ModuleMenuPermissionsUseCase {
             }
 
 
-            const existingPermissionsUser =  this.moduleMenuPermissionsRepository.verificationIfUserHasPermissions({
-                userId: data.userId ,
-                permissionsId: data.permissionsId
+            const existingPermissionsUser = await this.moduleMenuPermissionsRepository.verificationIfUserHasPermissions({
+                userId: user?.id ,
+                permissionsId: data.permissionsId 
             })
 
-            const existingPermissionsIds = (await existingPermissionsUser).map(mod=>mod.permissionsId);
+            const existingPermissionsIds = existingPermissionsUser.map(mod=>mod.permissionsId);
 
-            const newPermissionsIds = data.permissionsIds.filter((permissionsId:number)=>!existingPermissionsIds.include(permissionsId));
+            const newPermissionsIds = data.permissionsIds.filter((permissionsId:number) => !existingPermissionsIds.includes(permissionsId))
 
             const permissionsUserAssing = newPermissionsIds.map((permissionsId:number)=> ({
-                userId:data.userId ,
-                permissionsId: data.permissionsId
+                userId:user?.id ,
+                permissionsId: permissionsId ,
+                status: status.ACTIVE
             }))
 
             if(permissionsUserAssing.length > 0 ){

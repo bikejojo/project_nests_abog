@@ -8,13 +8,16 @@ export class User {
   @Field()
   name: string;
 
+  @Field(() => String , {nullable:true})
+  ci: string | null;
+
   @Field(() => String ,{nullable:true})
   email: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String ,{ nullable: true })
   password: string;
 
-  @Field({ nullable: true })
+  @Field(() => String ,{ nullable: true })
   token: string;
 
   @Field(()=> Int,{nullable:true})

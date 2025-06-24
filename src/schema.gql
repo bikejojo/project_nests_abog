@@ -100,6 +100,38 @@ type LogoutUserOutPut {
   status: Float!
 }
 
+type Menu {
+  id: ID!
+  moduleMenus: [MenuModule!]
+  name: String!
+  status: Float
+}
+
+type MenuModule {
+  id: ID!
+  menu: Menu
+  menuId: ID!
+  module: Module
+  moduleId: ID!
+  status: Float!
+}
+
+type MenuPermissions {
+  id: ID!
+  menu: Menu
+  menuId: ID!
+  permissions: Permissions
+  permissionsId: ID!
+  status: Float!
+}
+
+type Module {
+  id: ID!
+  menuModules: [MenuModule!]
+  name: String!
+  status: Float!
+}
+
 type Mutation {
   assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
@@ -119,6 +151,13 @@ type Natural_Person {
   registrationDate: DateTime!
   status: Float!
   updatedAt: DateTime!
+}
+
+type Permissions {
+  id: ID!
+  menuPermissions: [MenuPermissions!]
+  name: String!
+  status: Float
 }
 
 type Persona {
@@ -257,8 +296,11 @@ input updatelawyerInput {
 }
 
 type userData {
-  ci: String!
-  id: Float!
-  name: String!
-  token: String!
+  ci: String
+  id: ID!
+  menu: [Menu]
+  module: [Module]
+  name: String
+  permissions: [Permissions]
+  token: String
 }

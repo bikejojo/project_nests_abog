@@ -57,12 +57,13 @@ model Module {
 model ModuleUser {
   id        Int @id @default(autoincrement())
   status    Int @default(1)
-  moduleId  Int? @unique
-  userId    Int? @unique
+  moduleId  Int? 
+  userId    Int? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   modules   Module? @relation(fields: [moduleId] , references: [id])
   users     User? @relation(fields: [userId] , references: [id])
+  @@unique([moduleId , userId ])
 }
 model Menu {
   id            Int @id @default(autoincrement())
@@ -70,7 +71,7 @@ model Menu {
   status        Int @default(1)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  menuUser      MenuUser?
+  menuUser      MenuUser[]
   menuPermissions MenuPermissions[]
   moduleMenus   ModuleMenu[]
 }
@@ -83,7 +84,7 @@ model ModuleMenu {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   module      Module @relation(fields: [moduleId], references: [id])
-  menu        Menu @relation(fields: [menuId], references: [id])
+  menu        Menu? @relation(fields: [menuId], references: [id])
 }
 
 model Permissions {
@@ -98,13 +99,14 @@ model Permissions {
 
 model MenuUser {
   id          Int @id @default(autoincrement())
-  userId      Int? @unique
-  menuId      Int? @unique
+  userId      Int
+  menuId      Int
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User? @relation(fields: [userId], references: [id])
-  menu        Menu? @relation(fields: [menuId], references: [id])
+  menu        Menu @relation(fields: [menuId], references: [id])
+  @@unique([userId, menuId])
 }
 
 model MenuPermissions {
@@ -120,13 +122,14 @@ model MenuPermissions {
 
 model PermissionsUser {
   id            Int @id @default(autoincrement())
-  userId        Int @unique
+  userId        Int 
   permissionsId Int
   status        Int @default(1)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User @relation(fields: [userId], references: [id])
   permissions   Permissions @relation(fields: [permissionsId], references: [id])
+  @@unique([userId, permissionsId]) 
 }
 //-------------------------------------------------------------------------------------
 

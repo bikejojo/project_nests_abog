@@ -11,7 +11,12 @@ export class UserRepository {
 
     async login(name:string) {
         //console.log(email);
-        return await this.prisma.user.findUnique({where:{name:name} })
+        return await this.prisma.user.findUnique({
+            where:
+            {
+                name:name
+            } 
+        })
     }
 
     async logout(userId:number){
@@ -57,5 +62,37 @@ export class UserRepository {
             where:{id:data.id}
         })
     }
+
+    async findModuleUsersId(data:any){
+        return await this.prisma.moduleUser.findMany({
+            where:{
+                userId:data.userId
+            },
+            include: {
+                modules:true
+            }
+        })
+    }
+
+    async findMenuUserId(data:any){
+        return await this.prisma.menuUser.findMany({
+            where: {
+                userId: data.userId
+            },
+            include:{
+                menu:true
+            }
+        })
+    }
     
+    async findPermissonsUserId(data:any){
+        return await this.prisma.permissionsUser.findMany({
+            where:{
+                userId:data.userId
+            },
+            include:{
+                permissions:true
+            }
+        })
+    }
 }
