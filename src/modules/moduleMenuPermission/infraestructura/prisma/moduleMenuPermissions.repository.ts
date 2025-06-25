@@ -96,4 +96,20 @@ export class ModuleMenuPermissionsRepository {
             skipDuplicates: true
         })
     }
+
+    async delIdUserModule(data:any){
+        return await this.prisma.moduleUser.deleteMany({
+            where:{userId:data.userId}
+        })
+    }
+    async delIdUserMenu(data:any){
+        return await this.prisma.menuUser.deleteMany({
+            where:{userId:data.userId},
+        })
+    }
+    async delIdUserPermissions(data:any){
+        return await this.prisma.permissionsUser.deleteMany({
+            where:{ userId:data.userId }
+        })
+    }
 }

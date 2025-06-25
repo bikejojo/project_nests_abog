@@ -114,7 +114,7 @@ export class ModuleMenuPermissionsUseCase {
             const existingPermissionsUser = await this.moduleMenuPermissionsRepository.verificationIfUserHasPermissions({
                 userId: user?.id ,
                 permissionsId: data.permissionsId 
-            })
+            });
 
             const existingPermissionsIds = existingPermissionsUser.map(mod=>mod.permissionsId);
 
@@ -138,6 +138,55 @@ export class ModuleMenuPermissionsUseCase {
             console.log('Fallas en AssignUsPer y son: ' + err.message );
             return {
                 message:'Fallas en AssignUsPer y son: ' + err.message ,
+                status: response.WARN
+            }
+        }
+    }
+
+    async updatedUserPermiss(data:any){
+        try { 
+
+            const user = await this.userRepository.findIdUsers({
+                id:data.id
+            })
+
+            if(!user){
+                return {
+                    message:'No se encontro el modelo de user.',
+                    status:response.FALL
+                }
+            }
+
+            await this.moduleMenuPermissionsRepository.delIdUserModule({ userId: user.id })
+
+            await this.moduleMenuPermissionsRepository.delIdUserMenu({ userId:user.id })
+
+            await this.moduleMenuPermissionsRepository.delIdUserPermissions({ userId:user.id })
+
+            await this.moduleMenuPermissionsRepository.createModuleUser({
+                userId: user.id ,
+                moduleId: data.moduleId 
+            })
+
+            await this.moduleMenuPermissionsRepository.createMenuUser({
+                userId: user.id ,
+                menuId: data.menuId
+            })
+
+            await this.moduleMenuPermissionsRepository.createPermissionsUser({
+                userId: user.id ,
+                permissionsId: data.permissionsId
+            })
+
+            return {
+                message: 'Actualizacion correcta de permisos al usuario.' ,
+                status: response.NICE
+            }
+
+        }catch(err){
+            console.log('Fallas en UpdUsePerm y son: ' + err.message);
+            return {
+                message: 'Fallas en UpdUsePerm y son: ' + err.message , 
                 status: response.WARN
             }
         }

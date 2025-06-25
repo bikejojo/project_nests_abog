@@ -139,6 +139,7 @@ type Mutation {
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
+  updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
 }
 
@@ -281,6 +282,18 @@ type updateLawyerData {
 
 type updateLawyerOutPut {
   lawyerData: updateLawyerData
+  message: String!
+  status: Float!
+}
+
+input updateUserModuleMenuPermissionsInput {
+  id: ID!
+  menuIds: [Int]
+  moduleIds: [Int]
+  permissionsIds: [Int]
+}
+
+type updateUserModuleMenuPermissionsOutPut {
   message: String!
   status: Float!
 }

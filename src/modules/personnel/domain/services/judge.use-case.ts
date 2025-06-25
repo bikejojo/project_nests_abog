@@ -4,7 +4,7 @@ import { PersonRepository } from "../../infraestructura/prisma/persona.repositor
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository";
 import { response } from "src/common/enum/typeResp";
-import { inter, status } from "src/common/enum/typeStatus";
+import { inter, isStatus, status } from "src/common/enum/typeStatus";
 import { isAbsolute } from "path";
 
 
@@ -171,6 +171,75 @@ export class JudgeUseCase {
             console.log('Error en UpdJud y son: '+err.message);
             return {
                 message:'',
+                status: response.WARN
+            }
+        }
+    }
+
+    async deleteJudge(data:any){
+        try {
+            const judge = await this.juddeRepository.findedJudge({
+                id: data.id
+            })
+
+            if(!judge){
+                return {
+                    message:'Fallas en retornar valores al juez',
+                    status: response.FALL
+                }
+            }
+
+            await this.juddeRepository.deleteJudge({
+                id:data.id,
+                status:status.DESACTIVADO,
+                isActive: isStatus.no
+            })
+
+            const persona = await this.personRepository.findedPersona({
+                id: judge.personId
+            })
+
+            await this.personRepository.deletePersona({
+                id: persona?.id,
+                status: status.DESACTIVADO
+            })
+
+            return {
+                message: 'Eliminacion correcta del juez.',
+                status: response.NICE
+            }
+            
+        }catch(err){
+            console.log('Fallas en DelJud y son: ' + err.message);
+            return {
+                message: 'Fallas en DelJud y son: ' + err.message ,
+                status: response.WARN
+            }
+        }
+    }
+
+    async inactiveJudge(data:any){
+        try {
+            const judge = await this.juddeRepository.findedJudge({
+                id:data.id
+            })
+
+            if(!judge){
+                return {
+                    message: 'Fallas al encontrar al juez',
+                    status: response.FALL
+                }
+            }
+
+            await this.juddeRepository.inactiveJudge({
+                id:judge.id ,
+                isActive: isStatus.no
+            })
+            
+        }catch(err){
+            console.log('Fallas en InacJud y son: ' + err.message);
+            return {
+                message: 'Fallas en InacJud y son: ' + err.message ,
                 status: response.WARN
             }
         }
