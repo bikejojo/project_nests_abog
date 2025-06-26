@@ -15,6 +15,7 @@ import { CityModule } from './modules/city/interfaces/city.module';
 import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
 import { DocumentsModule } from './modules/documents/interfaces/documents.module';
 import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
+import { JudgeModule } from './modules/personnel/interfaces/judge/judge.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/inter
     CityModule ,
     DocumentsModule,
     PersonModule,
+    JudgeModule,
     PrismaModule,
     ModuleMenuPermissionModule
   ],

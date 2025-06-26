@@ -1,4 +1,5 @@
 import { InputType , ObjectType , Field , ID } from "@nestjs/graphql";
+import { judgeData } from "./update-judge.input";
 
 @InputType()
 export class createJudgeInput{
@@ -13,40 +14,24 @@ export class createJudgeInput{
 
     @Field({nullable:true})
     phone: string
+
+    @Field({nullable:true})
+    isActive: boolean
+
+    @Field({nullable:true})
+    isIntern: boolean
     
     @Field({nullable:true})
     address: string
 
     @Field({nullable:true})
-    registrationDate: Date
+    description: string
+
+    @Field({nullable:true})
+    registratioDate: Date
     
     @Field({nullable:true})
     cityId: number
-}
-
-@ObjectType()
-export class judgeData{
-    @Field()
-    id:number
-
-    @Field()
-    ci:string
-
-    @Field()
-    firstName: string
-
-    @Field()
-    lastName: string
-
-    @Field()
-    phone: string
-
-    @Field()
-    address: string
-
-    @Field()
-    registrationDate: Date
-    
 }
 
 @ObjectType()
@@ -58,5 +43,5 @@ export class createJudgeOutPut{
     status: number
 
     @Field(()=> judgeData , {nullable:true})
-    judgeDats: judgeData | null
+    response: judgeData | null
 }

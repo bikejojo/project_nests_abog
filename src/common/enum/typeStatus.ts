@@ -1,6 +1,11 @@
-export enum status {
+export enum tatus {
     ACTIVE = 1 ,
-    DESACTIVADO = 0
+    INACTIVO = 0 ,
+}
+
+export const status = {
+    ACTIVE:true ,
+    DESACTIVADO:false
 }
 
 export enum inter {

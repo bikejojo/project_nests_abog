@@ -15,6 +15,12 @@ export class updateJudgeInput{
     lastName:string
 
     @Field({nullable:true})
+    isActive:boolean
+
+    @Field({nullable:true})
+    isIntern:boolean
+
+    @Field({nullable:true})
     phone: string
     
     @Field({nullable:true})
@@ -23,6 +29,11 @@ export class updateJudgeInput{
     @Field({nullable:true})
     registrationDate: Date
     
+    @Field({nullable:true})
+    cityId:number
+
+    @Field({nullable:true})
+    description: string
 }
 
 @ObjectType()
@@ -54,7 +65,7 @@ export class judgeData {
 }
 
 @ObjectType()
-export class deletedJudgeData {
+export class updateJudgeOutPut {
     @Field()  
     message:string
 
@@ -62,5 +73,5 @@ export class deletedJudgeData {
     status: number
 
     @Field(()=> judgeData,{nullable:true})
-    judgeData:judgeData |null
+    response:judgeData |null
 }

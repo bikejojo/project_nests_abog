@@ -30,7 +30,8 @@ export class PersonRepository {
                 firstName: data.firstName ,
                 lastName: data.lastName ,
                 phone: data.phone ,
-                address: data.address
+                address: data.address ,
+                cityId: data.cityId ,
             }
         })
     }

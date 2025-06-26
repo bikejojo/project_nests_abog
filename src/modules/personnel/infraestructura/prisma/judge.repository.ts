@@ -21,7 +21,9 @@ export class JudgeRepository {
 
     async findedJudge(data:any){
         return await this.prisma.judge.findUnique({
-            where:{id:data.id},
+            where:{
+                id:data.id
+            },
             select:{
                 id:true,
                 registratioDate:true,
@@ -49,7 +51,7 @@ export class JudgeRepository {
 
     async deleteJudge(data:any){
         return await this.prisma.judge.update({
-            where:{id:data.id} ,
+            where:{ id:data.id } ,
             data: {
                 status:data.status,
                 isActive:data.isActive

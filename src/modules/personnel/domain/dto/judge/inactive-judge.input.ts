@@ -9,8 +9,6 @@ export class inactiveJudgeInput {
     @Field(()=> Boolean , {nullable:true})
     isActive: boolean
 
-    @Field({nullable:true})
-    status: number
 }
 
 @ObjectType()

@@ -135,10 +135,14 @@ type Module {
 type Mutation {
   assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
+  createJudge(data: createJudgeInput!): createJudgeOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
+  deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
+  inactiveJudge(data: inactiveJudgeInput!): inactiveJudgeOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
+  updateJudge(data: updateJudgeInput!): updateJudgeOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
 }
@@ -241,6 +245,25 @@ input createDocumentsInput {
   type: Float!
 }
 
+input createJudgeInput {
+  address: String
+  ci: String
+  cityId: Float
+  description: String
+  firstName: String
+  isActive: Boolean
+  isIntern: Boolean
+  lastName: String
+  phone: String
+  registratioDate: DateTime
+}
+
+type createJudgeOutPut {
+  message: String!
+  response: judgeData
+  status: Float!
+}
+
 input createLawyerInput {
   address: String
   ci: String!
@@ -263,10 +286,40 @@ type createUserLawyerOutPut {
   status: Float!
 }
 
+input deleteJudgeInput {
+  id: ID!
+}
+
+type deleteJudgeOutPut {
+  message: String!
+  status: Float!
+}
+
 type documentsDataOutPut {
   documents: String
   message: String
   status: String
+}
+
+input inactiveJudgeInput {
+  id: ID!
+  isActive: Boolean
+}
+
+type inactiveJudgeOutPut {
+  message: String!
+  status: Float!
+}
+
+type judgeData {
+  address: String
+  ci: String
+  cityId: Float
+  firstName: String
+  id: Float!
+  lastName: String
+  phone: String
+  registrationDate: DateTime
 }
 
 type lawyerData {
@@ -274,6 +327,26 @@ type lawyerData {
   isFiscal: Boolean!
   isIntern: Boolean!
   registratioDate: DateTime!
+}
+
+input updateJudgeInput {
+  address: String
+  ci: String
+  cityId: Float
+  description: String
+  firstName: String
+  id: ID!
+  isActive: Boolean
+  isIntern: Boolean
+  lastName: String
+  phone: String
+  registrationDate: DateTime
+}
+
+type updateJudgeOutPut {
+  message: String!
+  response: judgeData
+  status: Float!
 }
 
 type updateLawyerData {

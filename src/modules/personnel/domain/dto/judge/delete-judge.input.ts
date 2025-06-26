@@ -5,8 +5,6 @@ export class deleteJudgeInput {
     @Field( ()=>ID )
     id:number
 
-    @Field({nullable:true})
-    status:number
 }
 
 
