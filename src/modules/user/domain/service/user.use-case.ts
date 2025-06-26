@@ -84,7 +84,15 @@ export class UserUseCase {
                 name: p.permissions?.name
             }));
 
-            let jwtToken = await this.authService.generateToken(user);
+            const user1 = await this.userRepository.findIdUserContent({id:user.id});
+            if (!user1) {
+                return {
+                    message: 'El usuario no existe',
+                    status: response.FALL,
+                    user: null
+                }
+            }
+            let jwtToken = await this.authService.generateToken(user1!);
             this.userRepository.saveToken(jwtToken.token , user );
             return {
                 message: 'Inicio de sesión exitoso',

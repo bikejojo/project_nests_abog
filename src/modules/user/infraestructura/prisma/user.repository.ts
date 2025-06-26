@@ -95,4 +95,17 @@ export class UserRepository {
             }
         })
     }
+
+    async findIdUserContent(data:any){
+        return await this.prisma.user.findUnique({
+            where:{
+                id:data.id
+            },
+            select: { id: true, email: true, name:true , ci:true , password:true, token:true,type:true, isActive:true,status:true,roleId:true,
+                moduleUser: { select: { modules: { select: { id: true, name: true } } } },
+                menuUser: { select: { menu: { select: { id: true, name: true } } } },
+                permissionsUser: { select: { permissions: { select: { id: true, name: true } } } }
+            }
+        });
+    }
 }
