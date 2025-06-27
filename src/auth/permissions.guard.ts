@@ -18,14 +18,14 @@ export class PermissionsGuard implements CanActivate{
         const user = req.user;
 
         const hasMenu = user.menus.some((menu: any) => menu.name === requiredAccess.menuName);
-        if (!hasMenu) throw new ForbiddenException({ message: 'No tiene acceso al menú requerido', status: 403,  date: new Date(),});
+        if (!hasMenu) throw new ForbiddenException({ message: 'No tiene acceso al menú requerido', status: response.WARN});
 
 
         const hasModule = user.modules.some((mod: any) => mod.name === requiredAccess.moduleName);
         if (!hasModule) throw new ForbiddenException({ message: 'No tiene acceso al módulo requerido', status: response.WARN });
 
         const hasPermission = user.permissions.some((perm: any) => perm.name === requiredAccess.permissionName);
-        if (!hasPermission) throw new ForbiddenException({ message: 'No tiene el permiso requerido', status: 403,  date: new Date(),});
+        if (!hasPermission) throw new ForbiddenException({ message: 'No tiene el permiso requerido', status:response.WARN});
 
         return true;
     }
