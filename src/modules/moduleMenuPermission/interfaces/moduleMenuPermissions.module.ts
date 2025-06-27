@@ -13,7 +13,7 @@ import { UserRepository } from "src/modules/user/infraestructura/prisma/user.rep
     AuthModule,
     JwtModule.register({
         secret: jwtConstants.secret,
-        signOptions: { expiresIn: '60s' }, // Adjust the expiration time as needed
+        signOptions: { expiresIn: '1h' }, // Adjust the expiration time as needed
     }),
   ],
   providers: [

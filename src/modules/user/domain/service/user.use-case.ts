@@ -85,14 +85,16 @@ export class UserUseCase {
             }));
 
             const user1 = await this.userRepository.findIdUserContent({id:user.id});
-            if (!user1) {
-                return {
-                    message: 'El usuario no existe',
-                    status: response.FALL,
-                    user: null
-                }
-            }
-            let jwtToken = await this.authService.generateToken(user1!);
+            const payloadUser = {
+                id: user.id,
+                email: user.email,
+                modules: (user1?.moduleUser ?? []).map(m => m.modules),
+                menus: (user1?.menuUser ?? []).map(m => m.menu),
+                permissions: (user1?.permissionsUser ?? []).map(p => p.permissions)
+            };
+            //console.log('b',payloadUser)
+            let jwtToken = await this.authService.generateToken(payloadUser);
+            //console.log('a',jwtToken);
             this.userRepository.saveToken(jwtToken.token , user );
             return {
                 message: 'Inicio de sesión exitoso',

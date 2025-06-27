@@ -1,4 +1,7 @@
 import { ObjectType , Field , ID, Int } from "@nestjs/graphql";
+import { MenuUser } from "src/modules/moduleMenuPermission/entities/menuUser.entity";
+import { ModuleUser } from "src/modules/moduleMenuPermission/entities/moduleUser.entity";
+import { PermissionsUser } from "src/modules/moduleMenuPermission/entities/permissionsUser.entity";
 
 @ObjectType()
 export class User {
@@ -37,5 +40,14 @@ export class User {
 
   //@Field(()=> RolUser , {nullable:true})
   //rols: RolUser | null
-  
+
+  /*@Field(()=> [MenuUser] , {nullable:true})
+  menuUser: MenuUser[] | null
+
+  @Field(()=>[ModuleUser],{nullable:true})
+  moduleUser: ModuleUser[] | null
+ 
+  @Field(()=> [PermissionsUser] , {nullable:true})
+  permissionsUser: PermissionsUser[]*/
+
 }
