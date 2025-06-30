@@ -3,6 +3,10 @@ import { PersonRepository } from "../../infraestructura/prisma/persona.repositor
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository";
 import { response } from "src/common/enum/typeResp";
 import { status } from "src/common/enum/typeStatus";
+import { ResponseContext } from "src/common/responses/response-context";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
+import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
+import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
 
 @Injectable()
 export class LawyerUseCase {
@@ -11,18 +15,17 @@ export class LawyerUseCase {
         private lawyerRepository:LawyerRepository
     ){}
 
+    private ResponseContext = new ResponseContext();
+
     async createLawyer(data:any){
         try {
             
             if(data.phone < 8 ){
-                return {
-                    message:'El numero es incorrecto.' , 
-                    status: response.FALL
-                }
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
+                    message:'Registro incorecto de telefono en persona' , status:response.FALL })
             }
 
             const cityId = parseInt(data.cityId);
-            //console.log(cityId);
             const person = await this.personRepository.createPerson({
                 ci:data.ci ,
                 firstName: data.firstName ,
@@ -36,9 +39,8 @@ export class LawyerUseCase {
             })
 
             if(!person){
-                return {
-                    message:'Surgio un problema de creacion del modelo'
-                }
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
+                    type:'Surgio un  problema en persona ID' , status:response.FALL })
             }
 
             const lawyer = await this.lawyerRepository.createLawyer({
@@ -54,9 +56,8 @@ export class LawyerUseCase {
             })
 
             if(!lawyer){
-                return {
-                    message:'Surgieron problemas al crear el modelo de Abogado'
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto: 'abogado para crear un registro ' , status: response.FALL })
             }
 
             return {
@@ -66,11 +67,8 @@ export class LawyerUseCase {
 
         }catch(err){
             console.log('Fallas detectadas en CrLaw y son:' + err.message)
-            return {
-                message: 'Fallas en CrLaw: ' + err.message,
-                status:  response.WARN 
-
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
+                name:'CrLaw' , message: err.message , status:response.WARN })
         }
     }
 
@@ -84,23 +82,18 @@ export class LawyerUseCase {
             })
 
             if(!lawyerId){
-                return {
-                    message:'Fallas en encontrar los datos.' , 
-                    status: response.FALL
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto:'abogado ID' , status:response.FALL
+                });
             }
-
-            console.log(lawyerId);
-
+            //console.log(lawyerId);
             await this.personRepository.updatePersona({
                 id:lawyerId.persona.id,
                 firstName: data.firstName == null || data.firstName == '' ? lawyerId.persona.firstName : data.firstName ,
                 lastName: data.lastName == null || data.lastName == '' ? lawyerId.persona.lastName : data.lastName , 
                 phone: data.phone == null || data.phone == '' ? lawyerId.persona.phone : data.phone, 
                 address: data.address == null || data.address == '' ? lawyerId.persona.address : data.address, 
-                
             });
-
 
             await this.lawyerRepository.updateLawyer({
                 id: lawyerId.id ,
@@ -116,10 +109,8 @@ export class LawyerUseCase {
 
         }catch(err){
             console.log('Fallas en UpdLaw y son: ' + err.message );
-            return {
-                message: 'Fallas en UpdLaw y son: ' + err.message , 
-                status: response.WARN
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
+                name:'WpdLaw' , message:err.message  , status:response.WARN })
         }
     }
 
@@ -130,17 +121,13 @@ export class LawyerUseCase {
             const listLawyer = await this.lawyerRepository.allLawyerByUser()
             
             if(!listLawyer){
-                return {
-                    message: 'Problemas de creacion de listado' ,
-                    status: response.FALL
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto: 'listar abogados ' ,  status:response.FALL })
             }
 
             if( listLawyer.length === 0){
-                return {
-                    message: 'No existen listado de abogados.',
-                    status: response.FALL
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto: 'listado de abogados no exactos' , status:response.FALL })
             }
 
             return {
@@ -166,10 +153,8 @@ export class LawyerUseCase {
             })
 
             if(!lawyerId){
-                return {
-                    message:'No existen datos de abogado.',
-                    status: response.FALL
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto:'abogado de su ID' , status:response.FALL })
             }
 
             const personId = lawyerId?.persona.id;
@@ -192,10 +177,8 @@ export class LawyerUseCase {
 
         }catch(err){
             console.log('Fallas en DelLaw y son: ' + err.message);
-            return {
-                message: 'Fallas en DelLaw y son: ' + err.message ,
-                status: response.WARN
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
+                name:'DelLar', message:err.message , status:response.WARN })
         }
     }
 
@@ -206,10 +189,8 @@ export class LawyerUseCase {
             })
 
             if(!lawyerId){
-                return {
-                    message:'No retorna valores de abogados.',
-                    status:response.FALL
-                }
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto:'abogado el ID' , status:response.FALL });
             }
 
             await this.lawyerRepository.inactiveLawyer({
@@ -219,10 +200,8 @@ export class LawyerUseCase {
 
         }catch(err){
             console.log('Fallas de InAcLw y son: ' + err.message);
-            return {
-                message: 'Fallas de InAcLw y son: ' + err.message ,
-                status: response.WARN
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
+                name:'InAcLw' , message:err.message , status: response.WARN })
         }
     }
 }

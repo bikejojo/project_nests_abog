@@ -4,6 +4,9 @@ import { createLawyerInput , createLawyerOutPut } from "../../domain/dto/lawyer/
 import { LawyerUseCase } from "../../domain/services/lawyer.use-case";
 import { allStatusPersLawyerOutPut } from "../../domain/dto/persona/allStatus-persona.input";
 import { updatelawyerInput, updateLawyerOutPut } from "../../domain/dto/lawyer/update-lawyer.input";
+import { deletedLawyerInput, deletedLawyerOutPut } from "../../domain/dto/lawyer/delete-lawyer.input";
+import { deleteClientInput } from "src/modules/clients/domain/dto/delete-clients.input";
+import { inactiveLawyerInput, inactiveLawyerOutPut } from "../../domain/dto/lawyer/Inactive-lawyer.input";
 
 @Resolver(()=> Lawyer)
 export class LawyerResolver {
@@ -22,7 +25,15 @@ export class LawyerResolver {
     }
     
     
-    
+    @Mutation(()=>deletedLawyerOutPut)
+    async deletedLawyer(@Args('data') data:deletedLawyerInput ){
+        return await this.lawyerUseCase.deleteLawyerStatus(data)
+    }
+
+    @Mutation(()=>inactiveLawyerOutPut)
+    async inactivedLawyer(@Args('data') data:inactiveLawyerInput ){
+        return await this.lawyerUseCase.inactiveLawyer(data);
+    }
 
     @Query(()=>allStatusPersLawyerOutPut)
     async allLawyersStatus(){

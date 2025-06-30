@@ -17,5 +17,4 @@ export class deleteJudgeOutPut {
     @Field()
     status:number
 
-
 }

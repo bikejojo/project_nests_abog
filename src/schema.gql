@@ -139,7 +139,9 @@ type Mutation {
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
+  deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
   inactiveJudge(data: inactiveJudgeInput!): inactiveJudgeOutPut!
+  inactivedLawyer(data: inactiveLawyerInput!): inactiveLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   updateJudge(data: updateJudgeInput!): updateJudgeOutPut!
@@ -295,6 +297,21 @@ type deleteJudgeOutPut {
   status: Float!
 }
 
+type deleteLawyerData {
+  id: Float!
+}
+
+input deletedLawyerInput {
+  id: ID!
+  status: String
+}
+
+type deletedLawyerOutPut {
+  lawyerData: deleteLawyerData
+  message: String!
+  status: Float!
+}
+
 type documentsDataOutPut {
   documents: String
   message: String
@@ -307,6 +324,16 @@ input inactiveJudgeInput {
 }
 
 type inactiveJudgeOutPut {
+  message: String!
+  status: Float!
+}
+
+input inactiveLawyerInput {
+  id: ID!
+  isActive: Boolean
+}
+
+type inactiveLawyerOutPut {
   message: String!
   status: Float!
 }

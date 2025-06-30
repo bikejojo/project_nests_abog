@@ -1,4 +1,5 @@
 import { InputType , ObjectType , Field , ID } from "@nestjs/graphql";
+import { legalEntityPerson } from "./create-legal_entity.input";
 
 @InputType()
 export class updateLegalEntityInput{
@@ -47,4 +48,7 @@ export class updateLegalEntityOutPut {
 
     @Field()
     status: number
+
+    @Field(()=>legalEntityPerson , {nullable:true})
+    response: legalEntityPerson
 }

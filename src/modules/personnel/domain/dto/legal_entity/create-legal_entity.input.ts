@@ -79,6 +79,8 @@ export class createLegalEntityOutPut{
     @Field()
     status: number
 
+    //@Field(()=>legalEntityPerson , {nullable:true})
+    //legalEntityDatas: legalEntityPerson | null
     @Field(()=>legalEntityPerson , {nullable:true})
-    legalEntityDatas: legalEntityPerson | null
+    response: legalEntityPerson | null
 }

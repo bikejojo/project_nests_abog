@@ -37,7 +37,7 @@ export class LegalEntityRepository {
                 companyName: data.companyName,
                 address: data.address,
                 registrationDate: data.registrationDate,
-                legalRepresentive: data.legalRepresentative,
+                legalRepresentive: data.legalRepresentive,
                 typeCompany: data.typeCompany,
             }
         })

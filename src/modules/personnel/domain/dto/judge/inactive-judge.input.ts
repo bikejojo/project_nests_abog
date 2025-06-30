@@ -19,5 +19,4 @@ export class inactiveJudgeOutPut {
     @Field()
     status: number
 
-
 }
