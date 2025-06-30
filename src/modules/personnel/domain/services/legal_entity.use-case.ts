@@ -136,8 +136,7 @@ export class LegalEntityUseCase {
             })
 
             if(!legalEntityId){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
-                    type:'No se encontro datos de la entidad.' , status:response.FALL })
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se encontro datos de la entidad.' , status:response.FALL })
             }
 
             const legalEntity = await this.legalEntityRepoository.deleteLegalEntity({
@@ -146,8 +145,7 @@ export class LegalEntityUseCase {
             })
 
             if(!legalEntity){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
-                    type:'No se genero el cambio' , status:response.FALL })
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se genero el cambio' , status:response.FALL })
             }
 
             const personId = await this.personRespository.findedPersona({
