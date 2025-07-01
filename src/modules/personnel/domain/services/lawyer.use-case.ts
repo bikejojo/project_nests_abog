@@ -7,6 +7,7 @@ import { ResponseContext } from "src/common/responses/response-context";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 
 @Injectable()
 export class LawyerUseCase {
@@ -114,37 +115,6 @@ export class LawyerUseCase {
         }
     }
 
-     //querys
-    async allLawyerStatus(){
-        //console.log(1);
-        try {
-            const listLawyer = await this.lawyerRepository.allLawyerByUser()
-            
-            if(!listLawyer){
-                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
-                    objeto: 'listar abogados ' ,  status:response.FALL })
-            }
-
-            if( listLawyer.length === 0){
-                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
-                    objeto: 'listado de abogados no exactos' , status:response.FALL })
-            }
-
-            return {
-                message: 'Objeto devuelvo exitoso !!' ,
-                status: response.NICE ,
-                allPersLaw: listLawyer
-            }
-
-        }catch(err){
-            console.log('Se presentaron fallas en AllLawSt y son: '+err.message)
-            return {
-                message: 'Se presentaron fallas en AllLawSt y son: '+ err.message ,
-                status: response.WARN
-            }
-        }
-    }
-
     async deleteLawyerStatus(data:any){
         try{
 
@@ -202,6 +172,44 @@ export class LawyerUseCase {
             console.log('Fallas de InAcLw y son: ' + err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
                 name:'InAcLw' , message:err.message , status: response.WARN })
+        }
+    }
+
+     //querys
+    
+    
+
+    async allLawyerStatus(){
+        // const listLawyer = await this.lawyerRepository.allLawyerByUser()
+        return this.dataLawyerResp(()=> this.lawyerRepository.allLawyerByUser(),'Abogados','AllLawStat');
+    }
+
+    async lawyerActStat(){
+        return this.dataLawyerResp( () => this.lawyerRepository.allLawyerActStat(),'Abogados','LawActStat');
+    }
+    async lawyerInactStat(){
+        return this.dataLawyerResp( () => this.lawyerRepository.allLawyerInactStat() , 'Abogados' ,'LawInacStat' );
+    }
+
+    private async dataLawyerResp(fetchMethod: () => Promise<any>,succesMessage:string , warningName:string){
+        try {
+            const allLawyer = await fetchMethod();
+
+            if(!allLawyer || allLawyer.length === 0){
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'No se encuentra ID s de abogados' , status:response.FALL})
+            }
+
+            const allLaywers = allLawyer.map(lawyer => ({
+                id:lawyer.id ,
+                fullName:` ${lawyer.persona.firstName} ${lawyer.persona.lastName} ` ,
+                status: lawyer.status
+            }))
+
+            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Listado',message:succesMessage , status:response.NICE , content:allLaywers})
+
+        }catch(err){
+            console.log(`[WARN] Fallas en ${warningName} y son: ` + err.message );
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({ name: warningName, message: err.message, status: response.WARN })
         }
     }
 }

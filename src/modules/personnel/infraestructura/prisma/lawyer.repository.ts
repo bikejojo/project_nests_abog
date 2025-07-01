@@ -70,23 +70,48 @@ export class LawyerRepository {
         })
     }
     //querys 
+    async allLawyerActStat(){
+        return await this.prisma.lawyer.findMany({
+            where:{
+                status:1,
+                isActive:true,
+                persona:{
+                    status:1
+                }
+            },
+            include:{
+                persona:true
+            }
+        })
+    }
+
+    async allLawyerInactStat(){
+        return await this.prisma.lawyer.findMany({
+            where:{
+                isActive:false,
+                status:1,
+                persona:{
+                    status:1
+                }
+            },
+            include:{
+                persona:true
+            }
+        })
+    }
 
     async allLawyerByUser(){
-        let lawyers =  await this.prisma.lawyer.findMany({
+        return await this.prisma.lawyer.findMany({
             where:{
                 status:1 ,
-                userId:null
+                persona:{
+                    status:1
+                }
             },
             include: {
                 persona: true,
             }
         });
-
-        return lawyers.map( law => ({
-            id: law.id ,
-            fullName: `${law.persona.firstName} ${law.persona.lastName}` ,
-            status: law.status
-        }))
     }
 
     async findLawyerId(data:any){

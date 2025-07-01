@@ -187,11 +187,15 @@ type Persona {
 }
 
 type Query {
+  allActiveStatusLawyer: allStatusPersLawyerOutPut!
   allBranchOffice: allBranchOfficeOutPut!
   allCityData: AllCityDataOutPut!
+  allInactiveStatusLawyer: allStatusPersLawyerOutPut!
   allLawyersStatus: allStatusPersLawyerOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
-  alljuedgeActive: allActiveStatusOutPut!
+  alljudgeActive: allActiveStatusOutPut!
+  listAllActStatusJudge: allActiveStatusOutPut!
+  listAllInactStatusJudge: allActiveStatusOutPut!
   sayHello: String!
 }
 
@@ -217,8 +221,8 @@ type allStatus {
 }
 
 type allStatusPersLawyerOutPut {
-  allPersLaw: [allStatus!]
   message: String
+  response: [allStatus!]
   status: Int
 }
 

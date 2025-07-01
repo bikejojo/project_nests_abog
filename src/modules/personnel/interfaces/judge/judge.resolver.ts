@@ -46,7 +46,17 @@ export class JudgeResolver {
     }
     
     @Query(()=>allActiveStatusOutPut)
-    async alljuedgeActive(){
+    async alljudgeActive(){
+        return await this.judgeUseCase.judgeAll();
+    }
+
+    @Query(()=> allActiveStatusOutPut)
+    async listAllActStatusJudge(){
         return await this.judgeUseCase.judgeActiveStatus();
+    }
+
+    @Query(()=>allActiveStatusOutPut)
+    async listAllInactStatusJudge(){
+        return await this.judgeUseCase.judgeInactiveAll();
     }
 }

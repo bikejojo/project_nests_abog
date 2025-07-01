@@ -2,7 +2,7 @@ import { Resolver , Mutation , Query , Args } from "@nestjs/graphql";
 import { Lawyer } from "../../entities/lawyer.entity";
 import { createLawyerInput , createLawyerOutPut } from "../../domain/dto/lawyer/create-lawyer.input";
 import { LawyerUseCase } from "../../domain/services/lawyer.use-case";
-import { allStatusPersLawyerOutPut } from "../../domain/dto/persona/allStatus-persona.input";
+import { allStatusPersLawyerOutPut } from "../../domain/dto/lawyer/allStatus-persona.input";
 import { updatelawyerInput, updateLawyerOutPut } from "../../domain/dto/lawyer/update-lawyer.input";
 import { deletedLawyerInput, deletedLawyerOutPut } from "../../domain/dto/lawyer/delete-lawyer.input";
 import { deleteClientInput } from "src/modules/clients/domain/dto/delete-clients.input";
@@ -38,5 +38,15 @@ export class LawyerResolver {
     @Query(()=>allStatusPersLawyerOutPut)
     async allLawyersStatus(){
         return await this.lawyerUseCase.allLawyerStatus();
+    }
+
+    @Query(()=>allStatusPersLawyerOutPut)
+    async allActiveStatusLawyer(){
+        return await this.lawyerUseCase.lawyerActStat();
+    }
+
+    @Query(()=>allStatusPersLawyerOutPut)
+    async allInactiveStatusLawyer(){
+        return await this.lawyerUseCase.lawyerInactStat();
     }
 }
