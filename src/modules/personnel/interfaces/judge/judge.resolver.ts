@@ -10,6 +10,7 @@ import { PermissionsGuard } from "src/auth/permissions.guard";
 import { GqlAuthGuard } from "src/auth/authentification";
 import { CheckAccess } from "src/common/decorator/permissions-user.decorator";
 import { GraphqlForbiddenExceptionFilter } from "src/helper/Exception.Filter";
+import { allActiveStatusOutPut } from "../../domain/dto/judge/all-judege-is-active.input";
 
 @Resolver(()=> Judge)
 export class JudgeResolver {
@@ -44,4 +45,8 @@ export class JudgeResolver {
         return await this.judgeUseCase.inactiveJudge(data)
     }
     
+    @Query(()=>allActiveStatusOutPut)
+    async alljuedgeActive(){
+        return await this.judgeUseCase.judgeActiveStatus();
+    }
 }

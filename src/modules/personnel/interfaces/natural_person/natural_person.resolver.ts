@@ -20,4 +20,10 @@ export class NaturalPersonResolver {
     async updatePersonNatural(@Args('data') data:updateNaturalPersonInput){
         return await this.naturalPersonUseCase.updateNaturalPerson(data);
     }
+
+    @Mutation(()=> deleteNaturalPersonOutPut)
+    async deletedPersonNatural(@Args('data') data:deleteNaturalPersonInput ){
+        return await this.naturalPersonUseCase.deleteNaturalPerson(data)
+    }
+    
 }

@@ -2,12 +2,16 @@ import { Injectable } from "@nestjs/common";
 import { BranchOfficeRepository } from "../../infraestructura/prisma/branchOffice.repository";
 import { status } from "src/common/enum/typeStatus";
 import { response } from "src/common/enum/typeResp";
+import { ResponseContext } from "src/common/responses/response-context";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 
 @Injectable()
 export class BranchOfficeUseCase {
     constructor(
         private readonly cityRepository: BranchOfficeRepository
     ){}
+
+    private ResponseContent = new ResponseContext();
 
     async listCityData(){
         try {
@@ -111,10 +115,7 @@ export class BranchOfficeUseCase {
             }
         }catch(err){
             console.log('Fallas en UpdBrchOff y son: '+err.message)
-            return {
-                message: 'Fallas en UpdBrchOff y son: '+err.message ,
-                status: response.WARN
-            }
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message , status:response.WARN })
         }
     }
 }

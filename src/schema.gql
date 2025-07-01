@@ -141,6 +141,7 @@ type Mutation {
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
   deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
+  deletedPersonNatural(data: deleteNaturalPersonInput!): deleteNaturalPersonOutPut!
   inactiveJudge(data: inactiveJudgeInput!): inactiveJudgeOutPut!
   inactivedLawyer(data: inactiveLawyerInput!): inactiveLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
@@ -190,11 +191,18 @@ type Query {
   allCityData: AllCityDataOutPut!
   allLawyersStatus: allStatusPersLawyerOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
+  alljuedgeActive: allActiveStatusOutPut!
   sayHello: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+type allActiveStatusOutPut {
+  message: String!
+  response: [dataJudegeAll!]
+  status: Float!
+}
 
 type allBranchOfficeOutPut {
   allBranchOffice: [Branch_Office!]
@@ -306,6 +314,13 @@ type createUserLawyerOutPut {
   status: Float!
 }
 
+type dataJudegeAll {
+  address: String!
+  ci: String!
+  fullName: String!
+  id: Float!
+}
+
 input deleteJudgeInput {
   id: ID!
 }
@@ -317,6 +332,15 @@ type deleteJudgeOutPut {
 
 type deleteLawyerData {
   id: Float!
+}
+
+input deleteNaturalPersonInput {
+  id: ID!
+}
+
+type deleteNaturalPersonOutPut {
+  message: String
+  status: Float
 }
 
 input deletedLawyerInput {

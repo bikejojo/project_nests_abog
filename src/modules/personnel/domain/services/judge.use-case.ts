@@ -249,4 +249,39 @@ export class JudgeUseCase {
             })
         }
     }
+
+    async judgeActiveStatus(){
+        return this.getJudgeList( () => this.juddeRepository.allJudgeActiveStatus(), 'jueces activos', 'JudActStatus' )
+    }
+
+    async judgeAll(){
+       return this.getJudgeList( () => this.juddeRepository.allJudge(), 'jueces' , 'JudAll');
+    }
+
+    async judgeInactiveAll(){
+        return this.getJudgeList( () => this.juddeRepository.allJudgeInactiveStatus(), 'jueces inactivos' , 'JudInactStat')
+    }
+
+    private async getJudgeList(fetchMethod: ()=> Promise<any>,successMessage:string , warningName:string){
+        try {
+            const allJudge = await fetchMethod();
+            
+            if (!allJudge || allJudge.length === 0) {
+                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type: 'No se encontraron datos de listado de juez.', status: response.FALL });
+            }
+
+            const allJudges = allJudge.map(judge => ({
+                id: judge.id,
+                fullName: `${judge.persona.firstName} ${judge.persona.lastName}`,
+                ci: judge.persona.ci,
+                address: judge.persona.address
+            }));
+
+            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type: 'Listado', message: successMessage, status: response.NICE, content: allJudges });
+
+        }catch(err){
+            console.log(`[WARN] Fallas en ${warningName} y son: ` + err.message);
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({ name: warningName, message: err.message, status: response.WARN });
+        }
+    }
 }

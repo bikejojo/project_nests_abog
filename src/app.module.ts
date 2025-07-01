@@ -30,7 +30,6 @@ import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/l
     }),
     AuthModule,
     UserModule,
-    
     BranchOfficeModule ,
     CityModule ,
     DocumentsModule,
