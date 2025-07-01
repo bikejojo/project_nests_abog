@@ -16,6 +16,8 @@ import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffi
 import { DocumentsModule } from './modules/documents/interfaces/documents.module';
 import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
 import { JudgeModule } from './modules/personnel/interfaces/judge/judge.module';
+import { NaturalPersonModule } from './modules/personnel/interfaces/natural_person/natural_person.module';
+import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/legal_entity.module';
 
 @Module({
   imports: [
@@ -28,12 +30,15 @@ import { JudgeModule } from './modules/personnel/interfaces/judge/judge.module';
     }),
     AuthModule,
     UserModule,
-    LawyerModule,
+    
     BranchOfficeModule ,
     CityModule ,
     DocumentsModule,
     PersonModule,
     JudgeModule,
+    LawyerModule,
+    NaturalPersonModule ,
+    LegalEntityModule,
     PrismaModule,
     ModuleMenuPermissionModule
   ],

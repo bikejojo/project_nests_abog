@@ -100,7 +100,7 @@ export class LegalEntityUseCase {
             })
 
             const personId = await this.personRespository.findedPersona({
-                id: legalEntityId.personId
+                id: legalEntity.personId
             })
 
             if(!personId){
@@ -159,6 +159,12 @@ export class LegalEntityUseCase {
             const person = await this.personRespository.deletePersona({
                 id:personId.id , status: tatus.INACTIVO
             })
+
+            if(!person){
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    objeto:'Persona en eliminar ',status:response.FALL
+                })
+            }
 
             return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Eliminado',message:'de entidad legal',status:response.NICE})
 

@@ -37,7 +37,7 @@ export class PersonRepository {
     }
 
     async deletePersona(data:any){
-        await this.prisma.persona.update({
+        return await this.prisma.persona.update({
             where:{
                 id:data.id
             },

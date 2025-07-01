@@ -137,6 +137,7 @@ type Mutation {
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createJudge(data: createJudgeInput!): createJudgeOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
+  createPersonNatural(data: createNaturalPersonInput!): createNaturalPersonOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
   deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
@@ -145,6 +146,7 @@ type Mutation {
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   updateJudge(data: updateJudgeInput!): updateJudgeOutPut!
+  updatePersonNatural(data: updateNaturalPersonInput!): updateNaturalPersonOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
 }
@@ -283,6 +285,22 @@ type createLawyerOutPut {
   status: Float!
 }
 
+input createNaturalPersonInput {
+  address: String
+  ci: String
+  description: String!
+  firstName: String
+  lastName: String
+  phone: String
+  registrationDate: DateTime!
+}
+
+type createNaturalPersonOutPut {
+  message: String!
+  naturalPersonUserData: naturalPersonPersonUserData
+  status: Float!
+}
+
 type createUserLawyerOutPut {
   message: String
   status: Float!
@@ -356,6 +374,32 @@ type lawyerData {
   registratioDate: DateTime!
 }
 
+type naturalPersonData {
+  description: String!
+  id: Float!
+  registrationData: DateTime!
+}
+
+type naturalPersonPersonUserData {
+  naturalPersons: naturalPersonData
+  personDats: personData
+  userDats: userData
+}
+
+type persLawUserData {
+  lawyerData: lawyerData
+  personData: personData
+  userData: userData
+}
+
+type personData {
+  address: String!
+  firstName: String!
+  id: Float!
+  lastName: String!
+  phone: String!
+}
+
 input updateJudgeInput {
   address: String
   ci: String
@@ -383,6 +427,23 @@ type updateLawyerData {
 type updateLawyerOutPut {
   lawyerData: updateLawyerData
   message: String!
+  status: Float!
+}
+
+input updateNaturalPersonInput {
+  address: String
+  ci: String
+  description: String
+  firstName: String
+  id: ID!
+  lastName: String
+  phone: String
+  registrationDate: DateTime
+}
+
+type updateNaturalPersonOutPut {
+  message: String!
+  response: String
   status: Float!
 }
 
