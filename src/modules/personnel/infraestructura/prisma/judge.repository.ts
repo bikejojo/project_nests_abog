@@ -1,14 +1,13 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { status } from "src/common/enum/typeStatus";
-import { stat } from "fs";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class JudgeRepository {
     constructor(private readonly prisma:PrismaService){}
     
-    async createJudge(data:any){
-        return await this.prisma.judge.create({
+    async createJudge(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.judge.create({
             data:{
                 registratioDate: data.registrationDate ,
                 description: data.description ,
@@ -37,8 +36,8 @@ export class JudgeRepository {
         });
     }
 
-    async updatedJudge(data:any){
-        return await this.prisma.judge.update({
+    async updatedJudge(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.judge.update({
             where:{ id: data.id },
             data: {
                 registratioDate:data.registratioDate ,
@@ -50,8 +49,8 @@ export class JudgeRepository {
         })
     }
 
-    async deleteJudge(data:any){
-        return await this.prisma.judge.update({
+    async deleteJudge(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.judge.update({
             where:{ id:data.id } ,
             data: {
                 status:data.status,
@@ -60,8 +59,8 @@ export class JudgeRepository {
         })
     }
 
-    async inactiveJudge(data:any){
-        return await this.prisma.judge.update({
+    async inactiveJudge(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.judge.update({
             where:{ id:data.id },
             data:{
                 isActive:data.isActive

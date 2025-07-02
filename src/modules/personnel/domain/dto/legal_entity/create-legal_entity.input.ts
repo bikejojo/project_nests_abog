@@ -19,7 +19,7 @@ export class createLegalEntityInput{
     address: string
 
     @Field({nullable:true})
-    NIT: number
+    NIT: string
 
     @Field({nullable:true})
     companyName: string
@@ -36,6 +36,8 @@ export class createLegalEntityInput{
     @Field({nullable:true})
     typeCompany:string 
     
+    @Field({nullable:true})
+    cityId: number
 }
 
 @ObjectType()
@@ -74,7 +76,7 @@ export class legalEntityPerson {
 @ObjectType()
 export class createLegalEntityOutPut{
     @Field()
-    messsage:string
+    message:string
 
     @Field()
     status: number

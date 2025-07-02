@@ -1,5 +1,6 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class LawyerRepository {
@@ -7,7 +8,7 @@ export class LawyerRepository {
     
     // mutations
 
-    async createLawyer(data:any){
+    async createLawyer(prisma:Prisma.TransactionClient,data:any){
         return this.prisma.lawyer.create({
             data:{
                 registrationDate: data.registrationDate ,
@@ -23,8 +24,8 @@ export class LawyerRepository {
         })
     }
 
-    async updateLawyerUser(data:any){
-        return await this.prisma.lawyer.update({
+    async updateLawyerUser(prisma: Prisma.TransactionClient, data:any){
+        return await prisma.lawyer.update({
             where:{
                 id:data.id
             },
@@ -35,8 +36,8 @@ export class LawyerRepository {
         })
     }
 
-    async updateLawyer(data:any){
-        return await this.prisma.lawyer.update({
+    async updateLawyer(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.lawyer.update({
             where:{
                 id:data.id
             },
@@ -47,8 +48,8 @@ export class LawyerRepository {
         })
     }
 
-    async deleteLawyer(data:any){
-        return await this.prisma.lawyer.update({
+    async deleteLawyer(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.lawyer.update({
             where:{
                 id:data.id
             },
@@ -59,8 +60,8 @@ export class LawyerRepository {
         })
     }
 
-    async inactiveLawyer(data:any){
-        return await this.prisma.lawyer.update({
+    async inactiveLawyer(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.lawyer.update({
             where:{
                 id: data.id
             },

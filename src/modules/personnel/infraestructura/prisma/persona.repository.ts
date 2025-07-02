@@ -1,12 +1,13 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class PersonRepository {
     constructor(private readonly prisma:PrismaService){}
 
-    async createPerson(data:any){
-        return await this.prisma.persona.create({
+    async createPerson(prisma: Prisma.TransactionClient , data:any){
+        return await prisma.persona.create({
             data:{
                 ci:data.ci ,
                 firstName: data.firstName ,
@@ -21,8 +22,8 @@ export class PersonRepository {
         })
     }
 
-    async updatePersona(data:any){
-        return await this.prisma.persona.update({
+    async updatePersona(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.persona.update({
             where:{
                 id:data.id
             },
@@ -36,8 +37,8 @@ export class PersonRepository {
         })
     }
 
-    async deletePersona(data:any){
-        return await this.prisma.persona.update({
+    async deletePersona(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.persona.update({
             where:{
                 id:data.id
             },

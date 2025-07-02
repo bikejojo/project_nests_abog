@@ -21,14 +21,14 @@ import { NaturalPersonResolver } from "../natural_person/natural_person.resolver
     })
   ],
   providers: [
-    NaturalPersonRepository,
-    NaturalPersonUseCase,
-    NaturalPersonResolver,
+    LegalEntityRepository,
+    LegalEntityUseCase,
+    LegalEntityResolver,
     PrismaService
   ],
   exports: [
-    NaturalPersonRepository ,
-    NaturalPersonUseCase
+    LegalEntityRepository,
+    LegalEntityUseCase,
   ],
 })
 

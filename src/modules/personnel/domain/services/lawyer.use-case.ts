@@ -8,10 +8,12 @@ import { WarningResponseStrategy } from "src/common/responses/warning-response.s
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class LawyerUseCase {
     constructor(
+        private prisma: PrismaService ,
         private personRepository:PersonRepository ,
         private lawyerRepository:LawyerRepository
     ){}
@@ -25,47 +27,48 @@ export class LawyerUseCase {
                 return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
                     message:'Registro incorecto de telefono en persona' , status:response.FALL })
             }
+            await this.prisma.$transaction(async (prisma)=>{
+                const cityId = parseInt(data.cityId);
+                const person = await this.personRepository.createPerson(prisma,{
+                    ci:data.ci ,
+                    firstName: data.firstName ,
+                    lastName: data.lastName ,
+                    phone: data.phone ,
+                    address: data.address , 
+                    status: status.ACTIVE ,
+                    cityId: cityId ,
+                    createdAt: new Date ,
+                    updatedAt: new Date
+                })
 
-            const cityId = parseInt(data.cityId);
-            const person = await this.personRepository.createPerson({
-                ci:data.ci ,
-                firstName: data.firstName ,
-                lastName: data.lastName ,
-                phone: data.phone ,
-                address: data.address , 
-                status: status.ACTIVE ,
-                cityId: cityId ,
-                createdAt: new Date ,
-                updatedAt: new Date
+                if(!person){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
+                        type:'Surgio un  problema en persona ID' , status:response.FALL })
+                }
+
+                const lawyer = await this.lawyerRepository.createLawyer(prisma,{
+                    userId: null ,
+                    personId: person.id ,
+                    registrationDate: new Date ,
+                    isActive: true,
+                    isFiscal: data.isFiscal ,
+                    isIntern: data.isIntern ,
+                    status:  status.ACTIVE,
+                    createdAt: new Date ,
+                    updatedAt: new Date ,
+                })
+
+                if(!lawyer){
+                    return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                        objeto: 'abogado para crear un registro ' , status: response.FALL })
+                }
+
+                return {
+                    message:'Registro exitoso del abogado.',
+                    status: response.NICE
+                }
             })
-
-            if(!person){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
-                    type:'Surgio un  problema en persona ID' , status:response.FALL })
-            }
-
-            const lawyer = await this.lawyerRepository.createLawyer({
-                userId: null ,
-                personId: person.id ,
-                registrationDate: new Date ,
-                isActive: true,
-                isFiscal: data.isFiscal ,
-                isIntern: data.isIntern ,
-                status:  status.ACTIVE,
-                createdAt: new Date ,
-                updatedAt: new Date ,
-            })
-
-            if(!lawyer){
-                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
-                    objeto: 'abogado para crear un registro ' , status: response.FALL })
-            }
-
-            return {
-                message:'Registro exitoso del abogado.',
-                status: response.NICE
-            }
-
+           
         }catch(err){
             console.log('Fallas detectadas en CrLaw y son:' + err.message)
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
@@ -88,24 +91,25 @@ export class LawyerUseCase {
                 });
             }
             //console.log(lawyerId);
-            await this.personRepository.updatePersona({
-                id:lawyerId.persona.id,
-                firstName: data.firstName == null || data.firstName == '' ? lawyerId.persona.firstName : data.firstName ,
-                lastName: data.lastName == null || data.lastName == '' ? lawyerId.persona.lastName : data.lastName , 
-                phone: data.phone == null || data.phone == '' ? lawyerId.persona.phone : data.phone, 
-                address: data.address == null || data.address == '' ? lawyerId.persona.address : data.address, 
+            await this.prisma.$transaction(async (prisma)=> {
+                await this.personRepository.updatePersona(prisma, {
+                    id:lawyerId.persona.id,
+                    firstName: data.firstName == null || data.firstName == '' ? lawyerId.persona.firstName : data.firstName ,
+                    lastName: data.lastName == null || data.lastName == '' ? lawyerId.persona.lastName : data.lastName , 
+                    phone: data.phone == null || data.phone == '' ? lawyerId.persona.phone : data.phone, 
+                    address: data.address == null || data.address == '' ? lawyerId.persona.address : data.address, 
+                });
+
+                await this.lawyerRepository.updateLawyer(prisma,{
+                    id: lawyerId.id ,
+                    isFiscal: data.isFiscal ,
+                    isIntern: data.isIntern 
+                })
             });
-
-            await this.lawyerRepository.updateLawyer({
-                id: lawyerId.id ,
-                isFiscal: data.isFiscal ,
-                isIntern: data.isIntern 
-            })
-
+            
             return {
                 message: 'Actualizacion exitosa de abogado. ' ,
                 status: response.NICE ,
-
             }
 
         }catch(err){
@@ -128,27 +132,27 @@ export class LawyerUseCase {
             }
 
             const personId = lawyerId?.persona.id;
+            await this.prisma.$transaction(async(prisma)=>{
+                await this.personRepository.deletePersona(prisma,{
+                    id:personId ,
+                    status:0
+                })
 
-            await this.personRepository.deletePersona({
-                id:personId ,
-                status:0
+                await this.lawyerRepository.deleteLawyer(prisma,{
+                    id:lawyerId?.id,
+                    isActive: false ,
+                    status: 0
+                })
+
+                return {
+                    message:'Eliminacion correcta de abogado.',
+                    status: response.NICE 
+                }
             })
-
-            await this.lawyerRepository.deleteLawyer({
-                id:lawyerId?.id,
-                isActive: false ,
-                status: 0
-            })
-
-            return {
-                message:'Eliminacion correcta de abogado.',
-                status: response.NICE 
-            }
 
         }catch(err){
             console.log('Fallas en DelLaw y son: ' + err.message);
-            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
-                name:'DelLar', message:err.message , status:response.WARN })
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'DelLar', message:err.message , status:response.WARN })
         }
     }
 
@@ -162,11 +166,13 @@ export class LawyerUseCase {
                 return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
                     objeto:'abogado el ID' , status:response.FALL });
             }
-
-            await this.lawyerRepository.inactiveLawyer({
-                id:lawyerId.id ,
-                isActive: data.isActive
+            await this.prisma.$transaction(async (prisma) => {
+                await this.lawyerRepository.inactiveLawyer(prisma,{
+                    id:lawyerId.id ,
+                    isActive: data.isActive
+                })
             })
+            
 
         }catch(err){
             console.log('Fallas de InAcLw y son: ' + err.message);

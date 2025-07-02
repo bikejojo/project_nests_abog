@@ -1,12 +1,13 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class LegalEntityRepository {
     constructor(private readonly prisma:PrismaService){}
     
-    async createLegalEntity(data:any){
-        return await this.prisma.legal_Entity.create({
+    async createLegalEntity(prisma:Prisma.TransactionClient , data:any){
+        return await prisma.legal_Entity.create({
             data:{
                 NIT: data.NIT,
                 companyName: data.companyName,
@@ -27,8 +28,8 @@ export class LegalEntityRepository {
         })
     };
 
-    async updateLegalEntity(data:any){
-        return await this.prisma.legal_Entity.update({
+    async updateLegalEntity(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.legal_Entity.update({
             where: {
                 id: data.id
             },
@@ -43,8 +44,8 @@ export class LegalEntityRepository {
         })
     };
 
-    async deleteLegalEntity(data:any){
-        return await this.prisma.legal_Entity.update({
+    async deleteLegalEntity(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.legal_Entity.update({
             where: {
                 id: data.id
             },

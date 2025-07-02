@@ -9,16 +9,17 @@ import { DataResponseStrategy } from "src/common/responses/data-response.strateg
 import { city } from "src/modules/city/entities/city.entity";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class LegalEntityUseCase {
     constructor(
+        private prisma: PrismaService ,
         private legalEntityRepoository:LegalEntityRepository,
         private personRespository: PersonRepository
     ){}
 
     private ResponseContext = new ResponseContext();
-
     async createLegalEntity(data:any){
         try {
             if(data.phone < 8){
@@ -27,51 +28,51 @@ export class LegalEntityUseCase {
                     status: response.FALL
                 }
             }
+            await this.prisma.$transaction(async (prisma)=>{
+                const person = await this.personRespository.createPerson( prisma ,{
+                    ci: data.ci,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    phone: data.phone,
+                    address: data.address,
+                    status: tatus.ACTIVE,
+                    city: data.cityId,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                })
 
-            const person = await this.personRespository.createPerson({
-                ci: data.ci,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phone: data.phone,
-                address: data.address,
-                status: status.ACTIVE,
-                city: data.cityId,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            })
-
-            if(!person){
-                return {
-                    message: 'Surgio un problema de creacion del modelo',
-                    status: response.FALL
+                if(!person){
+                    return {
+                        message: 'Surgio un problema de creacion del modelo',
+                        status: response.FALL
+                    }
                 }
-            }
+                //const nitNum = parseInt(data.NIT);
+                const legalEntity = await this.legalEntityRepoository.createLegalEntity(prisma , {
+                    NIT: data.NIT,
+                    companyName: data.companyName,
+                    address: data.address,
+                    registrationDate: new Date(),
+                    legalRepresentative: data.legalRepresentative,
+                    typeCompany: data.typeCompany,
+                    personId: person.id,
+                    status: tatus.ACTIVE,
+                })
 
-            const legalEntity = await this.legalEntityRepoository.createLegalEntity({
-                NIT: data.NIT,
-                companyName: data.companyName,
-                address: data.address,
-                registrationDate: new Date(),
-                legalRepresentative: data.legalRepresentative,
-                typeCompany: data.typeCompany,
-                personId: person.id,
-                status: status.ACTIVE,
-            })
+                if(!legalEntity){
+                    return {
+                        message: 'Surgieron problemas al crear el modelo de Entidad Legal',
+                        status: response.FALL
+                    }
 
-            if(!legalEntity){
-                return {
-                    message: 'Surgieron problemas al crear el modelo de Entidad Legal',
-                    status: response.FALL
                 }
 
-            }
-
-            return {
-                message: 'Entidad Legal creada correctamente',
-                status: response.NICE,
-                data: legalEntity
-            }
-
+                return {
+                    message: 'Entidad Legal creada correctamente',
+                    status: response.NICE,
+                    data: legalEntity
+                }
+            })          
         }catch (err) {
             console.log('Error en CrtLegEnt: ', err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
@@ -81,48 +82,51 @@ export class LegalEntityUseCase {
 
     async updateLegalEntity(data:any){
         try {
-            const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
-                id: data.id
+            await this.prisma.$transaction(async (prisma)=> {
+                const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
+                    id: data.id
+                })
+
+                if(!legalEntityId){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'Fallas al encontrar valors de legalEntity su ID',status:response.FALL })
+                }
+
+                const legalEntity = await this.legalEntityRepoository.updateLegalEntity(prisma, {
+                    id:legalEntityId.id , 
+                    NIT: data.NIT ,
+                    companyName: data.companyName ,
+                    address: data.address ,
+                    registrationData: data.registrationDate ,
+                    legalRepresentive: data.legalRepresentive ,
+                    typeCompany: data.typeCompany
+                })
+                
+                const personId = await this.personRespository.findedPersona({
+                    id: legalEntity.personId
+                })
+
+                if(!personId){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
+                        type: 'ID persona no encontrado.' , status: response.FALL    })
+                }
+
+                const person = await this.personRespository.updatePersona(prisma,{
+                    id: personId.id ,
+                    firstName: data.firstName, 
+                    lastName: data.lastName,
+                    phone: data.phone,
+                    address: data.address,
+                    cityId: data.cityId
+                })
+
+                if(!person){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
+                        type: 'Error en persona ID' , status: response.FALL  })
+                }
+
+                return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type: 'Actualizacion' , message:' de Entidad Legal' , status:response.NICE })
+       
             })
-
-            if(!legalEntityId){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'Fallas al encontrar valors de legalEntity su ID',status:response.FALL })
-            }
-
-            const legalEntity = await this.legalEntityRepoository.updateLegalEntity({
-                id:legalEntityId.id , 
-                NIT: data.NIT ,
-                companyName: data.companyName ,
-                address: data.address ,
-                registrationData: data.registrationDate ,
-                legalRepresentive: data.legalRepresentive ,
-                typeCompany: data.typeCompany
-            })
-
-            const personId = await this.personRespository.findedPersona({
-                id: legalEntity.personId
-            })
-
-            if(!personId){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
-                    type: 'ID persona no encontrado.' , status: response.FALL    })
-            }
-
-            const person = await this.personRespository.updatePersona({
-                id: personId.id ,
-                firstName: data.firstName, 
-                lastName: data.lastName,
-                phone: data.phone,
-                address: data.address,
-                cityId: data.cityId
-            })
-
-            if(!person){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({
-                    type: 'Error en persona ID' , status: response.FALL  })
-            }
-
-            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type: 'Actualizacion' , message:' de Entidad Legal' , status:response.NICE })
         } catch(err) {
             console.log('[WARNING] Fallas en UptLegEnt y son: ' + err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({ name: 'UptLegEnt' , message: err.message , status: response.WARN });
@@ -131,48 +135,60 @@ export class LegalEntityUseCase {
 
     async deleteLegalEntity(data:any){
         try {
-            const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
-                id:data.id
-            })
-
-            if(!legalEntityId){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se encontro datos de la entidad.' , status:response.FALL })
-            }
-
-            const legalEntity = await this.legalEntityRepoository.deleteLegalEntity({
-                id:legalEntityId.id,
-                status: tatus.INACTIVO
-            })
-
-            if(!legalEntity){
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se genero el cambio' , status:response.FALL })
-            }
-
-            const personId = await this.personRespository.findedPersona({
-                id:legalEntity.personId
-            })
-
-            if(!personId) {
-                return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'No se encontro ID de persona',status:response.FALL}) 
-            }
-
-            const person = await this.personRespository.deletePersona({
-                id:personId.id , status: tatus.INACTIVO
-            })
-
-            if(!person){
-                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
-                    objeto:'Persona en eliminar ',status:response.FALL
+            await this.prisma.$transaction(async (prisma) => {
+                const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
+                    id:data.id
                 })
-            }
 
-            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Eliminado',message:'de entidad legal',status:response.NICE})
+                if(!legalEntityId){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se encontro datos de la entidad.' , status:response.FALL })
+                }
 
+                const legalEntity = await this.legalEntityRepoository.deleteLegalEntity(prisma,{
+                    id:legalEntityId.id,
+                    status: tatus.INACTIVO
+                })
+
+                if(!legalEntity){
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'No se genero el cambio' , status:response.FALL })
+                }
+
+                const personId = await this.personRespository.findedPersona({
+                    id:legalEntity.personId
+                })
+
+                 if(!personId) {
+                    return this.ResponseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'No se encontro ID de persona',status:response.FALL}) 
+                }
+
+                const person = await this.personRespository.deletePersona(prisma,{
+                    id:personId.id , status: tatus.INACTIVO
+                })
+
+                if(!person){
+                    return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                        objeto:'Persona en eliminar ',status:response.FALL
+                    })
+                }
+
+                return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Eliminado',message:'de entidad legal',status:response.NICE})
+
+            })
+           
         }catch(err){
             console.log();
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({
                 name: 'DelLegEnt' , message:err.message , status: response.WARN 
             })
+        }
+    }
+
+    async allListLegalEntityStatus(){
+        try {
+
+        }catch(err){
+            console.log();
+
         }
     }
 }

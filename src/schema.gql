@@ -137,9 +137,11 @@ type Mutation {
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createJudge(data: createJudgeInput!): createJudgeOutPut!
   createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
+  createLegalEntity(data: createLegalEntityInput!): createLegalEntityOutPut!
   createPersonNatural(data: createNaturalPersonInput!): createNaturalPersonOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
   deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
+  deleteLegalEntity(data: deleteLegalEntityInput!): deleteLegalEntityOutPut!
   deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
   deletedPersonNatural(data: deleteNaturalPersonInput!): deleteNaturalPersonOutPut!
   inactiveJudge(data: inactiveJudgeInput!): inactiveJudgeOutPut!
@@ -150,6 +152,7 @@ type Mutation {
   updatePersonNatural(data: updateNaturalPersonInput!): updateNaturalPersonOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
+  updatedLegalEntity(data: updateLegalEntityInput!): updateLegalEntityOutPut!
 }
 
 type Natural_Person {
@@ -297,6 +300,27 @@ type createLawyerOutPut {
   status: Float!
 }
 
+input createLegalEntityInput {
+  NIT: String
+  address: String
+  addressLE: String
+  ci: String
+  cityId: Float
+  companyName: String
+  firstName: String
+  lastName: String
+  legalRepresentive: String
+  phone: String
+  registrationDate: DateTime
+  typeCompany: String
+}
+
+type createLegalEntityOutPut {
+  message: String!
+  response: legalEntityPerson
+  status: Float!
+}
+
 input createNaturalPersonInput {
   address: String
   ci: String
@@ -336,6 +360,15 @@ type deleteJudgeOutPut {
 
 type deleteLawyerData {
   id: Float!
+}
+
+input deleteLegalEntityInput {
+  id: ID!
+}
+
+type deleteLegalEntityOutPut {
+  message: String
+  status: Float!
 }
 
 input deleteNaturalPersonInput {
@@ -402,6 +435,21 @@ type lawyerData {
   registratioDate: DateTime!
 }
 
+type legalEntityData {
+  NIT: Float
+  address: String
+  companyName: String
+  id: Float!
+  legalRepresentive: String
+  registrationDate: DateTime
+  typeCompany: String
+}
+
+type legalEntityPerson {
+  legalEntityDats: legalEntityData
+  personsData: personData
+}
+
 type naturalPersonData {
   description: String!
   id: Float!
@@ -455,6 +503,27 @@ type updateLawyerData {
 type updateLawyerOutPut {
   lawyerData: updateLawyerData
   message: String!
+  status: Float!
+}
+
+input updateLegalEntityInput {
+  NIT: Float
+  address: String
+  addressLE: String
+  ci: String
+  companyName: String
+  firstName: String
+  id: ID!
+  lastName: String
+  legalRepresentive: String
+  phone: String
+  registrationDate: DateTime
+  typeCompany: String
+}
+
+type updateLegalEntityOutPut {
+  message: String
+  response: legalEntityPerson
   status: Float!
 }
 
