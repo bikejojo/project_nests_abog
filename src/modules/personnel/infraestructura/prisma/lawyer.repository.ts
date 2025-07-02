@@ -9,7 +9,7 @@ export class LawyerRepository {
     // mutations
 
     async createLawyer(prisma:Prisma.TransactionClient,data:any){
-        return this.prisma.lawyer.create({
+        return prisma.lawyer.create({
             data:{
                 registrationDate: data.registrationDate ,
                 isActive: data.isActive ,

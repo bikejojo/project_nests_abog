@@ -37,5 +37,5 @@ export class updateNaturalPersonOutPut {
     status: number
 
     @Field({nullable:true})
-    response: string
+    response?: string
 }

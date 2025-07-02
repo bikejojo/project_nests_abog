@@ -9,10 +9,11 @@ import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/p
 import { LawyerRepository } from "src/modules/personnel/infraestructura/prisma/lawyer.repository";
 import { typeUser } from "src/common/enum/typeUser";
 import { response } from "src/common/enum/typeResp";
-import { status } from "src/common/enum/typeStatus";
+import { status, tatus } from "src/common/enum/typeStatus";
 @Injectable()
 export class UserUseCase {
     constructor(
+        private prisma: PrismaService,
         private authService: AuthService ,
         private userRepository: UserRepository ,
         private personaRepository: PersonRepository ,
@@ -169,8 +170,8 @@ export class UserUseCase {
                 email: data.email,
                 ci: lawyerData.persona.ci , 
                 password: hashedPassword ,
-                isActive: true,
-                status: status.ACTIVE,
+                isActive: status.ACTIVE,
+                status: tatus.ACTIVE,
                 type: typeUser.LawyerIntern ,
                 token: '' ,
                 roleId: data.roleId
@@ -182,28 +183,30 @@ export class UserUseCase {
                     status: response.FALL
                 }
             }
+            await this.prisma.$transaction(async (prisma) => {
+                 const lawyer = await this.lawyerRepository.updateLawyerUser(prisma,{
+                    userId: user.id ,
+                    id: lawyerData.id ,
+                    branchOfficeId: data.branchOfficeId
+                })
 
-            const lawyer = await this.lawyerRepository.updateLawyerUser({
-                userId: user.id ,
-                id: lawyerData.id ,
-                branchOfficeId: data.branchOfficeId
+                if(!lawyer){
+                    return{
+                        message:'El registro de Lawyer fue incorrecto !!!' ,
+                        status: response.FALL
+                    }
+                }
+
+                return {
+                    message: 'registro existoso del usuario abogado. !!!',
+                    status: response.NICE ,
+                    personLawyUser: {
+                        userData: user ,
+                        lawyerData: lawyer,
+                    }
+                }
             })
-
-            if(!lawyer){
-                return{
-                    message:'El registro de Lawyer fue incorrecto !!!' ,
-                    status: response.FALL
-                }
-            }
             
-            return {
-                message: 'registro existoso del usuario abogado. !!!',
-                status: response.NICE ,
-                personLawyUser: {
-                    userData: user ,
-                    lawyerData: lawyer,
-                }
-            }
         }catch(err){
             console.log('Fallas detectadas en CrPers y son:' + err.message)
             return {

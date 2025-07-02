@@ -43,5 +43,5 @@ export class createJudgeOutPut{
     status: number
 
     @Field(()=> judgeData , {nullable:true})
-    response: judgeData | null
+    response?: judgeData | null
 }

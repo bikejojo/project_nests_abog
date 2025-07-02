@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PersonRepository } from "../../infraestructura/prisma/persona.repository";
 import { LawyerRepository } from "../../infraestructura/prisma/lawyer.repository";
 import { response } from "src/common/enum/typeResp";
-import { status } from "src/common/enum/typeStatus";
+import { status, tatus } from "src/common/enum/typeStatus";
 import { ResponseContext } from "src/common/responses/response-context";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
@@ -35,7 +35,7 @@ export class LawyerUseCase {
                     lastName: data.lastName ,
                     phone: data.phone ,
                     address: data.address , 
-                    status: status.ACTIVE ,
+                    status: tatus.ACTIVE,
                     cityId: cityId ,
                     createdAt: new Date ,
                     updatedAt: new Date
@@ -53,7 +53,7 @@ export class LawyerUseCase {
                     isActive: true,
                     isFiscal: data.isFiscal ,
                     isIntern: data.isIntern ,
-                    status:  status.ACTIVE,
+                    status:  tatus.ACTIVE,
                     createdAt: new Date ,
                     updatedAt: new Date ,
                 })

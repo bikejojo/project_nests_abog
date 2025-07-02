@@ -24,5 +24,5 @@ export class deletedLawyerOutPut {
     status: number
 
     @Field(()=>deleteLawyerData ,  {nullable:true})
-    lawyerData: deleteLawyerData | null    
+    lawyerData?: deleteLawyerData | null    
 }

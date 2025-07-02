@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ModuleMenuPermissionsRepository } from "../../infraestructura/prisma/moduleMenuPermissions.repository";
 import { response } from "src/common/enum/typeResp";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
-import { status } from "src/common/enum/typeStatus";
+import { status, tatus } from "src/common/enum/typeStatus";
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
@@ -84,7 +84,7 @@ export class ModuleMenuPermissionsUseCase {
             const moduleUserAssing = newModuleIds.map((moduleId:number) => ({
                 userId:user?.id ,
                 moduleId: moduleId ,
-                status: status.ACTIVE
+                status: tatus.ACTIVE
             }));
 
             if(moduleUserAssing.length > 0 ){
@@ -103,7 +103,7 @@ export class ModuleMenuPermissionsUseCase {
             const menuUserAssing = newMenuIds.map((menuId:number) => ({
                 userId: user?.id ,
                 menuId: menuId ,
-                status: status.ACTIVE
+                status: tatus.ACTIVE
             }));
 
             if(menuUserAssing.length > 0 ){
@@ -123,7 +123,7 @@ export class ModuleMenuPermissionsUseCase {
             const permissionsUserAssing = newPermissionsIds.map((permissionsId:number)=> ({
                 userId:user?.id ,
                 permissionsId: permissionsId ,
-                status: status.ACTIVE
+                status: tatus.ACTIVE
             }))
 
             if(permissionsUserAssing.length > 0 ){

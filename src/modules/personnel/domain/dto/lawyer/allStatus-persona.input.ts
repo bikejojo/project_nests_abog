@@ -22,5 +22,5 @@ export class allStatusPersLawyerOutPut{
     status: number
 
     @Field(() => [allStatus] , {nullable:true})
-    response: allStatus[] | null
+    response?: allStatus[] | null
 }

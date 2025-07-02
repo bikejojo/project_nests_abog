@@ -25,7 +25,7 @@ type Branch_Office {
 input CreateUserInput {
   branchOfficeId: Float!
   email: String
-  lawyerId: String
+  lawyerId: Float
   name: String!
   password: String!
   roleId: Float!
@@ -286,7 +286,7 @@ type createJudgeOutPut {
 input createLawyerInput {
   address: String
   ci: String!
-  cityId: String
+  cityId: Float
   firstName: String!
   isFiscal: Boolean!
   isInterno: Boolean!

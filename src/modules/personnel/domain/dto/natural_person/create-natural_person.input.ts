@@ -61,5 +61,5 @@ export class createNaturalPersonOutPut{
     status: number
 
     @Field(() => naturalPersonPersonUserData , {nullable:true})
-    naturalPersonUserData: naturalPersonPersonUserData | null
+    naturalPersonUserData?: naturalPersonPersonUserData | null
 }

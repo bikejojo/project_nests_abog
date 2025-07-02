@@ -39,6 +39,6 @@ export class updateLawyerOutPut {
     status:number
 
     @Field(()=>updateLawyerData , {nullable:true })
-    lawyerData:updateLawyerData | null
+    lawyerData?:updateLawyerData | null
     
 }

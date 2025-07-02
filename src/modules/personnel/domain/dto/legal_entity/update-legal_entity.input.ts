@@ -50,5 +50,5 @@ export class updateLegalEntityOutPut {
     status: number
 
     @Field(()=>legalEntityPerson , {nullable:true})
-    response: legalEntityPerson
+    response?: legalEntityPerson
 }

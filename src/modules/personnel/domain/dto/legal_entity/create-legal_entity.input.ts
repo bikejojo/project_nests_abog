@@ -84,5 +84,5 @@ export class createLegalEntityOutPut{
     //@Field(()=>legalEntityPerson , {nullable:true})
     //legalEntityDatas: legalEntityPerson | null
     @Field(()=>legalEntityPerson , {nullable:true})
-    response: legalEntityPerson | null
+    response?: legalEntityPerson | null
 }

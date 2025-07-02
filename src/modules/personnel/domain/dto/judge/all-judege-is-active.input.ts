@@ -24,5 +24,5 @@ export class allActiveStatusOutPut {
     status: number
 
     @Field(()=>[dataJudegeAll],{nullable:true})
-    response:dataJudegeAll[] | null
+    response?:dataJudegeAll[] | null
 }

@@ -39,7 +39,7 @@ export class createLawyerInput {
     @Field()
     isInterno: boolean
 
-    @Field(()=> String , {nullable:true})
+    @Field(()=> Number , {nullable:true})
     cityId: number
 }
 
@@ -79,5 +79,5 @@ export class createLawyerOutPut {
     status: number
 
     @Field(()=>lawyerData , {nullable:true} )
-    lawyesData: lawyerData | null
+    lawyesData?: lawyerData | null
 }
