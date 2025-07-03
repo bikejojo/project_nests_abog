@@ -1,8 +1,8 @@
 import { ArgumentsHost , Catch ,ExceptionFilter , ForbiddenException  } from "@nestjs/common";
-import { GqlArgumentsHost , GqlExceptionFilter} from "@nestjs/graphql";
+import { GqlArgumentsHost } from "@nestjs/graphql";
 
 @Catch(ForbiddenException)
-export class GraphqlForbiddenExceptionFilter implements GqlExceptionFilter {
+export class GraphqlForbiddenExceptionFilter implements ExceptionFilter {
     catch(exception: ForbiddenException, host: ArgumentsHost) {
        const gqlHost = GqlArgumentsHost.create(host);
        const originResponse = exception.getResponse() as any;

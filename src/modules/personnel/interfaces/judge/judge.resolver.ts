@@ -28,6 +28,7 @@ export class JudgeResolver {
     
     @Mutation(()=>updateJudgeOutPut)
     @UseGuards(GqlAuthGuard, PermissionsGuard)
+    @UseFilters(GraphqlForbiddenExceptionFilter)
     @CheckAccess('PERSONAS',  'Juez', 'Editar juez')
     async updateJudge(@Args('data') data:updateJudgeInput){
         return await this.judgeUseCase.updateJudge(data)

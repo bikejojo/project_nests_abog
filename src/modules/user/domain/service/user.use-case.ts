@@ -52,13 +52,6 @@ export class UserUseCase {
                 }
             }
 
-            /*if(user.token != '' ){
-                return {
-                    message: 'Usuario inicio sesion en otro dipositivo',
-                    status: response.FALL,
-                    user: null
-                }
-            }*/
             const module = await this.userRepository.findModuleUsersId({
                 userId: user.id
             })
@@ -93,7 +86,7 @@ export class UserUseCase {
                 menus: (user1?.menuUser ?? []).map(m => m.menu),
                 permissions: (user1?.permissionsUser ?? []).map(p => p.permissions)
             };
-            //console.log('b',payloadUser)
+            console.log('b',payloadUser)
             let jwtToken = await this.authService.generateToken(payloadUser);
             //console.log('a',jwtToken);
             this.userRepository.saveToken(jwtToken.token , user );

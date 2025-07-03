@@ -18,6 +18,7 @@ export class PermissionsGuard implements CanActivate{
         const user = req.user;
 
         const hasMenu = user.menus.some((menu: any) => menu.name === requiredAccess.menuName);
+        console.log('d',hasMenu)
         if (!hasMenu) throw new ForbiddenException({ message: 'No tiene acceso al menú requerido', status: response.WARN});
 
 
