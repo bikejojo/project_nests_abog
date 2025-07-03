@@ -4,6 +4,8 @@ import { status } from "src/common/enum/typeStatus";
 import { response } from "src/common/enum/typeResp";
 import { ResponseContext } from "src/common/responses/response-context";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
+import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 
 @Injectable()
 export class BranchOfficeUseCase {
@@ -57,23 +59,13 @@ export class BranchOfficeUseCase {
             })
 
             if(!branchOffice){
-                return {
-                    message: 'No se creo con exito la sucursal' ,
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'Sucursal',status:response.FALL});
             }
 
-            return {
-                message:'Exito en crear la sucursal',
-                status:response.NICE ,
-                dataBranchOffice:branchOffice
-            }
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Creacion',message:'Sucursales', status:response.NICE}); 
         }catch(err){
             console.log("Fallas en CrBrOff" + err.message);
-            return {
-                message:'Fallas en CrBrOff' + err.message ,
-                status: response.WARN ,
-            }
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'CrBrOff', message:err.message , status:response.WARN})
         }
     }
 
@@ -85,10 +77,7 @@ export class BranchOfficeUseCase {
             })
 
             if(!branchOfficeId){
-                return {
-                    message:'Valores null',
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'La ID de sucursal',status:response.FALL})   
             }
 
             const updateBranchOffice = this.cityRepository.updateBranchOffices({
@@ -101,18 +90,11 @@ export class BranchOfficeUseCase {
             })
 
             if(!updateBranchOffice){
-                return {
-                    message:'Valores nulos en sucursales.',
-                    status: response.FALL ,
-                    
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'La ID de sucursal' , status: response.FALL })
             }
 
-            return {
-                message:'Actualizacion correcta de sucursal',
-                status:response.NICE ,
-                dataBranchOffice: updateBranchOffice
-            }
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Modificacion',message:'de sucursales',status:response.NICE}) 
+
         }catch(err){
             console.log('Fallas en UpdBrchOff y son: '+err.message)
             return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message , status:response.WARN })

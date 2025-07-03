@@ -1,5 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { CityRepository } from "../../infraestructura/prisma/city.repository";
+import { ResponseContext } from "src/common/responses/response-context";
+import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
+import { response } from "src/common/enum/typeResp";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 
 @Injectable()
 export class CityUseCase {
@@ -7,35 +12,24 @@ export class CityUseCase {
         private readonly cityRepository: CityRepository
     ){}
 
+    private responseContext = new ResponseContext();
     async listCityData(){
         try {
             const city = await this.cityRepository.listCity();
 
             if( !city ){
-                return {
-                    message: 'Error al traer los datos de ciudades.', 
-                    status: 1
-                }
+                return this.responseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'ID de ciudad',status:response.FALL});
             }
 
             if( city.length === 0 ){
-                return {
-                    message: 'No existen datos de ciudades.' ,
-                    status: 1
-                }
+                return this.responseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'No existe listado de ciudades',status:response.FALL})            
             }
 
-            return {
-                message: 'Retorno valores exitoso. !!',
-                status: 2,
-                allCity: city
-            }
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Listado' , message:'ciudades',status:response.NICE })
+
         }catch(err){
             console.log('Las fallas en LstCity son: ' + err.message)
-            return {
-                message:'Las fallas en LstCity son: ' + err.message ,
-                status:3
-            }
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'LstCity',message:err.message , status:response.WARN})
         }
     }
 }

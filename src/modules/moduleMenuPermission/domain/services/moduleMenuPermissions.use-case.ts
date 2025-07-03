@@ -3,6 +3,9 @@ import { ModuleMenuPermissionsRepository } from "../../infraestructura/prisma/mo
 import { response } from "src/common/enum/typeResp";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import { status, tatus } from "src/common/enum/typeStatus";
+import { ResponseContext } from "src/common/responses/response-context";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
@@ -10,6 +13,8 @@ export class ModuleMenuPermissionsUseCase {
         private readonly moduleMenuPermissionsRepository: ModuleMenuPermissionsRepository ,
         private readonly userRepository: UserRepository
     ){}
+
+    private ResponseContext = new ResponseContext();
 
     async listAllModuleMenuPermissions() {
         try {
@@ -130,16 +135,11 @@ export class ModuleMenuPermissionsUseCase {
                 await this.moduleMenuPermissionsRepository.createPermissionsUser(permissionsUserAssing);
             }
 
-            return {
-                message:'Existosa asignacion de permissos',
-                status: response.NICE
-            }
+            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Asignacion',message:'Permisos',status:response.NICE})
+
         }catch(err){
             console.log('Fallas en AssignUsPer y son: ' + err.message );
-            return {
-                message:'Fallas en AssignUsPer y son: ' + err.message ,
-                status: response.WARN
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'AssignUsPer',message:err.message , status:response.WARN})
         }
     }
 
@@ -185,10 +185,7 @@ export class ModuleMenuPermissionsUseCase {
 
         }catch(err){
             console.log('Fallas en UpdUsePerm y son: ' + err.message);
-            return {
-                message: 'Fallas en UpdUsePerm y son: ' + err.message , 
-                status: response.WARN
-            }
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'UpdUsePerm',message:err.message , status:response.WARN})
         }
     }
 }
