@@ -3,14 +3,23 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 import { AuthService } from "src/auth/auth.service";
 import { ClientRepository } from "../../infraestructura/prisma/clients.repository";
+import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
+import { Prisma } from "@prisma/client";
+import { tatus } from "src/common/enum/typeStatus";
 
 @Injectable()
 export class ClientsUseCase{
-    constructor(private clientRepository: ClientRepository){}
+    constructor(
+        private clientRepository: ClientRepository,
+        private personRepository: PersonRepository ,
+        private prisma:PrismaService
 
+    ){}
+    
     async createClient(data:any){
         try{
-            const client = await this.clientRepository.createdClients({
+            let variables = {
+                ci: data.ci,
                 firstName: data.firstName,
                 lastName: data.lastName,
                 NIT: data.NIT,
@@ -18,13 +27,44 @@ export class ClientsUseCase{
                 email: data.email,
                 address:data.address,
                 isActive:true,
-                status: 1
+                cityId:data.cityId,
+            }
+
+
+            const result = await this.prisma.$transaction(async (prisma) => {
+                const persona = await this.personRepository.createPerson(prisma,{
+                    ci:variables.ci,
+                    firstName: variables.firstName ,
+                    lastName: variables.lastName ,
+                    phone:variables.phone,
+                    address: variables.address ,
+                    status: tatus.ACTIVE,
+                    cityId: variables.cityId ,
+                    createdAt: new Date() ,
+                    updatedAt: new Date()
+                })
+
+                const client = await this.clientRepository.createdClients({
+                    personId: persona.id,  // Relacionamos con la persona creada
+                    NIT: variables.NIT,
+                    email: variables.email,
+                    isActive: variables.isActive,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+                
+                return { persona, client };
             })
+
+            
 
         return {
             message:'creacion exitosa del client',
             status:201,
-            createClient:client
+            createClient:{
+                client: result.client,
+                person: result.persona
+            }
         }
         }catch(err){
             console.log('[LOG] siguientes problemas:' + err.message)

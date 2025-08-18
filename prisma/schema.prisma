@@ -149,6 +149,8 @@ model Persona {
   judges          Judge[]
   natural_persons Natural_Person[]
   legal_entity    Legal_Entity[]
+  providers       Provider[]
+  clients         Clients[]
 }
 
 model Lawyer {
@@ -230,43 +232,29 @@ model Branch_Office {
 //-------------------------------------------------------------------
 
 model Provider {
-  id Int @id @default(autoincrement())
-  firstName String
-  lastName  String
-  NIT       String
-  phone     String
-  email     String
-  address   String
+  id          Int @id @default(autoincrement())
+  NIT         String?
+  cellphone   String?
+  email       String
   typeProvider  String?
-  isActive  Boolean
-  status    Int
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  isActive    Boolean
+  status      Int
+  personId    Int
+  person      Persona? @relation(fields: [personId] , references: [id])
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
 }
 
 model Clients {
-  id Int @id @default(autoincrement())
-  firstName String
-  lastName  String
-  phone     String
+  id        Int @id @default(autoincrement())
   email     String
+  cellphone String?
   NIT       String
+  isIntern  Boolean
   isActive  Boolean
   status    Int
+  personId  Int
+  person    Persona? @relation(fields: [personId], references: [id])
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 } 
-
-model External_personal {
-  id        Int @id @default(autoincrement())
-  firstName String?
-  lastName  String?
-  phone     String?
-  email     String?
-  type      Int
-  description String
-  status    Int
-  dateOfBirth DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
