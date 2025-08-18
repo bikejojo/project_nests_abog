@@ -7,27 +7,24 @@ export class ClientRepository {
     async createdClients(data:any){
         return this.prisma.clients.create({
             data:{
-                firstName:data.firstName,
-                lastName:data.lastName,
-                phone:data.phone,
-                email:data.email,
-                NIT:data.NIT,
+                personId: data.personId,
+                email: data.email,
+                NIT: data.NIT,
+                isIntern: data.isIntern, // Make sure to provide this value when calling createdClients
                 isActive: true,
-                status:1,
-                createAt: new Date,
-                updateAt: new Date
+                status: 1,
+                createAt: new Date(),
+                updateAt: new Date()
             }
         })
     }
     async updatedClients(data:any){
         return this.prisma.clients.update({where:{id:data.id}, 
             data:{
-                firstName:data.firstName,
-                lastName:data.lastName,
-                phone:data.phone ,
-                email:data.email,
-                NIT:data.NIT,
-                updateAt: new Date,
+                personId: data.personId,
+                email: data.email,
+                NIT: data.NIT,
+                updateAt: new Date(),
             }
         })
     }

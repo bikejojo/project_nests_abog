@@ -6,12 +6,6 @@ export class Clients {
     Id: number
 
     @Field()
-    firstName: string
-
-    @Field()
-    lastName: string
-
-    @Field()
     phone: string
 
     @Field()
