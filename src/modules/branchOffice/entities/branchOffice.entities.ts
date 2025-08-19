@@ -11,7 +11,7 @@ export class Branch_Office {
     @Field()
     address: string
 
-    @Field()
+    @Field(()=>String , {nullable:true})
     phone: string
 
     @Field(()=>Int , {nullable:true})

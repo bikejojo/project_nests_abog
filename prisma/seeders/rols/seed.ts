@@ -9,8 +9,9 @@ async function main(){
     const roles = [
         { name: "Administrador", status: 1 },
         { name: "Abogado", status: 1 },
-        { name: "Juez",  status: 1 },
-        { name: "Client",  status: 1 }
+        { name: "Fiscal", status: 1 },
+        { name: "Juez", status: 1 },
+        { name: "Cliente",  status: 1 }
     ];
 
     const user = await prisma.user.findUnique({

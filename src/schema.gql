@@ -18,8 +18,17 @@ type Branch_Office {
   address: String!
   id: ID!
   name: String!
-  phone: String!
+  phone: String
   status: Int
+}
+
+input CreateBranchOfficeInput {
+  address: String!
+  cityId: Float!
+  email: String
+  name: String!
+  phone: String
+  status: Float
 }
 
 input CreateUserInput {
@@ -140,6 +149,7 @@ type Mutation {
   createLegalEntity(data: createLegalEntityInput!): createLegalEntityOutPut!
   createPersonNatural(data: createNaturalPersonInput!): createNaturalPersonOutPut!
   createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
+  createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
   deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
   deleteLegalEntity(data: deleteLegalEntityInput!): deleteLegalEntityOutPut!
   deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
@@ -151,6 +161,7 @@ type Mutation {
   updateJudge(data: updateJudgeInput!): updateJudgeOutPut!
   updatePersonNatural(data: updateNaturalPersonInput!): updateNaturalPersonOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
+  updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
   updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
   updatedLegalEntity(data: updateLegalEntityInput!): updateLegalEntityOutPut!
 }
@@ -256,6 +267,22 @@ type contentModuleMenuPermissions {
 type contentPermissions {
   permissionsId: Float!
   permissionsName: String
+}
+
+type createBranchOfficeOutPut {
+  dataBranchOffice: createDataBranchOffice
+  message: String
+  status: Float!
+}
+
+type createDataBranchOffice {
+  address: String!
+  cityId: Float!
+  email: String
+  id: ID!
+  name: String!
+  phone: String
+  status: Float
 }
 
 input createDocumentsInput {
@@ -474,6 +501,32 @@ type personData {
   id: Float!
   lastName: String!
   phone: String!
+}
+
+input updateBranchOfficeInput {
+  address: String!
+  cityId: Float!
+  email: String
+  id: ID!
+  name: String!
+  phone: String
+  status: Float
+}
+
+type updateBranchOfficeOutPut {
+  dataBranchOffice: updateDataBranchOffice
+  message: String
+  status: Float!
+}
+
+type updateDataBranchOffice {
+  address: String!
+  cityId: Float!
+  email: String
+  id: ID!
+  name: String!
+  phone: String
+  status: Float
 }
 
 input updateJudgeInput {

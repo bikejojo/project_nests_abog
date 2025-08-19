@@ -20,39 +20,30 @@ async function main(){
             "Usuario": [
                 "Crear_usuario",
                 "Editar_usuario",
-                "Eliminar_usuario"
+                "Eliminar_usuario",
+                "Listar_usuarios",
+            ],
+            "Permisos":[
+                "Crear_permiso",
+                "Editar_permiso",
+                "Eliminar_permiso",
+                "Listar_permisos",
+                "Asignar_permisos",
             ],
             "Sucursal":[
                 "Crear_sucursal",
                 "Editar_sucursal",
                 "Eliminar_sucursal",
-            ],
-            "Cargos":[
-                "Crear_cargo",
-                "Editar_cargo",
-                "Eliminar_cargo",
-            ],
-            "Abogados":[
-                "Crear_abogado",
-                "Editar_abogado",
-                "Eliminar_abogado",
             ]
         },
 
         "PERSONAS" :{
-            "Juez":[
-                "Crear_juez",
-                "Editar_juez",
-                "Eliminar_juez",
-                "Listar_jueces",
-                "Inactiva_juez"
-            ],
-            "Abogado":[
-                "Crear_abogado",
-                "Editar_abogado",
-                "Eliminar_abogado",
-                "Listar_abogado",
-                "Inactiva_juez",
+            "Operador":[
+                "Crear_operador",
+                "Editar_operador",
+                "Eliminar_operador",
+                "Listar_operadores",
+                "Inactiva_operador",
             ],
             "Cliente":[
                 "Crear_cliente",

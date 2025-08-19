@@ -15,10 +15,10 @@ export class updateBranchOfficeInput {
     @Field()
     cityId: number;
 
-    @Field( {nullable:true})
+    @Field(()=> String, {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(()=> String, { nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
@@ -40,19 +40,20 @@ export class updateDataBranchOffice{
     @Field()
     cityId: number;
 
-    @Field( {nullable:true})
+    @Field(()=> String, {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(()=> String, { nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
     status?: number;
 }
 
+@ObjectType()
 export class updateBranchOfficeOutPut {
     
-    @Field()
+    @Field(()=> String, {nullable:true})
     message:string | null
 
     @Field()

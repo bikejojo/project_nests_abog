@@ -26,7 +26,8 @@ import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/l
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      playground: true,
+      playground: false, // Desactiva el antiguo Playground
+      introspection: true, // Necesario para Apollo Sandbox
     }),
     AuthModule,
     UserModule,

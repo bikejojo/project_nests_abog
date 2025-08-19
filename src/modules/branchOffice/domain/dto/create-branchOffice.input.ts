@@ -11,10 +11,10 @@ export class CreateBranchOfficeInput {
     @Field()
     cityId: number;
 
-    @Field( {nullable:true})
+    @Field(() => String , {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(() => String ,{ nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
@@ -36,10 +36,10 @@ export class createDataBranchOffice{
     @Field()
     cityId: number;
 
-    @Field( {nullable:true})
+    @Field(()=> String , {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(() => String ,{ nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
@@ -48,7 +48,7 @@ export class createDataBranchOffice{
 
 @ObjectType()
 export class createBranchOfficeOutPut {
-    @Field()
+    @Field(()=> String, {nullable:true})
     message: string
 
     @Field()
