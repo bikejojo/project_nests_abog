@@ -12,7 +12,8 @@ import { isStatus, status, tatus } from "src/common/enum/typeStatus";
 import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
-import { UpdateUserInput } from "../dto/update-user.input";
+import { UpdateUserPersonInput } from "../dto/update-user.input";
+import { first } from "rxjs";
 @Injectable()
 export class UserUseCase {
 
@@ -195,7 +196,7 @@ export class UserUseCase {
         }
     }
 
-    async updateUserPerson(data:UpdateUserInput){
+    async updateUserPerson(data:UpdateUserPersonInput){
         let user:any     = null;
         let person:any   = null;
         
@@ -245,7 +246,13 @@ export class UserUseCase {
                 type: 'Usuario',
                 message: 'actualizado correctamente',
                 status: response.NICE,
-                content: result.user
+                content: {
+                    userId: result.user.id,
+                    email: result.user.email,
+                    firstName: result.person.firstName,
+                    lastName: result.person.lastName,
+                    ci: result.person.ci
+                }
             });
 
         } catch(err){

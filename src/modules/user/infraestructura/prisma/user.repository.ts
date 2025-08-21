@@ -1,8 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../../prisma/prisma.service"
 import { Prisma, User as PrismaUser } from '@prisma/client';
-import { CreateUserInput } from "../../domain/dto/create-user.input";
-import { UpdateUserInput } from "../../domain/dto/update-user.input";
 import { LoginUserInput } from "../../domain/dto/login-user.input";
 import { Token } from "graphql";
 

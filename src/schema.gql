@@ -153,6 +153,7 @@ type Mutation {
   logout: LogoutUserOutPut!
   updateClients(data: updateClientInput!): updateClientOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
+  updateUserPerson(data: UpdateUserPersonInput!): UpdateUserOutPut!
   updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
   updatedLegalEntity(data: updateLegalEntityInput!): updateLegalEntityOutPut!
 }
@@ -218,8 +219,56 @@ type Query {
   findIdClients(data: findIdClientInput!): findIdClientOutPut!
 }
 
+type UpdateUserOutPut {
+  """mensaje de respuesta"""
+  message: String!
+
+  """contenido de la respuesta de user"""
+  response: UserContent
+
+  """status de la respuesta"""
+  status: Int!
+}
+
+input UpdateUserPersonInput {
+  """Numero de cedula de identidad"""
+  ci: String
+
+  """Correo del usuario"""
+  email: String
+
+  """Nombre del usuario"""
+  firstName: String
+
+  """Identificador unico del usuario"""
+  id: Int!
+
+  """Apellido del usuario"""
+  lastName: String
+
+  """Password de usuario actualizado"""
+  password: String
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+type UserContent {
+  """Numero de cedula de identidad"""
+  ci: String!
+
+  """Correo del usuario"""
+  email: String!
+
+  """Nombre del usuario"""
+  firstName: String!
+
+  """Apellido del usuario"""
+  lastName: String!
+
+  """Identificador unico del usuario"""
+  userId: Int!
+}
 
 type UserResponse {
   email: String!
