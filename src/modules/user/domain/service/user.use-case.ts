@@ -12,6 +12,7 @@ import { isStatus, status, tatus } from "src/common/enum/typeStatus";
 import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
+import { UpdateUserInput } from "../dto/update-user.input";
 @Injectable()
 export class UserUseCase {
 
@@ -31,7 +32,6 @@ export class UserUseCase {
             const user = await this.userRepository.login(data.username);
 
             if(!user){
-               
                 return {
                     message: 'El usuario no existe',
                     status: response.FALL ,
@@ -90,10 +90,10 @@ export class UserUseCase {
                 menus: (user1?.menuUser ?? []).map(m => m.menu),
                 permissions: (user1?.permissionsUser ?? []).map(p => p.permissions)
             };
-            //console.log('b',payloadUser)
-            let jwtToken = await this.authService.generateToken(payloadUser);
-            //console.log('a',jwtToken);
+
+            let jwtToken = await this.authService.generateToken(payloadUser); 
             this.userRepository.saveToken(jwtToken.token , user );
+
             return {
                 message: 'Inicio de sesión exitoso',
                 status: response.NICE ,
@@ -101,7 +101,6 @@ export class UserUseCase {
                     id:user.id ,
                     type: user.type, // 1: empresa, 2: abogado, 3: admin
                     token: jwtToken.token,
-                    //role: user.rols,
                     module:userModules ,
                     menu: userMenu ,
                     permissions: userPermissions
@@ -135,9 +134,8 @@ export class UserUseCase {
     }
 
     async createUserPerson(data:CreateUserInput){
-        let user:any = null;
-        let person: any = null;
-        const startTime = Date.now();
+        let user:any    = null;
+        let person:any  = null;
 
         try{
             const result  = await this.prisma.$transaction(
@@ -177,7 +175,7 @@ export class UserUseCase {
                         user: { ...user, person: person },
                         person,
                         success: true,
-                        executionTime: Date.now() - startTime
+                        executionTime: Date.now()
                     };
                 },{ maxWait: 10000, timeout: 5000 }
             );
@@ -194,6 +192,69 @@ export class UserUseCase {
             status: response.WARN,
             content: null
         });
+        }
+    }
+
+    async updateUserPerson(data:UpdateUserInput){
+        let user:any     = null;
+        let person:any   = null;
+        
+        try {
+            const verificationPerson = await this.personaRepository.findedPersona({id:data.id});
+            
+            if(!verificationPerson){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    type: 'Error',
+                    message: 'Persona no encontrada',
+                    status: response.FALL,
+                    content: null
+                });
+            }
+
+            const result = await this.prisma.$transaction(
+                async (tx) => {
+                    user = await this.userRepository.updateUser({
+                        id: verificationPerson?.userId,
+                        email: data.email ?? verificationPerson.user?.email,
+                        password: data.password ? await bcrypt.hash(data.password, 10) : verificationPerson.user?.password,
+                        type: verificationPerson.user?.type,
+                        isActive: verificationPerson.user?.isActive,
+                        status: verificationPerson.user?.status,
+                    },tx)
+
+                    if(!user){
+                        throw new Error('Error al actualizar el usuario');
+                    }
+
+                    person = await this.personaRepository.updatePersona(tx,{
+                        id: verificationPerson?.id,
+                        ci: data.ci ?? verificationPerson?.ci,
+                        firstName: data.firstName ?? verificationPerson?.firstName,
+                        lastName: data.lastName ?? verificationPerson?.lastName,
+                        phone:  verificationPerson?.phone,
+                        address: verificationPerson?.address,
+                        status: verificationPerson?.status,
+                    })
+
+                    return {user , person};
+                }
+
+            )
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({
+                type: 'Usuario',
+                message: 'actualizado correctamente',
+                status: response.NICE,
+                content: result.user
+            });
+
+        } catch(err){
+            return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                type: 'Error',
+                message: 'al actualizar usuario: ' + err.message,
+                status: response.WARN,
+                content: null
+            });
         }
     }
 }

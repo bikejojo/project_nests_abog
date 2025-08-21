@@ -43,7 +43,7 @@ export class PersonRepository {
                 id:data.id
             },
             data:{
-                status:data.status
+                status:0
             }
         })
     }
@@ -52,6 +52,9 @@ export class PersonRepository {
         return await this.prisma.persona.findUnique({
             where:{
                 id:data.id
+            },
+            include:{
+                user:true
             }
         })
     }

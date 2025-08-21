@@ -8,15 +8,18 @@ import { WarningResponseStrategy } from "src/common/responses/warning-response.s
 
 @Injectable()
 export class CityUseCase {
+    private responseContext:any;
+
     constructor(
         private readonly cityRepository: CityRepository
-    ){}
+    ){
+        this.responseContext = new ResponseContext();
+    }
 
-    private responseContext = new ResponseContext();
     async listCityData(){
         try {
             const city = await this.cityRepository.listCity();
-
+            
             if( !city ){
                 return this.responseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'ID de ciudad',status:response.FALL});
             }
@@ -25,11 +28,11 @@ export class CityUseCase {
                 return this.responseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'No existe listado de ciudades',status:response.FALL})            
             }
 
-            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Listado' , message:'ciudades',status:response.NICE })
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Listado' , message:'ciudades',status:response.NICE , content: city.map((item:any) => ({id: item.id, description: item.description}))});
 
         }catch(err){
             console.log('Las fallas en LstCity son: ' + err.message)
-            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'LstCity',message:err.message , status:response.WARN})
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'LstCity',message:err.message , status:response.WARN , content: null});
         }
     }
 }

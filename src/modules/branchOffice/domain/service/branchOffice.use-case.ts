@@ -37,7 +37,7 @@ export class BranchOfficeUseCase {
             return {
                 message: 'Retorno valores exitoso. !!',
                 status: response.NICE,
-                allBranchOffice: branch
+                response: branch
             }
         }catch(err){
             console.log('Las fallas en LstBrnch son: ' + err.message)

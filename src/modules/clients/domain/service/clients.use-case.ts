@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client";
 import { status, tatus } from "src/common/enum/typeStatus";
 import { createClientsInput } from "../dto/create-clients.input";
 import { updateClientInput } from "../dto/update-clients.input";
+import { deleteClientInput } from "../dto/delete-clients.input";
 
 @Injectable()
 export class ClientsUseCase{
@@ -69,7 +70,7 @@ export class ClientsUseCase{
     async updateClient(data:updateClientInput){
         try{
             const clientVerification = await this.clientRepository.findIdClients({id:data.id});
-            console.log('clientVerification', clientVerification);
+            //console.log('clientVerification', clientVerification);
             const personVerification = await this.personRepository.findedPersona({id:clientVerification?.personId})
             //console.log('personVerification', personVerification);
             if(!clientVerification){
@@ -146,27 +147,37 @@ export class ClientsUseCase{
         }
     }
 
-    async deleteClient(data:any){
+    async deleteClient(data:deleteClientInput){
+        let clients:any = null;
+        let person:any = null;
         try {
-            const verificationClient = await this.clientRepository.findIdClients(data);
-            if(verificationClient?.status === 0 ){
-                return {
-                    message:'Este objeto se encuentra en deshabilidato',
-                    status:301
-                }
-            }
+            const result = await this.prisma.$transaction(
+                async (tx) => {
+                    const verificationClient = await this.clientRepository.findIdClients({id:data.id});
 
-            const clients = await this.clientRepository.deletedClients(data);
+                    if(verificationClient?.status === 0 ){
+                        return {
+                            message:'Este objeto se encuentra en deshabilidato',
+                            status:301
+                        }
+                    }
+                    person = await this.personRepository.deletePersona(tx,{
+                                    id:verificationClient?.personId
+                                });
+                    clients = await this.clientRepository.deletedClients(data,tx);
 
-            if(!clients){
-                return {
-                    message:'Surgio un problema con el objeto ',
-                    status:401
+                    if(!clients){
+                        return {
+                            message:'Surgio un problema con el objeto ',
+                            status:401
+                        }
+                    }
+
                 }
-            }
+            )
 
             return {
-                message:'Creacion exitosa del cliente',
+                message:'Eliminacion exitosa del cliente',
                 status:201,
                 deleteClient:clients
             }
@@ -205,18 +216,42 @@ export class ClientsUseCase{
         }
     }
     async allClient(){
-        const allClients = await this.clientRepository.allClients();
-        if(!allClients){
-            return{
-                message:'objeto con problemas de conexiones.',
-                status:301
+        try{
+            const allClients = await this.clientRepository.allClients();
+            
+            if(!allClients){
+                return{
+                    message:'objeto con problemas de conexiones.',
+                    status:301
+                }
             }
-        }
 
-        return{
-            message:'Consulta exitosa',
-            status:201,
-            allClients:allClients
+            if(allClients.length === 0){
+                return {
+                    message:'No se encontraron objetos',
+                    status: 301
+                }
+            }
+
+            return {
+                message:'Excelente se encontraron los objetos',
+                status: 201,
+                allClients: allClients.map(client => ({
+                    id: client.id ,
+                    firtName: client.person.firstName,
+                    lastName: client.person.lastName,
+                    phone: client.person.phone, 
+                    address: client.person.address,
+                    NIT: client.NIT
+                }))
+            }
+        
+        }catch(err){
+            console.log('[LOG] Se presentaron los siguientes errores: ' + err.message)
+            return {
+                message:'En AllCli se presentaron fallas: ' + err.message,
+                status: 501
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-import { ObjectType , InputType , Field , ID  } from "@nestjs/graphql";
+import { ObjectType , InputType , Field , ID, Int  } from "@nestjs/graphql";
 
 @InputType()
 export class createClientsInput {
@@ -26,22 +26,22 @@ export class createClientsInput {
 
 @ObjectType()
 export class clientsData {
-    @Field(()=> ID)
+    @Field(()=> Int , {description:'Identificador unico del cliente'})
     id: number
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"nombre del cliente"})
     firtName: string
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"apellido del cliente"})
     lastName: string
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"numero de telefono del cliente"})
     phone: string
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"direccion del cliente"})
     address: string
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"NIT de cliente"})
     NIT: string
 
 }

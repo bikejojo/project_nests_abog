@@ -3,9 +3,12 @@
 # ------------------------------------------------------
 
 type AllCityDataOutPut {
-  allCity: [DataCity!]
+  """Mensaje de la operacion"""
   message: String!
-  status: Float!
+  response: [DataCity!]
+
+  """Estado de la operacion"""
+  status: Int!
 }
 
 type AllModuleMenuPermissionDataOutPut {
@@ -49,8 +52,11 @@ input CreateUserInput {
 }
 
 type DataCity {
-  description: String!
-  id: Float!
+  """Nombre de la ciudad"""
+  description: String
+
+  """Identificador unico de la ciudad"""
+  id: Int!
 }
 
 """
@@ -226,15 +232,16 @@ type UserResponse {
 }
 
 type allBranchOfficeOutPut {
-  allBranchOffice: [Branch_Office!]
+  """Mensaje de la operacion"""
   message: String!
+  response: [Branch_Office!]
   status: Float!
 }
 
 type allClientOutPut {
   allClients: [clientsData!]
   message: String!
-  status: Float!
+  status: Int!
 }
 
 input assingUserDataInput {
@@ -250,17 +257,29 @@ type assingUserDataOutPut {
 }
 
 type city {
-  description: String!
+  """nombre de la ciudad"""
+  description: String
   id: ID!
 }
 
 type clientsData {
-  NIT: String!
-  address: String!
-  firtName: String!
-  id: ID!
-  lastName: String!
-  phone: String!
+  """NIT de cliente"""
+  NIT: String
+
+  """direccion del cliente"""
+  address: String
+
+  """nombre del cliente"""
+  firtName: String
+
+  """Identificador unico del cliente"""
+  id: Int!
+
+  """apellido del cliente"""
+  lastName: String
+
+  """numero de telefono del cliente"""
+  phone: String
 }
 
 type contentMenuPermissions {

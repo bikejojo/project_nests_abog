@@ -1,27 +1,27 @@
-import { ObjectType , Field , ID } from "@nestjs/graphql";
+import { ObjectType , Field , ID, Int } from "@nestjs/graphql";
 import { Branch_Office } from "../../entities/branchOffice.entities";
 
 @ObjectType()
 export class allBranchOfficeData {
-    @Field()
+    @Field(()=>Int , {description:'Identificador unico de la sucursal'})
     id: number
 
-    @Field()
+    @Field(()=>String , {description:'Nombre de la sucursal'})
     name: string
 
-    @Field()
+    @Field(()=> Int , {description:'Estado de la sucursal, 1 activo, 0 inactivo'})
     status: number
     
 }
 
 @ObjectType()
 export class allBranchOfficeOutPut {
-    @Field()
+    @Field(()=>String , {description:'Mensaje de la operacion'})
     message: string
 
     @Field()
     status: number
 
     @Field(()=> [Branch_Office] , {nullable:true})
-    allBranchOffice: Branch_Office[] | null    
+    response: Branch_Office[] | null    
 }

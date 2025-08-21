@@ -5,31 +5,28 @@ export class updatePersonLawyerInput {
     @Field(()=>ID)
     id: number
 
-    @Field()
+    @Field(()=>String, {description:"serie de numeros de celula de identidad",nullable:true})
     ci: string
 
-    @Field()
+    @Field(()=>String, {description:"nombres de la persona",nullable:true})
     firstName: string
 
-    @Field()
+    @Field(()=>String, {description:"apellidos de la persona",nullable:true})
     lastName: string
 
     @Field()
     cityId: number
 
-    @Field()
+    @Field(()=>String, {description:"numero de telefono de la persona",nullable:true})
     phone: string
 
-    @Field()
+    @Field(()=>String, {description:"direccion de la persona",nullable:true})
     address: string
 
-    @Field()
+    @Field(()=>String, {description:"actualizacion de password",nullable:true})
     password: string
 
-    @Field()
-    isFiscal: boolean
-
-    @Field()
+    @Field(()=>String, {description:"correo de la persona",nullable:true})
     isInterno: boolean
 }
 

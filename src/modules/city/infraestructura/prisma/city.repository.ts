@@ -8,6 +8,8 @@ export class CityRepository {
     ){}
 
     async listCity(){
-        return await this.prisma.city.findMany();
+        return await this.prisma.city.findMany(
+            {orderBy:{id:'asc'}}
+        );
     }
 }

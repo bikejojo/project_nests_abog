@@ -11,7 +11,6 @@ export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
     async login(email: string) {
-        //console.log(email);
         return await this.prisma.user.findUnique({
             where: {
                 email: email
@@ -99,10 +98,33 @@ export class UserRepository {
             where:{
                 id:data.id
             },
-            select: { id: true, email: true,  password:true, token:true,type:true, isActive:true,status:true,roleId:true,
+            select: { 
+                id: true, 
+                email: true,  
+                password: true, 
+                token: true,
+                type: true, 
+                isActive: true,
+                status: true,
+                roleId: true,
                 moduleUser: { select: { modules: { select: { id: true, name: true } } } },
                 menuUser: { select: { menu: { select: { id: true, name: true } } } },
-                permissionsUser: { select: { permissions: { select: { id: true, name: true } } } }
+                permissionsUser: { select: { permissions: { select: { id: true, name: true } } } },
+                persona: true
+            }
+        });
+    }
+
+    async updateUser(data: any, tx?: Prisma.TransactionClient) {
+        const prisma = tx || this.prisma;
+        return await prisma.user.update({
+            where: { id: data.id },
+            data: {
+                email: data.email,
+                password: data.password,
+                type: data.type,
+                isActive: data.isActive,
+                status: data.status,
             }
         });
     }

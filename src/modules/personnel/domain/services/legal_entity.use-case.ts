@@ -180,12 +180,4 @@ export class LegalEntityUseCase {
         }
     }
 
-    async allListLegalEntityStatus(){
-        try {
-
-        }catch(err){
-            console.log();
-
-        }
-    }
 }

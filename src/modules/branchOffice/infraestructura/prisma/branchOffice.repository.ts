@@ -11,6 +11,9 @@ export class BranchOfficeRepository {
         return await this.prisma.branch_Office.findMany({
             where:{
                 status:1
+            },
+            orderBy:{
+                id:'asc'
             }
         });
     }

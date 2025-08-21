@@ -5,6 +5,6 @@ export class city {
     @Field(()=>ID)
     id: number
 
-    @Field()
+    @Field(()=>String , {nullable:true, description:"nombre de la ciudad"})
     description: string
 }
