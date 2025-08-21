@@ -1,15 +1,15 @@
-import { ObjectType , InputType , Field , ID  } from "@nestjs/graphql";
+import { ObjectType , InputType , Field , ID, Int  } from "@nestjs/graphql";
 import { clientsData } from "./create-clients.input";
 
 
 @InputType()
 export class deleteClientInput {
-    @Field()
+    @Field(()=>Int, {description:'Identificador unico del cliente'})
     id: number
 }
 
 @ObjectType()
-export class daleteClientOutPut {
+export class deleteClientOutPut {
     @Field()
     message: string
 

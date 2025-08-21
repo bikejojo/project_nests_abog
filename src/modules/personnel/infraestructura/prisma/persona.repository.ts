@@ -6,7 +6,8 @@ import { Prisma } from "@prisma/client";
 export class PersonRepository {
     constructor(private readonly prisma:PrismaService){}
 
-    async createPerson(prisma: Prisma.TransactionClient , data:any){
+    async createPerson(data: any, tx?: Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
         return await prisma.persona.create({
             data:{
                 ci:data.ci ,
@@ -15,9 +16,8 @@ export class PersonRepository {
                 phone: data.phone,
                 address: data.address , 
                 status: data.status ,
-                createdAt: data.createdAt ,
-                updatedAt: data.updatedAt ,
-                cityId:data.cityId
+                cityId:data.cityId ,
+                userId: data.userId ?? null
             }
         })
     }

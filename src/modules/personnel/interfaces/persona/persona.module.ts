@@ -6,15 +6,11 @@ import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserModule } from "src/modules/user/interfaces/user.module";
-import { LawyerModule } from "../lawyer/lawyer.module";
 import { PersonaResolver } from "./persona.resolver";
-import { JudgeModule } from "../judge/judge.module";
 
 @Module({
     imports: [
         AuthModule ,
-        forwardRef(() =>LawyerModule),
-        forwardRef(()=> JudgeModule ),
         forwardRef(() => UserModule),
         JwtModule.register({
             secret: jwtConstants.secret ,

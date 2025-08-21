@@ -9,15 +9,13 @@ import { GraphQLModule } from '@nestjs/graphql';
 const { graphqlUploadExpress } = require('graphql-upload');
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { PersonModule } from './modules/personnel/interfaces/persona/persona.module';
-import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
+import { PersonModule } from './modules/personnel/interfaces/persona/persona.module'
 import { CityModule } from './modules/city/interfaces/city.module';
 import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
 import { DocumentsModule } from './modules/documents/interfaces/documents.module';
 import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
-import { JudgeModule } from './modules/personnel/interfaces/judge/judge.module';
-import { NaturalPersonModule } from './modules/personnel/interfaces/natural_person/natural_person.module';
 import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/legal_entity.module';
+import { clientsModule } from './modules/clients/interfaces/clients.module';
 
 @Module({
   imports: [
@@ -26,18 +24,16 @@ import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/l
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      playground: false, // Desactiva el antiguo Playground
+      playground: true, // Desactiva el antiguo Playground
       introspection: true, // Necesario para Apollo Sandbox
     }),
     AuthModule,
     UserModule,
     BranchOfficeModule ,
     CityModule ,
+    clientsModule,
     DocumentsModule,
     PersonModule,
-    JudgeModule,
-    LawyerModule,
-    NaturalPersonModule ,
     LegalEntityModule,
     PrismaModule,
     ModuleMenuPermissionModule

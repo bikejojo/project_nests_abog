@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 export class LegalEntityRepository {
     constructor(private readonly prisma:PrismaService){}
     
-    async createLegalEntity(prisma:Prisma.TransactionClient , data:any){
+    async createLegalEntity(data:any , prisma:Prisma.TransactionClient){
         return await prisma.legal_Entity.create({
             data:{
                 NIT: data.NIT,

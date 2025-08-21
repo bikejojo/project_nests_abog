@@ -2,20 +2,26 @@ import { ObjectType , InputType , Field , ID  } from "@nestjs/graphql";
 
 @InputType()
 export class createClientsInput {
-    @Field()
-    firtName: string
+    @Field(() => String , {nullable:true, description:"nombre del cliente"})
+    firtName: string | null
 
-    @Field()
-    lastName: string
+    @Field(()=> String , {nullable:true, description:"apellido del cliente"})
+    lastName: string | null
 
-    @Field()
+    @Field(()=> String , {nullable:true, description:"numero de telefono del cliente"})
     phone: string
 
-    @Field()
+    @Field( ()=> String , {nullable:true, description:"direccion del cliente"})
     address: string
 
-    @Field()
+    @Field(()=> String , {nullable:true, description:"numero de NIT del cliente"})
     NIT: string
+
+    @Field(()=> String , {nullable:true, description:"correo del cliente"})
+    email: string
+
+    @Field(()=> Boolean , {nullable:true, description:"indica si el cliente es interno o externo"})
+    isIntern: boolean
 }
 
 @ObjectType()

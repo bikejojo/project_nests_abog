@@ -7,9 +7,6 @@ import { jwtConstants } from "src/auth/constants";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PersonModule } from "../persona/persona.module";
 import { LegalEntityResolver } from "./legal_entity.resolver";
-import { NaturalPersonRepository } from "../../infraestructura/prisma/natural_person.repository";
-import { NaturalPersonUseCase } from "../../domain/services/natural_person.use-case";
-import { NaturalPersonResolver } from "../natural_person/natural_person.resolver";
 
 @Module({
   imports: [

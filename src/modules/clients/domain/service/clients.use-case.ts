@@ -5,7 +5,9 @@ import { AuthService } from "src/auth/auth.service";
 import { ClientRepository } from "../../infraestructura/prisma/clients.repository";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
 import { Prisma } from "@prisma/client";
-import { tatus } from "src/common/enum/typeStatus";
+import { status, tatus } from "src/common/enum/typeStatus";
+import { createClientsInput } from "../dto/create-clients.input";
+import { updateClientInput } from "../dto/update-clients.input";
 
 @Injectable()
 export class ClientsUseCase{
@@ -16,56 +18,45 @@ export class ClientsUseCase{
 
     ){}
     
-    async createClient(data:any){
+    async createClient(data:createClientsInput){
+        let persona:any = null;
+        let client:any = null;
+
         try{
-            let variables = {
-                ci: data.ci,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                NIT: data.NIT,
-                phone: data.phone,
-                email: data.email,
-                address:data.address,
-                isActive:true,
-                cityId:data.cityId,
+            const result = await this.prisma.$transaction(
+                async (tx) => {
+                    persona = await this.personRepository.createPerson({
+                        firstName: data.firtName,
+                        lastName: data.lastName,
+                        phone: data.phone,
+                        address: data.address,
+                        status: tatus.ACTIVE,
+                        cityId: 1
+
+                    }, tx); // ← tx como segundo parámetro
+
+                    client = await this.clientRepository.createdClients({
+                        personId: persona.id,
+                        NIT: data.NIT,
+                        email: data.email,
+                        isActive: status.ACTIVE,
+                        cellphone: data.phone, // Añadido si es requerido
+                        isIntern: status.ACTIVE, // Añadido si es requerido
+                        status: tatus.ACTIVE // Añadido si es requerido
+                    }, tx); // ← tx como segundo parámetro
+
+                    return { persona, client };
+                }  
+            );
+
+            return {
+                message:'creacion exitosa del client',
+                status:201,
+                createClient:{
+                    client: result.client,
+                    person: result.persona
+                }
             }
-
-
-            const result = await this.prisma.$transaction(async (prisma) => {
-                const persona = await this.personRepository.createPerson(prisma,{
-                    ci:variables.ci,
-                    firstName: variables.firstName ,
-                    lastName: variables.lastName ,
-                    phone:variables.phone,
-                    address: variables.address ,
-                    status: tatus.ACTIVE,
-                    cityId: variables.cityId ,
-                    createdAt: new Date() ,
-                    updatedAt: new Date()
-                })
-
-                const client = await this.clientRepository.createdClients({
-                    personId: persona.id,  // Relacionamos con la persona creada
-                    NIT: variables.NIT,
-                    email: variables.email,
-                    isActive: variables.isActive,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                });
-                
-                return { persona, client };
-            })
-
-            
-
-        return {
-            message:'creacion exitosa del client',
-            status:201,
-            createClient:{
-                client: result.client,
-                person: result.persona
-            }
-        }
         }catch(err){
             console.log('[LOG] siguientes problemas:' + err.message)
             return {
@@ -74,9 +65,13 @@ export class ClientsUseCase{
             }
         }
     }
-    async updateClient(data:any){
+
+    async updateClient(data:updateClientInput){
         try{
-            const clientVerification = this.clientRepository.findIdClients(data.id);
+            const clientVerification = await this.clientRepository.findIdClients({id:data.id});
+            console.log('clientVerification', clientVerification);
+            const personVerification = await this.personRepository.findedPersona({id:clientVerification?.personId})
+            //console.log('personVerification', personVerification);
             if(!clientVerification){
                 return{
                     message:'Objeto de client no encontrado',
@@ -84,21 +79,62 @@ export class ClientsUseCase{
                 }
             }
 
-            const clients = this.clientRepository.updatedClients({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                NIT: data.NIT,
-                phone: data.phone,
-                email: data.email,
-                address:data.address,
-                isActive:true,
-                status: 1
-            });
+            if(!personVerification){
+                return{
+                    message:'Objeto de person no encontrado',
+                    status:301
+                }
+            }
+
+            let personaUpdate:any = null;
+            let clientUpdate:any = null;
+
+            const result = await this.prisma.$transaction(
+                async (tx) => {
+                    personaUpdate = await this.personRepository.updatePersona(tx,{
+                        id: personVerification?.id,
+                        firstName: data.firstName ?? personVerification?.firstName,
+                        lastname: data.lastName ?? personVerification?.lastName,
+                        phone: data.phone ?? personVerification?.phone,
+                        address: data.address ?? personVerification?.address,
+                    })
+
+                    if(!personaUpdate){
+                        return {
+                            message:'No se pudo actualizar la persona',
+                            status: 501
+                        }
+                    }
+
+                    clientUpdate = await this.clientRepository.updatedClients({
+                        id: clientVerification?.id,
+                        personId: personVerification?.id,
+                        NIT: data.NIT ?? clientVerification?.NIT,
+                        email: data.email ?? clientVerification?.email,
+                        cellphone: data.phone ?? clientVerification?.cellphone,
+                        isIntern: data.isIntern ?? clientVerification?.isIntern,
+                        isActive: data.IsActive ?? clientVerification?.isActive,
+                    },tx)
+
+                    if(!clientUpdate){
+                        return {
+                            message:'No se pudo actualizar el cliente',
+                            status: 501
+                        }
+                    }
+
+                    return { personaUpdate, clientUpdate };
+                }
+
+            )
 
             return {
                 messge:'Actualizacion exitos de cliente',
                 status:201,
-                updateClient:clients
+                updateClient: {
+                    ...clientUpdate,
+                    person: personaUpdate, // ✅ Incluir persona actualizada
+                },
             }
 
         }catch(err){
@@ -109,6 +145,7 @@ export class ClientsUseCase{
             }
         }
     }
+
     async deleteClient(data:any){
         try {
             const verificationClient = await this.clientRepository.findIdClients(data);

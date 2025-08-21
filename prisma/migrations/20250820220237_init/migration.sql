@@ -2,10 +2,8 @@
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT,
-    "name" TEXT NOT NULL,
-    "ci" TEXT,
     "password" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
+    "token" TEXT,
     "type" INTEGER DEFAULT 1,
     "isActive" BOOLEAN NOT NULL,
     "status" INTEGER NOT NULL,
@@ -14,6 +12,38 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Persona" (
+    "id" SERIAL NOT NULL,
+    "ci" TEXT,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "status" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "cityId" INTEGER,
+    "userId" INTEGER,
+
+    CONSTRAINT "Persona_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Operator" (
+    "id" SERIAL NOT NULL,
+    "registrationDate" TIMESTAMP(3) NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "isIntern" BOOLEAN NOT NULL DEFAULT true,
+    "status" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "personId" INTEGER NOT NULL,
+    "branchOfficeId" INTEGER,
+
+    CONSTRAINT "Operator_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -121,67 +151,6 @@ CREATE TABLE "PermissionsUser" (
 );
 
 -- CreateTable
-CREATE TABLE "Persona" (
-    "id" SERIAL NOT NULL,
-    "ci" TEXT,
-    "firstName" TEXT,
-    "lastName" TEXT,
-    "phone" TEXT,
-    "address" TEXT,
-    "status" INTEGER NOT NULL DEFAULT 1,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "cityId" INTEGER,
-
-    CONSTRAINT "Persona_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Lawyer" (
-    "id" SERIAL NOT NULL,
-    "registrationDate" TIMESTAMP(3) NOT NULL,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "isFiscal" BOOLEAN NOT NULL DEFAULT false,
-    "isIntern" BOOLEAN NOT NULL DEFAULT true,
-    "status" INTEGER NOT NULL DEFAULT 1,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" INTEGER,
-    "personId" INTEGER NOT NULL,
-    "branchOfficeId" INTEGER,
-
-    CONSTRAINT "Lawyer_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Judge" (
-    "id" SERIAL NOT NULL,
-    "registratioDate" TIMESTAMP(3) NOT NULL,
-    "description" TEXT,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "isIntern" BOOLEAN NOT NULL DEFAULT true,
-    "status" INTEGER NOT NULL DEFAULT 1,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "personId" INTEGER NOT NULL,
-
-    CONSTRAINT "Judge_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Natural_Person" (
-    "id" SERIAL NOT NULL,
-    "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "description" TEXT,
-    "status" INTEGER NOT NULL DEFAULT 1,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "personId" INTEGER NOT NULL,
-
-    CONSTRAINT "Natural_Person_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Legal_Entity" (
     "id" SERIAL NOT NULL,
     "NIT" TEXT,
@@ -247,14 +216,17 @@ CREATE TABLE "Clients" (
     "isActive" BOOLEAN NOT NULL,
     "status" INTEGER NOT NULL,
     "personId" INTEGER NOT NULL,
-    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Clients_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Persona_userId_key" ON "Persona"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ModuleUser_moduleId_userId_key" ON "ModuleUser"("moduleId", "userId");
@@ -266,13 +238,22 @@ CREATE UNIQUE INDEX "MenuUser_userId_menuId_key" ON "MenuUser"("userId", "menuId
 CREATE UNIQUE INDEX "PermissionsUser_userId_permissionsId_key" ON "PermissionsUser"("userId", "permissionsId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Lawyer_userId_key" ON "Lawyer"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "City_description_key" ON "City"("description");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Persona" ADD CONSTRAINT "Persona_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Persona" ADD CONSTRAINT "Persona_cityId_fkey" FOREIGN KEY ("cityId") REFERENCES "City"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Operator" ADD CONSTRAINT "Operator_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Persona"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Operator" ADD CONSTRAINT "Operator_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "Branch_Office"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ModuleUser" ADD CONSTRAINT "ModuleUser_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -303,24 +284,6 @@ ALTER TABLE "PermissionsUser" ADD CONSTRAINT "PermissionsUser_userId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "PermissionsUser" ADD CONSTRAINT "PermissionsUser_permissionsId_fkey" FOREIGN KEY ("permissionsId") REFERENCES "Permissions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Persona" ADD CONSTRAINT "Persona_cityId_fkey" FOREIGN KEY ("cityId") REFERENCES "City"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Lawyer" ADD CONSTRAINT "Lawyer_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Persona"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Lawyer" ADD CONSTRAINT "Lawyer_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Lawyer" ADD CONSTRAINT "Lawyer_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "Branch_Office"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Judge" ADD CONSTRAINT "Judge_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Persona"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Natural_Person" ADD CONSTRAINT "Natural_Person_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Persona"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Legal_Entity" ADD CONSTRAINT "Legal_Entity_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Persona"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

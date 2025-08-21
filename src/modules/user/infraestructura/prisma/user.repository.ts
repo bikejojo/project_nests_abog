@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../../prisma/prisma.service"
+import { Prisma, User as PrismaUser } from '@prisma/client';
 import { CreateUserInput } from "../../domain/dto/create-user.input";
 import { UpdateUserInput } from "../../domain/dto/update-user.input";
 import { LoginUserInput } from "../../domain/dto/login-user.input";
@@ -9,14 +10,13 @@ import { Token } from "graphql";
 export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
-    async login(name:string) {
+    async login(email: string) {
         //console.log(email);
         return await this.prisma.user.findUnique({
-            where:
-            {
-                name:name
-            } 
-        })
+            where: {
+                email: email
+            }
+        });
     }
 
     async logout(userId:number){
@@ -30,19 +30,17 @@ export class UserRepository {
         });
     }
 
-    async createUser(data:any){
-        return await this.prisma.user.create({
+    async createUser(data: any, tx?: Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.user.create({
             data: {
                 email: data.email,
                 password: data.password,
-                name: data.name,
-                ci:data.ci,
                 token: data.token,
+                type: data.type,
                 isActive: data.isActive,
                 status: data.status,
-                roleId:data.roleId,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                roleId: data.roleId,
             }
         })
     }
@@ -101,7 +99,7 @@ export class UserRepository {
             where:{
                 id:data.id
             },
-            select: { id: true, email: true, name:true , ci:true , password:true, token:true,type:true, isActive:true,status:true,roleId:true,
+            select: { id: true, email: true,  password:true, token:true,type:true, isActive:true,status:true,roleId:true,
                 moduleUser: { select: { modules: { select: { id: true, name: true } } } },
                 menuUser: { select: { menu: { select: { id: true, name: true } } } },
                 permissionsUser: { select: { permissions: { select: { id: true, name: true } } } }

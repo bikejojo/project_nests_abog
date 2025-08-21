@@ -20,7 +20,11 @@ export class LegalEntityUseCase {
     ){}
 
     private ResponseContext = new ResponseContext();
+    
     async createLegalEntity(data:any){
+        let person :any = null;
+        let legalEntity :any = null;
+
         try {
             if(data.phone < 8){
                 return {
@@ -28,51 +32,44 @@ export class LegalEntityUseCase {
                     status: response.FALL
                 }
             }
-            await this.prisma.$transaction(async (prisma)=>{
-                const person = await this.personRespository.createPerson( prisma ,{
-                    ci: data.ci,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    phone: data.phone,
-                    address: data.address,
-                    status: tatus.ACTIVE,
-                    city: data.cityId,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                })
+            const result = await this.prisma.$transaction(
+                async (tx) => {
+                    // ✅ 4. CREAR PERSONA - ORDEN DE PARÁMETROS CORREGIDO
+                    person = await this.personRespository.createPerson({
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        phone: data.phone,
+                        address: data.address,
+                        status: tatus.ACTIVE,
+                        cityId: data.cityId, 
+                    }, tx); // ✅ tx como segundo parámetro
 
-                if(!person){
+
+                    // ✅ 5. CREAR ENTIDAD LEGAL - ORDEN DE PARÁMETROS CORREGIDO
+                    legalEntity = await this.legalEntityRepoository.createLegalEntity(
+                    {
+                        NIT: data.NIT,
+                        companyName: data.companyName,
+                        address: data.address,
+                        registrationDate: new Date(),
+                        legalRepresentative: data.legalRepresentative, // ✅ Corregido typo
+                        typeCompany: data.typeCompany,
+                        personId: person.id,
+                        status: tatus.ACTIVE,
+                    }, tx); // ✅ tx como segundo parámetro
+
+
                     return {
-                        message: 'Surgio un problema de creacion del modelo',
-                        status: response.FALL
-                    }
-                }
-                //const nitNum = parseInt(data.NIT);
-                const legalEntity = await this.legalEntityRepoository.createLegalEntity(prisma , {
-                    NIT: data.NIT,
-                    companyName: data.companyName,
-                    address: data.address,
-                    registrationDate: new Date(),
-                    legalRepresentative: data.legalRepresentative,
-                    typeCompany: data.typeCompany,
-                    personId: person.id,
-                    status: tatus.ACTIVE,
-                })
-
-                if(!legalEntity){
-                    return {
-                        message: 'Surgieron problemas al crear el modelo de Entidad Legal',
-                        status: response.FALL
-                    }
-
-                }
-
-                return {
-                    message: 'Entidad Legal creada correctamente',
-                    status: response.NICE,
-                    data: legalEntity
-                }
-            })          
+                        person,
+                        legalEntity: {
+                            ...legalEntity,
+                            person: person
+                        },
+                        success: true,
+                        executionTime: Date.now()
+                    };
+                }, 
+            )       
         }catch (err) {
             console.log('Error en CrtLegEnt: ', err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({

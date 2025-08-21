@@ -32,12 +32,20 @@ input CreateBranchOfficeInput {
 }
 
 input CreateUserInput {
-  branchOfficeId: Float!
-  email: String
-  lawyerId: Float
-  name: String!
+  """numero de cedula de identidad"""
+  ci: String!
+
+  """correo de usuario"""
+  email: String!
+
+  """nombre de usuario"""
+  firstname: String!
+
+  """apellido de usuario"""
+  lastname: String!
+
+  """contraseña de usuario"""
   password: String!
-  roleId: Float!
 }
 
 type DataCity {
@@ -50,44 +58,29 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Judge {
-  createdAt: DateTime!
-  description: String
-  id: ID!
-  isActive: Boolean!
-  isIntern: Boolean!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
-}
-
-type Lawyer {
-  createdAt: DateTime!
-  id: ID!
-  isActive: Boolean!
-  isFiscal: Boolean!
-  isIntern: Boolean!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
-  userId: Float!
-}
-
 type Legal_Entity {
+  """numero de NIT de la entidad legal"""
   NIT: Float!
+
+  """direccion de la entidad legal"""
   address: String!
+
+  """nombre de la entidad legal"""
   companyName: String!
   createdAt: DateTime!
+
+  """ID de la entidad legal"""
   id: ID!
-  legalRepresentive: String!
   personId: Float!
   persona: Persona!
+
+  """fecha de registro de la entidad legal"""
   registrationDate: DateTime!
+
+  """estado de la entidad legal en el sistema como activo o inactivo"""
   status: Float!
+
+  """nombre de referencia de tipo de compania"""
   typeCompany: String!
   updatedAt: DateTime!
 }
@@ -143,38 +136,19 @@ type Module {
 
 type Mutation {
   assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
+  createClients(data: createClientsInput!): createClientsOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
-  createJudge(data: createJudgeInput!): createJudgeOutPut!
-  createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
   createLegalEntity(data: createLegalEntityInput!): createLegalEntityOutPut!
-  createPersonNatural(data: createNaturalPersonInput!): createNaturalPersonOutPut!
-  createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
+  createUser(data: CreateUserInput!): createUserLawyerOutPut!
   createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
-  deleteJudge(data: deleteJudgeInput!): deleteJudgeOutPut!
+  deleteClients(data: deleteClientInput!): deleteClientOutPut!
   deleteLegalEntity(data: deleteLegalEntityInput!): deleteLegalEntityOutPut!
-  deletedLawyer(data: deletedLawyerInput!): deletedLawyerOutPut!
-  deletedPersonNatural(data: deleteNaturalPersonInput!): deleteNaturalPersonOutPut!
-  inactiveJudge(data: inactiveJudgeInput!): inactiveJudgeOutPut!
-  inactivedLawyer(data: inactiveLawyerInput!): inactiveLawyerOutPut!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
-  updateJudge(data: updateJudgeInput!): updateJudgeOutPut!
-  updatePersonNatural(data: updateNaturalPersonInput!): updateNaturalPersonOutPut!
+  updateClients(data: updateClientInput!): updateClientOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
-  updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
   updatedLegalEntity(data: updateLegalEntityInput!): updateLegalEntityOutPut!
-}
-
-type Natural_Person {
-  createdAt: DateTime!
-  description: String!
-  id: ID!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
 }
 
 type Permissions {
@@ -184,42 +158,71 @@ type Permissions {
   status: Float
 }
 
-type Persona {
+type PersonResponse {
   address: String!
-  ci: String
-  createdAt: DateTime!
-  firstName: String
-  id: ID!
-  judges: Judge
-  lastName: String
-  lawyers: Lawyer
-  legal_Entity: Legal_Entity
-  natural_persons: Natural_Person
-  phone: String
+  ci: String!
+  cityId: Float!
+  firstName: String!
+  id: String!
+  lastName: String!
+  phone: String!
   status: Float!
-  updatedAt: DateTime!
+  userId: String!
+}
+
+type Persona {
+  City: city
+
+  """direccion de domicilio de la persona"""
+  address: String!
+
+  """numero de cedula de identidad"""
+  ci: String
+
+  """ID de la ciudad donde vive ela persona"""
+  cityId: Float!
+  createdAt: DateTime
+
+  """nombre de la persona"""
+  firstName: String
+
+  """ID de la persona"""
+  id: ID!
+
+  """apellido de la persona"""
+  lastName: String
+  legal_Entity: Legal_Entity
+
+  """numero de telefono de la persona"""
+  phone: String
+
+  """estado de la persona en el base de datos como activo o inactivo"""
+  status: Float!
+  updatedAt: DateTime
+
+  """ID de user de la persona"""
+  userId: Float!
 }
 
 type Query {
-  allActiveStatusLawyer: allStatusPersLawyerOutPut!
   allBranchOffice: allBranchOfficeOutPut!
   allCityData: AllCityDataOutPut!
-  allInactiveStatusLawyer: allStatusPersLawyerOutPut!
-  allLawyersStatus: allStatusPersLawyerOutPut!
+  allClients: allClientOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
-  alljudgeActive: allActiveStatusOutPut!
-  listAllActStatusJudge: allActiveStatusOutPut!
-  listAllInactStatusJudge: allActiveStatusOutPut!
-  sayHello: String!
+  findIdClients(data: findIdClientInput!): findIdClientOutPut!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-type allActiveStatusOutPut {
-  message: String!
-  response: [dataJudegeAll!]
+type UserResponse {
+  email: String!
+  id: String!
+  isActive: Boolean!
+  person: PersonResponse
   status: Float!
+  token: String
+  type: Float!
 }
 
 type allBranchOfficeOutPut {
@@ -228,16 +231,10 @@ type allBranchOfficeOutPut {
   status: Float!
 }
 
-type allStatus {
-  fullName: String!
-  id: ID!
+type allClientOutPut {
+  allClients: [clientsData!]
+  message: String!
   status: Float!
-}
-
-type allStatusPersLawyerOutPut {
-  message: String
-  response: [allStatus!]
-  status: Int
 }
 
 input assingUserDataInput {
@@ -250,6 +247,20 @@ input assingUserDataInput {
 type assingUserDataOutPut {
   message: String!
   status: Float!
+}
+
+type city {
+  description: String!
+  id: ID!
+}
+
+type clientsData {
+  NIT: String!
+  address: String!
+  firtName: String!
+  id: ID!
+  lastName: String!
+  phone: String!
 }
 
 type contentMenuPermissions {
@@ -275,6 +286,35 @@ type createBranchOfficeOutPut {
   status: Float!
 }
 
+input createClientsInput {
+  """numero de NIT del cliente"""
+  NIT: String
+
+  """direccion del cliente"""
+  address: String
+
+  """correo del cliente"""
+  email: String
+
+  """nombre del cliente"""
+  firtName: String
+
+  """indica si el cliente es interno o externo"""
+  isIntern: Boolean
+
+  """apellido del cliente"""
+  lastName: String
+
+  """numero de telefono del cliente"""
+  phone: String
+}
+
+type createClientsOutPut {
+  createClient: clientsData
+  message: String!
+  status: Float!
+}
+
 type createDataBranchOffice {
   address: String!
   cityId: Float!
@@ -289,42 +329,6 @@ input createDocumentsInput {
   file: Upload
   id: ID!
   type: Float!
-}
-
-input createJudgeInput {
-  address: String
-  ci: String
-  cityId: Float
-  description: String
-  firstName: String
-  isActive: Boolean
-  isIntern: Boolean
-  lastName: String
-  phone: String
-  registratioDate: DateTime
-}
-
-type createJudgeOutPut {
-  message: String!
-  response: judgeData
-  status: Float!
-}
-
-input createLawyerInput {
-  address: String
-  ci: String!
-  cityId: Float
-  firstName: String!
-  isFiscal: Boolean!
-  isInterno: Boolean!
-  lastName: String!
-  phone: String
-}
-
-type createLawyerOutPut {
-  lawyesData: lawyerData
-  message: String!
-  status: Float!
 }
 
 input createLegalEntityInput {
@@ -348,45 +352,21 @@ type createLegalEntityOutPut {
   status: Float!
 }
 
-input createNaturalPersonInput {
-  address: String
-  ci: String
-  description: String!
-  firstName: String
-  lastName: String
-  phone: String
-  registrationDate: DateTime!
-}
-
-type createNaturalPersonOutPut {
-  message: String!
-  naturalPersonUserData: naturalPersonPersonUserData
-  status: Float!
-}
-
 type createUserLawyerOutPut {
   message: String
+  response: UserResponse
   status: Float!
 }
 
-type dataJudegeAll {
-  address: String!
-  ci: String!
-  fullName: String!
-  id: Float!
+input deleteClientInput {
+  """Identificador unico del cliente"""
+  id: Int!
 }
 
-input deleteJudgeInput {
-  id: ID!
-}
-
-type deleteJudgeOutPut {
+type deleteClientOutPut {
+  deleteClient: clientsData
   message: String!
   status: Float!
-}
-
-type deleteLawyerData {
-  id: Float!
 }
 
 input deleteLegalEntityInput {
@@ -398,68 +378,20 @@ type deleteLegalEntityOutPut {
   status: Float!
 }
 
-input deleteNaturalPersonInput {
-  id: ID!
-}
-
-type deleteNaturalPersonOutPut {
-  message: String
-  status: Float
-}
-
-input deletedLawyerInput {
-  id: ID!
-  status: String
-}
-
-type deletedLawyerOutPut {
-  lawyerData: deleteLawyerData
-  message: String!
-  status: Float!
-}
-
 type documentsDataOutPut {
   documents: String
   message: String
   status: String
 }
 
-input inactiveJudgeInput {
-  id: ID!
-  isActive: Boolean
-}
-
-type inactiveJudgeOutPut {
-  message: String!
-  status: Float!
-}
-
-input inactiveLawyerInput {
-  id: ID!
-  isActive: Boolean
-}
-
-type inactiveLawyerOutPut {
-  message: String!
-  status: Float!
-}
-
-type judgeData {
-  address: String
-  ci: String
-  cityId: Float
-  firstName: String
+input findIdClientInput {
   id: Float!
-  lastName: String
-  phone: String
-  registrationDate: DateTime
 }
 
-type lawyerData {
-  id: ID!
-  isFiscal: Boolean!
-  isIntern: Boolean!
-  registratioDate: DateTime!
+type findIdClientOutPut {
+  findClient: clientsData
+  message: String!
+  status: Float!
 }
 
 type legalEntityData {
@@ -477,20 +409,7 @@ type legalEntityPerson {
   personsData: personData
 }
 
-type naturalPersonData {
-  description: String!
-  id: Float!
-  registrationData: DateTime!
-}
-
-type naturalPersonPersonUserData {
-  naturalPersons: naturalPersonData
-  personDats: personData
-  userDats: userData
-}
-
 type persLawUserData {
-  lawyerData: lawyerData
   personData: personData
   userData: userData
 }
@@ -519,6 +438,41 @@ type updateBranchOfficeOutPut {
   status: Float!
 }
 
+input updateClientInput {
+  """Actualizar si el cliente esta activo o no"""
+  IsActive: Boolean
+
+  """Actualizar Numero de NIT del cliente"""
+  NIT: String
+
+  """Actualizar Direccion del cliente"""
+  address: String
+
+  """Actualizar Correo del cliente"""
+  email: String
+
+  """Actualizar Nombre del cliente"""
+  firstName: String
+
+  """Identificador unico del cliente"""
+  id: Int!
+
+  """Actualizar si el cliente es interno o externo"""
+  isIntern: Boolean
+
+  """Actualizar Apellido del cliente"""
+  lastName: String
+
+  """Actualizar Numero de telefono del cliente"""
+  phone: String
+}
+
+type updateClientOutPut {
+  message: String!
+  status: Float!
+  updateClient: clientsData
+}
+
 type updateDataBranchOffice {
   address: String!
   cityId: Float!
@@ -527,36 +481,6 @@ type updateDataBranchOffice {
   name: String!
   phone: String
   status: Float
-}
-
-input updateJudgeInput {
-  address: String
-  ci: String
-  cityId: Float
-  description: String
-  firstName: String
-  id: ID!
-  isActive: Boolean
-  isIntern: Boolean
-  lastName: String
-  phone: String
-  registrationDate: DateTime
-}
-
-type updateJudgeOutPut {
-  message: String!
-  response: judgeData
-  status: Float!
-}
-
-type updateLawyerData {
-  id: ID!
-}
-
-type updateLawyerOutPut {
-  lawyerData: updateLawyerData
-  message: String!
-  status: Float!
 }
 
 input updateLegalEntityInput {
@@ -580,23 +504,6 @@ type updateLegalEntityOutPut {
   status: Float!
 }
 
-input updateNaturalPersonInput {
-  address: String
-  ci: String
-  description: String
-  firstName: String
-  id: ID!
-  lastName: String
-  phone: String
-  registrationDate: DateTime
-}
-
-type updateNaturalPersonOutPut {
-  message: String!
-  response: String
-  status: Float!
-}
-
 input updateUserModuleMenuPermissionsInput {
   id: ID!
   menuIds: [Int]
@@ -607,16 +514,6 @@ input updateUserModuleMenuPermissionsInput {
 type updateUserModuleMenuPermissionsOutPut {
   message: String!
   status: Float!
-}
-
-input updatelawyerInput {
-  address: String
-  firstName: String
-  id: ID!
-  isFiscal: Boolean
-  isIntern: Boolean
-  lastName: String
-  phone: String
 }
 
 type userData {

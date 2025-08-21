@@ -6,26 +6,32 @@ import { LoginUserInput } from "../dto/login-user.input";
 import * as bcrypt from 'bcrypt';
 import { AuthService } from "../../../../auth/auth.service";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
-import { LawyerRepository } from "src/modules/personnel/infraestructura/prisma/lawyer.repository";
 import { typeUser } from "src/common/enum/typeUser";
 import { response } from "src/common/enum/typeResp";
-import { status, tatus } from "src/common/enum/typeStatus";
+import { isStatus, status, tatus } from "src/common/enum/typeStatus";
+import { ResponseContext } from "src/common/responses/response-context";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 @Injectable()
 export class UserUseCase {
+
+    private responseContext: ResponseContext;
+
     constructor(
-        private prisma: PrismaService,
         private authService: AuthService ,
         private userRepository: UserRepository ,
         private personaRepository: PersonRepository ,
-        private lawyerRepository: LawyerRepository 
-    ) {}
+        private prisma: PrismaService
+    ) {
+         this.responseContext = new ResponseContext()
+    }
 
     async login(data: LoginUserInput){
         try {
             const user = await this.userRepository.login(data.username);
 
             if(!user){
-                //throw new UnauthorizedException('El usuario no existe');
+               
                 return {
                     message: 'El usuario no existe',
                     status: response.FALL ,
@@ -35,7 +41,6 @@ export class UserUseCase {
 
             const validPassword = await bcrypt.compare(data.password, user.password);
             if (!validPassword) {
-                //throw new UnauthorizedException('Credenciales inválidas');
                 return {
                     message: 'Credenciales inválidas',
                     status: response.FALL ,
@@ -44,7 +49,6 @@ export class UserUseCase {
             }
 
             if(user.status === 0){
-                //throw new UnauthorizedException('Usuario inactivo');
                 return {
                     message: 'Usuario inactivo',
                     status: response.FALL ,
@@ -95,8 +99,6 @@ export class UserUseCase {
                 status: response.NICE ,
                 user: {
                     id:user.id ,
-                    name: user.name,
-                    ci: user.ci,
                     type: user.type, // 1: empresa, 2: abogado, 3: admin
                     token: jwtToken.token,
                     //role: user.rols,
@@ -132,81 +134,66 @@ export class UserUseCase {
         }
     }
 
-    async createPersonLawyerUser(data:any){
-        try {
-            const lawyerIds = parseInt(data.lawyerId);
+    async createUserPerson(data:CreateUserInput){
+        let user:any = null;
+        let person: any = null;
+        const startTime = Date.now();
 
-            const lawyerData = await this.lawyerRepository.findLawyerId({
-                id: lawyerIds
+        try{
+            const result  = await this.prisma.$transaction(
+                async (tx) => {
+                    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+                    user = await this.userRepository.createUser({
+                        email: data.email,
+                        password: hashedPassword,
+                        token: '',
+                        type: 0,
+                        isActive: status.ACTIVE,
+                        status: tatus.ACTIVE, 
+                        rolId: null
+                    },tx)
+                    
+                    const cityExists = await tx.city.findUnique({
+                        where: { id: 1 }
+                    });
+
+                    if (!cityExists) {
+                        throw new Error('City with id 1 does not exist');
+                    }
+
+                    person = await this.personaRepository.createPerson({
+                        ci: data.ci,
+                        firstName: data.firstname ,
+                        lastName: data.lastname,
+                        phone: '00000000' ,
+                        address: 'S/N',
+                        status: tatus.ACTIVE,
+                        userId: user.id ,
+                        cityId: cityExists.id,
+                    }, tx)
+
+                    return {
+                        user: { ...user, person: person },
+                        person,
+                        success: true,
+                        executionTime: Date.now() - startTime
+                    };
+                },{ maxWait: 10000, timeout: 5000 }
+            );
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({
+                type: 'Usuario',
+                message: 'creado correctamente',
+                status: response.NICE,
+                content: result.user
             });
-
-            //console.log(lawyerData)
-                ;
-            if(!lawyerData){
-                return {
-                    message:'Fallas en el obtencion de datos de abogado' ,
-                    status: response.FALL
-                }
-            }
-
-            if(lawyerData.userId){
-                return {
-                    message:'El abogado se registro previamente.' ,
-                    status: response.FALL
-                }
-            }
-
-            const hashedPassword = await bcrypt.hash(data.password, 10);
-
-            const user = await this.userRepository.createUser({
-                name: data.name ,//`${lawyerData.persona.firstName}_${lawyerData.persona.lastName}` ,
-                email: data.email,
-                ci: lawyerData.persona.ci , 
-                password: hashedPassword ,
-                isActive: status.ACTIVE,
-                status: tatus.ACTIVE,
-                type: typeUser.LawyerIntern ,
-                token: '' ,
-                roleId: data.roleId
-            })
-
-            if(!user){
-                return{
-                    message:'El registro de user fue incorrecto !!!' ,
-                    status: response.FALL
-                }
-            }
-            await this.prisma.$transaction(async (prisma) => {
-                 const lawyer = await this.lawyerRepository.updateLawyerUser(prisma,{
-                    userId: user.id ,
-                    id: lawyerData.id ,
-                    branchOfficeId: data.branchOfficeId
-                })
-
-                if(!lawyer){
-                    return{
-                        message:'El registro de Lawyer fue incorrecto !!!' ,
-                        status: response.FALL
-                    }
-                }
-
-                return {
-                    message: 'registro existoso del usuario abogado. !!!',
-                    status: response.NICE ,
-                    personLawyUser: {
-                        userData: user ,
-                        lawyerData: lawyer,
-                    }
-                }
-            })
-            
         }catch(err){
-            console.log('Fallas detectadas en CrPers y son:' + err.message)
-            return {
-                message: 'Fallas en CrPers: ' + err.message,
-                status: response.WARN , 
-
-            }
+            return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+            type: 'Error',
+            message: 'al crear usuario: ' + err.message,
+            status: response.WARN,
+            content: null
+        });
         }
     }
 }

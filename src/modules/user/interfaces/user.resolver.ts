@@ -26,13 +26,14 @@ export class UserResolver {
         return this.loginUser.logout(user);
     }
 
-    @Mutation(()=> createUserLawyerOutPut)
+    /*@Mutation(()=> createUserLawyerOutPut)
     async createUserLawyer(@Args('data') data:CreateUserInput ){
         return this.loginUser.createPersonLawyerUser(data)
-    }
+    }*/
 
-    @Query(() => String)
-    sayHello(): string {
-        return 'Hello from UserResolver';
+    @Mutation(()=> createUserLawyerOutPut)
+    //@UseGuards(GqlAuthGuard)
+    async createUser(@Args('data') data: CreateUserInput) {
+        return this.loginUser.createUserPerson(data);
     }
 }

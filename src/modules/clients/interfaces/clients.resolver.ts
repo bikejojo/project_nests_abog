@@ -3,7 +3,7 @@ import { Clients } from "../entities/clients.entities";
 import { ClientsUseCase } from "../domain/service/clients.use-case";
 import { createClientsInput, createClientsOutPut } from "../domain/dto/create-clients.input";
 import { updateClientInput , updateClientOutPut } from "../domain/dto/update-clients.input";
-import { deleteClientInput ,  daleteClientOutPut } from "../domain/dto/delete-clients.input";
+import { deleteClientInput ,  deleteClientOutPut } from "../domain/dto/delete-clients.input";
 import { findIdClientInput , findIdClientOutPut } from "../domain/dto/findId-clients.input";
 import { allClientOutPut } from "../domain/dto/all-clients.input";
 
@@ -19,6 +19,11 @@ export class ClientsResolver {
     @Mutation(()=> updateClientOutPut)
     async updateClients(@Args('data') data:updateClientInput ){
         return await this.clientsUseCase.updateClient(data)
+    }
+
+    @Mutation(()=> deleteClientOutPut)
+    async deleteClients(@Args('data') data:deleteClientInput){
+        return await this.clientsUseCase.deleteClient(data)
     }
 
     @Query(()=>findIdClientOutPut)

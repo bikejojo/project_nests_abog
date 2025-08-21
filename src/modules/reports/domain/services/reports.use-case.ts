@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { LawyerRepository } from "src/modules/personnel/infraestructura/prisma/lawyer.repository";
-import { JudgeRepository } from "src/modules/personnel/infraestructura/prisma/judge.repository";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 import { ResponseContext } from "src/common/responses/response-context";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
