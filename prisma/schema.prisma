@@ -20,6 +20,7 @@ model User {
   email       String?  @unique
   password    String
   token       String?
+  reftoken    String?
   type        Int?     @default(1) // CLIENT 2 OPERADOR 1 ADMIN 0
   isActive    Boolean
   status      Int      // 0: Inactivo, 1: Activo

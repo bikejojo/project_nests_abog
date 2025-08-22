@@ -44,6 +44,8 @@ export class clientsData {
     @Field(()=>String , {nullable:true, description:"NIT de cliente"})
     NIT: string
 
+    @Field(()=>Int , {nullable:true,description:"estado de la base de datos"})
+    status:number
 }
 
 @ObjectType()

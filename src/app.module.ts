@@ -26,6 +26,8 @@ import { clientsModule } from './modules/clients/interfaces/clients.module';
       sortSchema: true,
       playground: true, // Desactiva el antiguo Playground
       introspection: true, // Necesario para Apollo Sandbox
+      csrfPrevention: false,
+
     }),
     AuthModule,
     UserModule,

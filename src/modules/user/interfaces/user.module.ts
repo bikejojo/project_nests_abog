@@ -7,10 +7,12 @@ import { UserUseCase } from "../domain/service/user.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
 import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.module";
+import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
 @Module({
   imports: [
-    AuthModule,
-    forwardRef(() => PersonModule),
+    //AuthModule,
+    forwardRef(() => AuthModule),
+    //forwardRef(() => PersonModule),
     JwtModule.register({
         secret: jwtConstants.secret,
         signOptions: { expiresIn: '1d' } // Adjust the expiration time as needed
@@ -20,7 +22,8 @@ import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.m
     UserResolver,
     UserRepository,
     PrismaService,
-    UserUseCase
+    UserUseCase,
+    PersonRepository
   ],
   exports: [
     UserUseCase,

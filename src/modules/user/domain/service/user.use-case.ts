@@ -13,7 +13,8 @@ import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { UpdateUserPersonInput } from "../dto/update-user.input";
-import { first } from "rxjs";
+import { DeleteUserInput } from "../dto/delete-user.input";
+import { MenuUser } from "src/modules/moduleMenuPermission/entities/menuUser.entity";
 @Injectable()
 export class UserUseCase {
 
@@ -87,13 +88,13 @@ export class UserUseCase {
             const payloadUser = {
                 id: user.id,
                 email: user.email,
-                modules: (user1?.moduleUser ?? []).map(m => m.modules),
-                menus: (user1?.menuUser ?? []).map(m => m.menu),
-                permissions: (user1?.permissionsUser ?? []).map(p => p.permissions)
+                moduleUser: (user1?.moduleUser ?? []).map(m => m.modules),
+                menuUser: (user1?.menuUser ?? []).map(m => m.menu),
+                permissionsUser: (user1?.permissionsUser ?? []).map(p => p.permissions)
             };
 
             let jwtToken = await this.authService.generateToken(payloadUser); 
-            this.userRepository.saveToken(jwtToken.token , user );
+            this.userRepository.saveToken(jwtToken.token , jwtToken.refreshToken , user );
 
             return {
                 message: 'Inicio de sesión exitoso',
@@ -262,6 +263,72 @@ export class UserUseCase {
                 status: response.WARN,
                 content: null
             });
+        }
+    }
+
+    async deleteUserPerson(data:DeleteUserInput){
+        let user:any = null;
+        let person:any = null;
+
+        try {
+            const verificationPerson = await this.personaRepository.findedPersona({id:data.id})
+            
+            if(verificationPerson === null){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                    message: 'Persona no encontrada',
+                    status: response.FALL,
+                    response: null
+                });
+            }
+
+            const result  = await this.prisma.$transaction(
+                async (tx) => {
+                    user = await this.userRepository.deleteUserFind({id:verificationPerson.userId},tx);
+                    
+                }
+            )
+        } catch(err){
+            return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
+                message: 'al eliminar usuario: ' + err.message,
+                status: response.WARN,
+                response: null
+            });
+        }
+    }
+
+    async refreshUser(refreshTokenData: any){
+        try{
+            const refreshToken = refreshTokenData.refreshToken || refreshTokenData.token;
+
+            const newTokens = await this.authService.refreshAccessToken(refreshToken);
+
+            const user = await this.userRepository.findIdUsers({id:refreshTokenData.id})
+
+                    if (!user) {
+            return {
+                message: 'Usuario no encontrado',
+                status: response.FALL,
+                token: null,
+                refreshToken: null
+            };
+        }
+
+        // Guardar el nuevo refresh token en la base de datos
+        await this.userRepository.saveToken(newTokens.token, newTokens.refreshToken, user);
+
+        return {
+            message: 'Tokens renovados exitosamente',
+            status: response.NICE,
+            token: newTokens.token,
+            refreshToken: newTokens.refreshToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                type: user.type
+            }
+        };
+        }catch(err){
+
         }
     }
 }

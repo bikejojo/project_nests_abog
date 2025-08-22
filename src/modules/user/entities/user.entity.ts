@@ -17,6 +17,9 @@ export class User {
   @Field(() => String ,{description:"se guarda el token", nullable: true })
   token: string;
 
+  @Field(()=> String ,{description:"Se guarda el token refresh",nullable:true})
+  reftoken: string
+
   @Field(()=> Int,{description:"descripcion de tipo de user",nullable:true})
   type: number | null; // 
 

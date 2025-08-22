@@ -64,6 +64,19 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input DeleteUserInput {
+  """ID de usuario a eliminar"""
+  id: Int!
+}
+
+type DeleteUserOutput {
+  """Mensaje de confirmacion o error"""
+  message: String
+
+  """Indica el estado de la operacion de borrado"""
+  success: Boolean!
+}
+
 type Legal_Entity {
   """numero de NIT de la entidad legal"""
   NIT: Float!
@@ -149,8 +162,10 @@ type Mutation {
   createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
   deleteClients(data: deleteClientInput!): deleteClientOutPut!
   deleteLegalEntity(data: deleteLegalEntityInput!): deleteLegalEntityOutPut!
+  deleteUserPerson(data: DeleteUserInput!): DeleteUserOutput!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
+  refresh: RefreshTokenResponse!
   updateClients(data: updateClientInput!): updateClientOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updateUserPerson(data: UpdateUserPersonInput!): UpdateUserOutPut!
@@ -217,6 +232,17 @@ type Query {
   allClients: allClientOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
   findIdClients(data: findIdClientInput!): findIdClientOutPut!
+}
+
+type RefreshTokenResponse {
+  """token"""
+  accessToken: String
+
+  """mensaje de respuesta"""
+  message: String
+
+  """estado"""
+  status: Int
 }
 
 type UpdateUserOutPut {
@@ -329,6 +355,9 @@ type clientsData {
 
   """numero de telefono del cliente"""
   phone: String
+
+  """estado de la base de datos"""
+  status: Int
 }
 
 type contentMenuPermissions {

@@ -242,7 +242,8 @@ export class ClientsUseCase{
                     lastName: client.person.lastName,
                     phone: client.person.phone, 
                     address: client.person.address,
-                    NIT: client.NIT
+                    NIT: client.NIT,
+                    status: client.status
                 }))
             }
         

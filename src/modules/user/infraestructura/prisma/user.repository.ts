@@ -20,10 +20,10 @@ export class UserRepository {
         return await this.prisma.user.update({where:{id:userId}, data:{ token:''}})
     }
 
-    async saveToken(token: string, user: { id: number }) {
+    async saveToken(token: string, reftoken: string ,user: { id: number }) {
         return await this.prisma.user.update({
             where: { id: user.id },
-            data: { token }, //---- cambios yayaya
+            data: { token , reftoken }, //---- cambios yayaya
         });
     }
 
@@ -42,9 +42,12 @@ export class UserRepository {
         })
     }
 
-    async deleteUserFind(data:any){
-        return await this.prisma.user.update({
-            where:{id:data},
+    async deleteUserFind( data:any,tx?: Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.user.update({
+            where:{
+                id:data.id
+            },
             data: {
                 status: 0
             }
