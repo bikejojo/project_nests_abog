@@ -18,77 +18,77 @@ async function main(){
     const permisosPorMenu: Record<string, Record<string, string[]>> = {
         "EMPRESA" : {
             "Usuario": [
-                "Crear_usuario",
-                "Editar_usuario",
-                "Eliminar_usuario",
-                "Listar_usuarios",
+                "Crear",
+                "Editar",
+                "Eliminar",
+                "Listar",
             ],
             "Permisos":[
-                "Crear_permiso",
-                "Editar_permiso",
-                "Eliminar_permiso",
-                "Listar_permisos",
-                "Asignar_permisos",
+                "Crear",
+                "Editar",
+                "Eliminar",
+                "Listar",
+                "Asignar",
             ],
             "Sucursal":[
-                "Crear_sucursal",
-                "Editar_sucursal",
-                "Eliminar_sucursal",
+                "Crear",
+                "Editar",
+                "Eliminar",
             ]
         },
 
         "PERSONAS" :{
             "Operador":[
-                "Crear_operador",
-                "Editar_operador",
-                "Eliminar_operador",
-                "Listar_operadores",
-                "Inactiva_operador",
+                "Crear",
+                "Editar",
+                "Eliminar",
+                "Listar",
+                "Inactiva",
             ],
             "Cliente":[
-                "Crear_cliente",
-                "Editar_cliente",
-                "Eliminar_cliente",
-                "Listar_clientes",
-                "Inactiva_cliente",
+                "Crear",
+                "Editar",
+                "Eliminar",
+                "Listar",
+                "Inactiva",
             ],
         } ,
     
         "PROCESOS JUDICIALES":{
             "Penal":[
-                "Crear_proceso_penal",
-                "Listar_procesos_penales",
+                "Crear",
+                "Listar",
             ],
             "Civil":[
-                "Crear_proceso_civil",
-                "Listar_procesos_civiles",
+                "Crear",
+                "Listar",
             ],
             "Laboral":[
-                "Crear_proceso_laboral",
-                "Listar_procesos_laborales",
+                "Crear",
+                "Listar",
             ],
             "Tributario":[
-                "Crear_proceso_tributario",
-                "Listar_procesos_tributarios",
+                "Crear",
+                "Listar",
             ],
             "Administrativo":[
-                "Crear_proceso_administrativo",
-                "Listar_procesos_administrativos",
+                "Crear",
+                "Listar",
             ],
             "Ambiental":[
-                "Crear_proceso_ambiental",
-                "Listar_procesos_ambientales",
+                "Crear",
+                "Listar",
             ] ,
             "ACTUADOS":[
-                "Registrar_actuado",
-                "Listar_actuados",
+                "Registrar",
+                "Listar",
             ]
         },
 
         "REPORTES":{
            "Reportes": [
-                "Ver_reportes",
-                "exportar_reportes",
+                "Ver",
+                "exportar",
             ]
         },
     };
