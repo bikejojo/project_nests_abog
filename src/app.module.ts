@@ -16,7 +16,7 @@ import { DocumentsModule } from './modules/documents/interfaces/documents.module
 import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
 import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/legal_entity.module';
 import { clientsModule } from './modules/clients/interfaces/clients.module';
-
+import { ClientMiddleware } from './common/midleware/client.midleware';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -27,7 +27,7 @@ import { clientsModule } from './modules/clients/interfaces/clients.module';
       playground: true, // Desactiva el antiguo Playground
       introspection: true, // Necesario para Apollo Sandbox
       csrfPrevention: false,
-
+      context: ({ req, res }) => ({ req, res }),
     }),
     AuthModule,
     UserModule,
@@ -47,7 +47,10 @@ import { clientsModule } from './modules/clients/interfaces/clients.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
+      .apply(ClientMiddleware)
+      .forRoutes('*')
+    consumer
       .apply(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 5 }))
-      .forRoutes('graphql');
+      .forRoutes('graphql');    
   }
 }

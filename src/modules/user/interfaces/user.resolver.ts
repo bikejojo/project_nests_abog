@@ -1,4 +1,4 @@
-import { Resolver , Mutation ,  Args , Query} from "@nestjs/graphql";
+import { Resolver , Mutation ,  Args , Query , Context} from "@nestjs/graphql";
 import { LoginResponse, LoginUserInput } from "../domain/dto/login-user.input";
 import { UserUseCase } from "../domain/service/user.use-case";
 import { User } from "../entities/user.entity";
@@ -21,8 +21,8 @@ export class UserResolver {
 
     @Mutation(() => LoginResponse)
     //@UseGuards(GqlAuthGuard)
-    async login(@Args('data') data: LoginUserInput) {
-       return this.loginUser.login(data);
+    async login(@Args('data') data: LoginUserInput , @Context() ctx:any ) {
+       return this.loginUser.login(data, ctx.req.client);
     }
 
     @Mutation(()=> RefreshTokenResponse)

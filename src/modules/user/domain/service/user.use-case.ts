@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Ip } from "@nestjs/common";
 import { UserRepository } from "../../infraestructura/prisma/user.repository";
 import { CreateUserInput } from "../dto/create-user.input";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -6,15 +6,13 @@ import { LoginUserInput } from "../dto/login-user.input";
 import * as bcrypt from 'bcrypt';
 import { AuthService } from "../../../../auth/auth.service";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
-import { typeUser } from "src/common/enum/typeUser";
 import { response } from "src/common/enum/typeResp";
-import { isStatus, status, tatus } from "src/common/enum/typeStatus";
+import { status, tatus } from "src/common/enum/typeStatus";
 import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { UpdateUserPersonInput } from "../dto/update-user.input";
 import { DeleteUserInput } from "../dto/delete-user.input";
-import { MenuUser } from "src/modules/moduleMenuPermission/entities/menuUser.entity";
 @Injectable()
 export class UserUseCase {
 
@@ -29,11 +27,20 @@ export class UserUseCase {
          this.responseContext = new ResponseContext()
     }
 
-    async login(data: LoginUserInput){
+    async login(data: LoginUserInput,clientMeta:{ip:string , userAgent:string}){
         try {
             const user = await this.userRepository.login(data.username);
 
             if(!user){
+                await this.userRepository.createLog({
+                    userId:null,
+                    message: '[LOG] El usuario no existe en la BD: ' + data.username ,
+                    action: 'Login de usuario' ,
+                    origin: 'Endpoint de login',
+                    timestamp: new Date() ,
+                    ipAddress: clientMeta.ip
+                })
+
                 return {
                     message: 'El usuario no existe',
                     status: response.FALL ,
@@ -43,6 +50,14 @@ export class UserUseCase {
 
             const validPassword = await bcrypt.compare(data.password, user.password);
             if (!validPassword) {
+                await this.userRepository.createLog({
+                    userId: user.id,
+                    message: '[LOG] Credenciales invalidas del usuario' ,
+                    action: 'Login de usuario , intento del usuario: ' + user.email ,
+                    origin: 'Endpoint de login',
+                    timestamp: new Date() ,
+                    ipAddress: clientMeta.ip
+                })
                 return {
                     message: 'Credenciales inválidas',
                     status: response.FALL ,
@@ -51,6 +66,14 @@ export class UserUseCase {
             }
 
             if(user.status === 0){
+                await this.userRepository.createLog({
+                    userId: user.id,
+                    message: '[LOG] Usuario inactivo' ,
+                    action: 'Login de usuario , intento del acceso del usuario: ' + user.email ,
+                    origin: 'Endpoint de login',
+                    timestamp: new Date() ,
+                    ipAddress: clientMeta.ip
+                })
                 return {
                     message: 'Usuario inactivo',
                     status: response.FALL ,
@@ -96,6 +119,15 @@ export class UserUseCase {
             let jwtToken = await this.authService.generateToken(payloadUser); 
             this.userRepository.saveToken(jwtToken.token , jwtToken.refreshToken , user );
 
+            await this.userRepository.createLog({
+                userId: user.id,
+                message: '[LOG] Acceso correcto del usuario' ,
+                action: 'Login de usuario correcto: ' + user.email + ':' + user.id,
+                origin: 'Endpoint de login',
+                timestamp: new Date() ,
+                ipAddress: clientMeta.ip
+            })
+
             return {
                 message: 'Inicio de sesión exitoso',
                 status: response.NICE ,
@@ -109,7 +141,16 @@ export class UserUseCase {
                 },
             }
         }catch(err){
+
             console.log('Fallas en Login, son: ' + err.message);
+            await this.userRepository.createLog({
+                userId: null,
+                message: '[LOG] ' + err.message ,
+                action: 'Login de usuario incorrecto',
+                origin: 'Endpoint de login',
+                timestamp: new Date() ,
+                ipAddress: clientMeta.ip
+            })
             return {
                 message: 'Fallas en Login, son: ' + err.message,
                 status: response.FALL,

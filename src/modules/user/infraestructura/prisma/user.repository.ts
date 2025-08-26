@@ -129,4 +129,19 @@ export class UserRepository {
             }
         });
     }
+    
+    async createLog(data:any,tx?:Prisma.TransactionClient){
+        const prisma  = tx || this.prisma;
+        return await prisma.auth_log.create({
+            data: {
+                userId: data.userId ,
+                message: data.message ,
+                action: data.action ,
+                origin: data.origin ,
+                timestamp: data.timestamp ,
+                ipAddress: data.ipAddress ,
+            }
+        })
+    }
+
 }

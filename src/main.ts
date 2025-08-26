@@ -9,6 +9,7 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept','X-Requested-With','apollo-require-preflight'],
   });
+  app.getHttpAdapter().getInstance().set('trust proxy',1);
   await app.listen(process.env.PORT ?? 3000 , '0.0.0.0');
 }
 bootstrap();
