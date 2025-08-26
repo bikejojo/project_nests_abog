@@ -34,6 +34,18 @@ model User {
   updatedAt   DateTime @updatedAt
 }
 
+model auth_log {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  message     String?
+  action      String?
+  origin      String?
+  timestamp   DateTime @default(now())
+  ipAddress   String?
+
+  //user        User     @relation(fields: [userId], references: [id])
+}
+
 model Persona {
   id              Int      @id @default(autoincrement())
   ci              String?
