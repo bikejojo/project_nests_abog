@@ -3,6 +3,7 @@ import { ModuleMenuPermissionsUseCase } from '../domain/services/moduleMenuPermi
 import { AllModuleMenuPermissionDataOutPut } from '../domain/dto/allModuleMenuPermission.input';
 import { assingUserDataInput, assingUserDataOutPut } from '../domain/dto/assingUserModuleMenuPermission.input';
 import { updateUserModuleMenuPermissionsInput, updateUserModuleMenuPermissionsOutPut } from '../domain/dto/updateUserModuleMenuPermission.input';
+import { allRols } from '../domain/dto/allRoles.input';
 
 @Resolver()
 export class ModuleMenuPermissionResolver {
@@ -13,6 +14,11 @@ export class ModuleMenuPermissionResolver {
     @Query(() => AllModuleMenuPermissionDataOutPut)
     async allModuloMenuPermissions(){
         return await this.moduleMenuPermissionsUseCase.listAllModuleMenuPermissions();
+    }
+
+    @Query(() => allRols)
+    async allRoles(){
+        return await this.moduleMenuPermissionsUseCase.listAllRols();
     }
 
     @Mutation(()=> assingUserDataOutPut)

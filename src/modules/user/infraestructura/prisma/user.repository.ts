@@ -144,4 +144,14 @@ export class UserRepository {
         })
     }
 
+    async assingRolUser(data:any){
+        return await this.prisma.user.update({
+            where:{
+                id:data.userId
+            },
+            data:{
+                roleId:data.rolId
+            }
+        })
+    }
 }

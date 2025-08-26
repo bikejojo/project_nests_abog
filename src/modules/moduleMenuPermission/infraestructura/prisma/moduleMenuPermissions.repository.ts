@@ -116,4 +116,8 @@ export class ModuleMenuPermissionsRepository {
     async listRols(){
         return await this.prisma.role.findMany({where:{status:1}});
     }
+
+    async roleFind(data:any){
+        return await this.prisma.role.findUnique({where:{id:data.id}})
+    }
 }

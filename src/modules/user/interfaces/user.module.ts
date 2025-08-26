@@ -8,6 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
 import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.module";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
+import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
 @Module({
   imports: [
     //AuthModule,
@@ -21,6 +22,7 @@ import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/p
   providers: [
     UserResolver,
     UserRepository,
+    ModuleMenuPermissionsRepository,
     PrismaService,
     UserUseCase,
     PersonRepository

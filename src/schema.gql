@@ -231,6 +231,7 @@ type Query {
   allCityData: AllCityDataOutPut!
   allClients: allClientOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
+  allRoles: allRols!
   findIdClients(data: findIdClientInput!): findIdClientOutPut!
 }
 
@@ -317,6 +318,15 @@ type allClientOutPut {
   allClients: [clientsData!]
   message: String!
   status: Int!
+}
+
+type allRols {
+  """mensaje de retorno"""
+  message: String
+  response: [roles!]
+
+  """estado del retorno"""
+  status: Int
 }
 
 input assingUserDataInput {
@@ -517,6 +527,12 @@ type personData {
   id: Float!
   lastName: String!
   phone: String!
+}
+
+type roles {
+  """el nombre del rol"""
+  description: String
+  id: Int!
 }
 
 input updateBranchOfficeInput {

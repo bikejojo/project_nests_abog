@@ -15,7 +15,7 @@ export class allRols{
 @ObjectType()
 export class roles {
     @Field(()=>Int )
-    ID:number
+    id:number
 
     @Field(()=>String , {nullable:true , description:'el nombre del rol'})
     description: string

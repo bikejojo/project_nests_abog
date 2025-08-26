@@ -13,6 +13,9 @@ import { SucccessResponseStrategy } from "src/common/responses/success-response.
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { UpdateUserPersonInput } from "../dto/update-user.input";
 import { DeleteUserInput } from "../dto/delete-user.input";
+import { assingRolUserInput } from "../dto/assign-user.input";
+import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 @Injectable()
 export class UserUseCase {
 
@@ -22,6 +25,7 @@ export class UserUseCase {
         private authService: AuthService ,
         private userRepository: UserRepository ,
         private personaRepository: PersonRepository ,
+        private rolRepository: ModuleMenuPermissionsRepository ,
         private prisma: PrismaService
     ) {
          this.responseContext = new ResponseContext()
@@ -370,6 +374,34 @@ export class UserUseCase {
         };
         }catch(err){
 
+        }
+    }
+
+    async assignRolUser(data:assingRolUserInput){
+        try{
+            const existRol = await this.rolRepository.roleFind({id:data.idRol});
+
+            if(!existRol){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe rol',status:response.FALL});
+            }
+
+            const existUser = await this.userRepository.findIdUsers({id:data.idUser});
+
+            if(!existUser){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe User',status:response.FALL});
+            }
+
+            if(!existUser.roleId){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error' , message:'Asignacion erronea' , status: response.FALL})
+            }
+
+            await this.userRepository.assingRolUser({idUser:data.idUser , idRol:data.idRol});
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Exito' , message:'asignacion de rol con usuario ' , status:response.NICE , })
+
+        }catch(err){
+            console.log('[LOG] Surgieron las siguientes fallas: ' + err.message );
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'assgRolUsr' , message:err.message , status:response.WARN});
         }
     }
 }
