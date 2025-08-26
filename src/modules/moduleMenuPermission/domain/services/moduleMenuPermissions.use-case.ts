@@ -6,6 +6,7 @@ import { status, tatus } from "src/common/enum/typeStatus";
 import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
+import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
@@ -186,6 +187,25 @@ export class ModuleMenuPermissionsUseCase {
         }catch(err){
             console.log('Fallas en UpdUsePerm y son: ' + err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'UpdUsePerm',message:err.message , status:response.WARN})
+        }
+    }
+
+    async listAllRols(){
+        try {
+            const allRols = await this.moduleMenuPermissionsRepository.listRols();
+
+            if(!allRols){
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({status:response.FALL,type:'Listado de roles',message:'null'})
+            }
+
+            if(allRols.length == 0){
+                return this.ResponseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Listado de roles' , message:'No hay contenido' , status:response.FALL})
+            }
+
+            return this.ResponseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Existoso', message:'Listado',status:response.NICE , content: allRols.map((role) => ( {id: role.id , description: role.name })) })
+        } catch(err){
+            console.log('El error es el siguiente: ' + err.message);
+            return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'Roles',message:err.message ,status:response.WARN})
         }
     }
 }

@@ -112,4 +112,8 @@ export class ModuleMenuPermissionsRepository {
             where:{ userId:data.userId }
         })
     }
+
+    async listRols(){
+        return await this.prisma.role.findMany({where:{status:1}});
+    }
 }
