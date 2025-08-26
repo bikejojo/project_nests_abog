@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -52,5 +53,17 @@ export class BranchOfficeRepository {
                 email:data.email
             }
         })
+    }
+
+    async deleteBranchOffice(data:any,tx?:Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.branch_Office.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                status:0
+            }
+        });
     }
 }

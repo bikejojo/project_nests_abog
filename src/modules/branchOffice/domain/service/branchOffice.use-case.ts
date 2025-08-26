@@ -6,6 +6,9 @@ import { ResponseContext } from "src/common/responses/response-context";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { CreateBranchOfficeInput } from "../dto/create-branchOffice.input";
+import { updateBranchOfficeInput } from "../dto/update-branchOffice.input";
+import { deleteBranchOfficeInput } from "../dto/delete-branchOffice.input";
 
 @Injectable()
 export class BranchOfficeUseCase {
@@ -48,7 +51,7 @@ export class BranchOfficeUseCase {
         }
     }
 
-    async createdBranchOffice(data:any){
+    async createdBranchOffice(data:CreateBranchOfficeInput){
         try{
             const branchOffice = await this.cityRepository.createBranchOffices({
                 cityId: data.cityId ,
@@ -70,7 +73,7 @@ export class BranchOfficeUseCase {
     }
 
 
-    async updatedBranchOffice(data:any){
+    async updatedBranchOffice(data:updateBranchOfficeInput){
         try{ 
             const branchOfficeId = await this.cityRepository.findIdBranchOffices({
                 id:data.id
@@ -80,13 +83,13 @@ export class BranchOfficeUseCase {
                 return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'La ID de sucursal',status:response.FALL})   
             }
 
-            const updateBranchOffice = this.cityRepository.updateBranchOffices({
-                id:branchOfficeId.id,
-                name: data.name ,
-                address: data.address ,
-                phone: data.phone ,
-                email: data.email ,
-                cityId: data.cityId
+            const updateBranchOffice = await this.cityRepository.updateBranchOffices({
+                id:branchOfficeId.id ,
+                name: data.name ?? branchOfficeId.name ,
+                address: data.address ?? branchOfficeId.address ,
+                phone: data.phone ?? branchOfficeId.phone ,
+                email: data.email ?? branchOfficeId.email ,
+                cityId: data.cityId ?? branchOfficeId.cityId ,
             })
 
             if(!updateBranchOffice){
@@ -98,6 +101,23 @@ export class BranchOfficeUseCase {
         }catch(err){
             console.log('Fallas en UpdBrchOff y son: '+err.message)
             return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message , status:response.WARN })
+        }
+    }
+
+    async deleteBranchOffice(data:deleteBranchOfficeInput){
+        try{
+            const branchOfficeId = await this.cityRepository.findIdBranchOffices({id:data.id})
+            if(!branchOfficeId){
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type: 'El ID de branchOffice no existe' , status: response.FALL});
+            }
+
+            await this.cityRepository.deleteBranchOffice({id:data.id})
+
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({status:response.NICE , type:'Exitoso', message:'Eliminacion de Sucursal.'})
+            
+        }catch(err){
+            console.log('Fallas en DelBrchOff y son: '+ err.message);
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'DelBrcnOff', message:err.message , status:response.WARN});
         }
     }
 }
