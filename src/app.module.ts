@@ -28,6 +28,7 @@ import { ClientMiddleware } from './common/midleware/client.midleware';
       introspection: true, // Necesario para Apollo Sandbox
       csrfPrevention: false,
       context: ({ req, res }) => ({ req, res }),
+      path: '/graphql',
     }),
     AuthModule,
     UserModule,
@@ -51,6 +52,6 @@ export class AppModule implements NestModule {
       .forRoutes('*')
     consumer
       .apply(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 5 }))
-      .forRoutes('graphql');    
+      .forRoutes('/graphql');    
   }
 }
