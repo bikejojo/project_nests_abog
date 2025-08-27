@@ -10,6 +10,9 @@ import { city } from "src/modules/city/entities/city.entity";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { PrismaService } from "src/prisma/prisma.service";
+import { createLegalEntityInput } from "../dto/legal_entity/create-legal_entity.input";
+import { deleteLegalEntityInput } from "../dto/legal_entity/delete-legal_entity.input";
+import { updateLegalEntityInput } from "../dto/legal_entity/update-legal_entity.input";
 
 @Injectable()
 export class LegalEntityUseCase {
@@ -21,17 +24,18 @@ export class LegalEntityUseCase {
 
     private ResponseContext = new ResponseContext();
     
-    async createLegalEntity(data:any){
+    async createLegalEntity(data:createLegalEntityInput){
         let person :any = null;
         let legalEntity :any = null;
 
         try {
-            if(data.phone < 8){
+            if(data.phone.length < 9 ){
                 return {
                     message: 'El numero es incorrecto.',
                     status: response.FALL
                 }
             }
+
             const result = await this.prisma.$transaction(
                 async (tx) => {
                     // ✅ 4. CREAR PERSONA - ORDEN DE PARÁMETROS CORREGIDO
@@ -42,22 +46,20 @@ export class LegalEntityUseCase {
                         address: data.address,
                         status: tatus.ACTIVE,
                         cityId: data.cityId, 
-                    }, tx); // ✅ tx como segundo parámetro
+                    }, tx);
 
 
-                    // ✅ 5. CREAR ENTIDAD LEGAL - ORDEN DE PARÁMETROS CORREGIDO
                     legalEntity = await this.legalEntityRepoository.createLegalEntity(
                     {
                         NIT: data.NIT,
                         companyName: data.companyName,
                         address: data.address,
                         registrationDate: new Date(),
-                        legalRepresentative: data.legalRepresentative, // ✅ Corregido typo
+                        legalRepresentative: data.legalRepresentive, 
                         typeCompany: data.typeCompany,
                         personId: person.id,
                         status: tatus.ACTIVE,
-                    }, tx); // ✅ tx como segundo parámetro
-
+                    }, tx);
 
                     return {
                         person,
@@ -77,7 +79,7 @@ export class LegalEntityUseCase {
         }
     }
 
-    async updateLegalEntity(data:any){
+    async updateLegalEntity(data:updateLegalEntityInput){
         try {
             await this.prisma.$transaction(async (prisma)=> {
                 const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
@@ -130,7 +132,7 @@ export class LegalEntityUseCase {
         }
     }
 
-    async deleteLegalEntity(data:any){
+    async deleteLegalEntity(data:deleteLegalEntityInput){
         try {
             await this.prisma.$transaction(async (prisma) => {
                 const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
@@ -180,4 +182,15 @@ export class LegalEntityUseCase {
         }
     }
 
+}
+
+@Injectable()
+export class LegalEntityList {
+    constructor(
+        private prisma: PrismaService ,
+        private legalEntityRepoository:LegalEntityRepository,
+        private personRespository: PersonRepository
+    ){}
+
+    private ResponseContext = new ResponseContext();
 }

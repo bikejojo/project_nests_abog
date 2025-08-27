@@ -39,6 +39,10 @@ export class updateLegalEntityInput{
 
     @Field({nullable:true})
     typeCompany:string 
+
+    @Field({nullable:true})
+    cityId: number
+    
 }
 
 @ObjectType()

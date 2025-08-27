@@ -601,6 +601,7 @@ input updateLegalEntityInput {
   address: String
   addressLE: String
   ci: String
+  cityId: Float
   companyName: String
   firstName: String
   id: ID!
