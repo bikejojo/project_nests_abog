@@ -12,14 +12,15 @@ async function main(){
             const SALT_ROUNDS = 10;
             const users = [
                 {
-                    name: "admin",
+                    
                     password:  await bcrypt.hash("admin123", SALT_ROUNDS), 
                     type: 1,
                     isActive: true,
                     status: tatus.ACTIVE,
                     ci: null,
                     email: "admin@admin.com",
-                    token: "" // or provide a default token value if needed
+                    token: "" ,// or provide a default token value if needed
+                    reftoken: ""
                 }
             ]
 
