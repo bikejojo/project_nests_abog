@@ -1,6 +1,6 @@
 import { Resolver , Mutation ,  Args , Query , Context} from "@nestjs/graphql";
 import { LoginResponse, LoginUserInput } from "../domain/dto/login-user.input";
-import { UserUseCase } from "../domain/service/user.use-case";
+import { UserUseCase , actionUserPerson} from "../domain/service/user.use-case";
 import { User } from "../entities/user.entity";
 import { UseGuards , SetMetadata, Delete} from "@nestjs/common";
 import { RolesGuard } from "../../../guards/roles.guards";
@@ -17,7 +17,10 @@ import { RefreshAuthGuard } from "src/guards/refresh-auth.guard";
 //@UseGuards(GqlAuthGuard ,RolesGuard)
 //@SetMetadata('roles', ['EMPRESA','ABOGADO'])
 export class UserResolver {
-    constructor( private readonly loginUser: UserUseCase ){}
+    constructor( 
+        private readonly loginUser: UserUseCase ,
+        private readonly actionsUser: actionUserPerson
+    ){}
 
     @Mutation(() => LoginResponse)
     //@UseGuards(GqlAuthGuard)
@@ -46,16 +49,16 @@ export class UserResolver {
     @Mutation(()=> createUserLawyerOutPut)
     //@UseGuards(GqlAuthGuard)
     async createUser(@Args('data') data: CreateUserInput) {
-        return await this.loginUser.createUserPerson(data);
+        return await this.actionsUser.createUserPerson(data);
     }
 
     @Mutation(()=> UpdateUserOutPut)
     async updateUserPerson(@Args('data') data: UpdateUserPersonInput) {
-        return await this.loginUser.updateUserPerson(data);
+        return await this.actionsUser.updateUserPerson(data);
     }
 
     @Mutation(()=> DeleteUserOutput)
     async deleteUserPerson(@Args('data') data: DeleteUserInput) {
-        return await this.loginUser.deleteUserPerson(data)
+        return await this.actionsUser.deleteUserPerson(data)
     }
 }

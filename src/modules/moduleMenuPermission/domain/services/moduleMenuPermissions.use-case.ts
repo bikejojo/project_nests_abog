@@ -17,58 +17,6 @@ export class ModuleMenuPermissionsUseCase {
 
     private ResponseContext = new ResponseContext();
 
-    async listAllModuleMenuPermissions() {
-        try {
-            const allContent = await this.moduleMenuPermissionsRepository.listAllModuleMenuPermissions();
-            if (!allContent) {
-                return {
-                    message: 'Error al traer los datos de permisos de modulos y menus.',
-                    status: response.FALL,
-                    allModuleMenuPermission: null
-                }
-            }
-
-            if (allContent.length === 0) {
-                return {
-                    message: 'No existen datos de permisos de modulos y menus.',
-                    status: response.FALL,
-                    allModuleMenuPermission: null
-                }
-            }
-            const allModuleMenuPermission = allContent.map(module => {
-                return {
-                    moduleId: module.id,
-                    moduleName: module.name,
-                    contentModPermi: module.moduleMenu.map(menu => {
-                        return {
-                            menuId: menu.menu?.id,
-                            menuName: menu.menu?.name,
-                            contentPermissions: menu.menu?.menuPermissions.map(permission => {
-                                return {
-                                    permissionsId: permission.permissions.id,
-                                    permissionsName: permission.permissions.name
-                                }
-                            })
-                        }
-                    })
-                }
-            });
-
-            return {
-                message: 'Retorno valores exitoso. !!',
-                status: response.NICE,
-                allModuleMenuPermission: allModuleMenuPermission
-            }
-            
-        } catch (err) {
-            console.log('Se presentaron errrores en AllModMenPerm y son: ' + err.message);
-            return {
-                message: 'Se presentaron errrores en AllModMenPerm y son: ' + err.message,
-                status: response.WARN,
-                allModuleMenuPermission: null
-            }
-        }
-    }
 
     async assignmentUserPermiss(data:any){
         try {
@@ -190,6 +138,18 @@ export class ModuleMenuPermissionsUseCase {
         }
     }
 
+    
+}
+
+@Injectable()
+export class ModuleMenuPermissionList {
+    private ResponseContext= new ResponseContext();
+    
+    constructor(
+        private readonly moduleMenuPermissionsRepository: ModuleMenuPermissionsRepository ,
+        private readonly userRepository: UserRepository
+    ){}
+
     async listAllRols(){
         try {
             const allRols = await this.moduleMenuPermissionsRepository.listRols();
@@ -206,6 +166,59 @@ export class ModuleMenuPermissionsUseCase {
         } catch(err){
             console.log('El error es el siguiente: ' + err.message);
             return this.ResponseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'Roles',message:err.message ,status:response.WARN})
+        }
+    }
+
+    async listAllModuleMenuPermissions() {
+        try {
+            const allContent = await this.moduleMenuPermissionsRepository.listAllModuleMenuPermissions();
+            if (!allContent) {
+                return {
+                    message: 'Error al traer los datos de permisos de modulos y menus.',
+                    status: response.FALL,
+                    allModuleMenuPermission: null
+                }
+            }
+
+            if (allContent.length === 0) {
+                return {
+                    message: 'No existen datos de permisos de modulos y menus.',
+                    status: response.FALL,
+                    allModuleMenuPermission: null
+                }
+            }
+            const allModuleMenuPermission = allContent.map(module => {
+                return {
+                    moduleId: module.id,
+                    moduleName: module.name,
+                    contentModPermi: module.moduleMenu.map(menu => {
+                        return {
+                            menuId: menu.menu?.id,
+                            menuName: menu.menu?.name,
+                            contentPermissions: menu.menu?.menuPermissions.map(permission => {
+                                return {
+                                    permissionsId: permission.permissions.id,
+                                    permissionsName: permission.permissions.name
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+
+            return {
+                message: 'Retorno valores exitoso. !!',
+                status: response.NICE,
+                allModuleMenuPermission: allModuleMenuPermission
+            }
+            
+        } catch (err) {
+            console.log('Se presentaron errrores en AllModMenPerm y son: ' + err.message);
+            return {
+                message: 'Se presentaron errrores en AllModMenPerm y son: ' + err.message,
+                status: response.WARN,
+                allModuleMenuPermission: null
+            }
         }
     }
 }

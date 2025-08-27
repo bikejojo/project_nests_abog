@@ -3,7 +3,7 @@ import { AuthModule } from "src/auth/auth.module";
 import { UserResolver } from "./user.resolver";
 import { UserRepository } from "../infraestructura/prisma/user.repository";
 import { PrismaService } from "src/prisma/prisma.service";
-import { UserUseCase } from "../domain/service/user.use-case";
+import { actionUserPerson, UserUseCase } from "../domain/service/user.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
 import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.module";
@@ -25,6 +25,7 @@ import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermissio
     ModuleMenuPermissionsRepository,
     PrismaService,
     UserUseCase,
+    actionUserPerson,
     PersonRepository
   ],
   exports: [

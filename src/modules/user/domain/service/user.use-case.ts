@@ -16,6 +16,8 @@ import { DeleteUserInput } from "../dto/delete-user.input";
 import { assingRolUserInput } from "../dto/assign-user.input";
 import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
+import { Prisma } from "@prisma/client";
+
 @Injectable()
 export class UserUseCase {
 
@@ -24,11 +26,9 @@ export class UserUseCase {
     constructor(
         private authService: AuthService ,
         private userRepository: UserRepository ,
-        private personaRepository: PersonRepository ,
         private rolRepository: ModuleMenuPermissionsRepository ,
-        private prisma: PrismaService
     ) {
-         this.responseContext = new ResponseContext()
+        this.responseContext = new ResponseContext()
     }
 
     async login(data: LoginUserInput,clientMeta:{ip:string , userAgent:string}){
@@ -166,7 +166,7 @@ export class UserUseCase {
         try {
                         
             const user = this.userRepository.logout(data.id);
-            //console.log(user);
+            
             return{
                 message: 'Logout exitoso',
                 status: response.FALL ,
@@ -178,6 +178,84 @@ export class UserUseCase {
                 status: 501
             }
         }
+    }
+
+    
+    async refreshUser(refreshTokenData: any){
+        try{
+            const refreshToken = refreshTokenData.refreshToken || refreshTokenData.token;
+
+            const newTokens = await this.authService.refreshAccessToken(refreshToken);
+
+            const user = await this.userRepository.findIdUsers({id:refreshTokenData.id})
+
+                    if (!user) {
+            return {
+                message: 'Usuario no encontrado',
+                status: response.FALL,
+                token: null,
+                refreshToken: null
+            };
+        }
+
+        // Guardar el nuevo refresh token en la base de datos
+        await this.userRepository.saveToken(newTokens.token, newTokens.refreshToken, user);
+
+        return {
+            message: 'Tokens renovados exitosamente',
+            status: response.NICE,
+            token: newTokens.token,
+            refreshToken: newTokens.refreshToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                type: user.type
+            }
+        };
+        }catch(err){
+
+        }
+    }
+
+    async assignRolUser(data:assingRolUserInput){
+        try{
+            const existRol = await this.rolRepository.roleFind({id:data.idRol});
+
+            if(!existRol){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe rol',status:response.FALL});
+            }
+
+            const existUser = await this.userRepository.findIdUsers({id:data.idUser});
+
+            if(!existUser){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe User',status:response.FALL});
+            }
+
+            if(!existUser.roleId){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error' , message:'Asignacion erronea' , status: response.FALL})
+            }
+
+            await this.userRepository.assingRolUser({idUser:data.idUser , idRol:data.idRol});
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Exito' , message:'asignacion de rol con usuario ' , status:response.NICE , })
+
+        }catch(err){
+            console.log('[LOG] Surgieron las siguientes fallas: ' + err.message );
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'assgRolUsr' , message:err.message , status:response.WARN});
+        }
+    }
+}
+
+@Injectable()
+export class actionUserPerson{
+    private responseContext: ResponseContext;
+
+    constructor(
+        private readonly prisma:PrismaService,
+        private readonly userRepository: UserRepository ,
+        private readonly personaRepository: PersonRepository ,
+    ){
+        this.responseContext = new ResponseContext();
     }
 
     async createUserPerson(data:CreateUserInput){
@@ -233,6 +311,12 @@ export class UserUseCase {
                 content: result.user
             });
         }catch(err){
+            if(err instanceof Prisma.PrismaClientKnownRequestError){
+                if(err.code === 'P2002'){
+                    return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Validacion',message:'Correo registrado existente en el sistema' , status:response.FALL , content: null})
+                }
+            }
+
             return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
             type: 'Error',
             message: 'al crear usuario: ' + err.message,
@@ -338,70 +422,6 @@ export class UserUseCase {
                 status: response.WARN,
                 response: null
             });
-        }
-    }
-
-    async refreshUser(refreshTokenData: any){
-        try{
-            const refreshToken = refreshTokenData.refreshToken || refreshTokenData.token;
-
-            const newTokens = await this.authService.refreshAccessToken(refreshToken);
-
-            const user = await this.userRepository.findIdUsers({id:refreshTokenData.id})
-
-                    if (!user) {
-            return {
-                message: 'Usuario no encontrado',
-                status: response.FALL,
-                token: null,
-                refreshToken: null
-            };
-        }
-
-        // Guardar el nuevo refresh token en la base de datos
-        await this.userRepository.saveToken(newTokens.token, newTokens.refreshToken, user);
-
-        return {
-            message: 'Tokens renovados exitosamente',
-            status: response.NICE,
-            token: newTokens.token,
-            refreshToken: newTokens.refreshToken,
-            user: {
-                id: user.id,
-                email: user.email,
-                type: user.type
-            }
-        };
-        }catch(err){
-
-        }
-    }
-
-    async assignRolUser(data:assingRolUserInput){
-        try{
-            const existRol = await this.rolRepository.roleFind({id:data.idRol});
-
-            if(!existRol){
-                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe rol',status:response.FALL});
-            }
-
-            const existUser = await this.userRepository.findIdUsers({id:data.idUser});
-
-            if(!existUser){
-                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe User',status:response.FALL});
-            }
-
-            if(!existUser.roleId){
-                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error' , message:'Asignacion erronea' , status: response.FALL})
-            }
-
-            await this.userRepository.assingRolUser({idUser:data.idUser , idRol:data.idRol});
-
-            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Exito' , message:'asignacion de rol con usuario ' , status:response.NICE , })
-
-        }catch(err){
-            console.log('[LOG] Surgieron las siguientes fallas: ' + err.message );
-            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'assgRolUsr' , message:err.message , status:response.WARN});
         }
     }
 }

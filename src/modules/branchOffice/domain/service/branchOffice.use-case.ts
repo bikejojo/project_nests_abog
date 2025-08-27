@@ -18,38 +18,7 @@ export class BranchOfficeUseCase {
 
     private ResponseContent = new ResponseContext();
 
-    async listCityData(){
-        try {
-            const branch = await this.cityRepository.listCity();
-
-            if( !branch ){
-                return {
-                    message: 'Error al traer los datos de ciudades.', 
-                    status: response.FALL
-                }
-            }
-
-            if( branch.length === 0 ){
-                return {
-                    message: 'No existen datos de ciudades.' ,
-                    status: response.FALL
-                }
-            }
-
-
-            return {
-                message: 'Retorno valores exitoso. !!',
-                status: response.NICE,
-                response: branch
-            }
-        }catch(err){
-            console.log('Las fallas en LstBrnch son: ' + err.message)
-            return {
-                message:'Las fallas en LstBrnch son: ' + err.message ,
-                status:response.WARN
-            }
-        }
-    }
+  
 
     async createdBranchOffice(data:CreateBranchOfficeInput){
         try{
@@ -118,6 +87,46 @@ export class BranchOfficeUseCase {
         }catch(err){
             console.log('Fallas en DelBrchOff y son: '+ err.message);
             return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'DelBrcnOff', message:err.message , status:response.WARN});
+        }
+    }
+}
+
+@Injectable()
+export class branchOfficeList{
+    constructor(
+        private readonly cityRepository: BranchOfficeRepository
+    ){}
+
+    async listCityData(){
+        try {
+            const branch = await this.cityRepository.listCity();
+
+            if( !branch ){
+                return {
+                    message: 'Error al traer los datos de ciudades.', 
+                    status: response.FALL
+                }
+            }
+
+            if( branch.length === 0 ){
+                return {
+                    message: 'No existen datos de ciudades.' ,
+                    status: response.FALL
+                }
+            }
+
+
+            return {
+                message: 'Retorno valores exitoso. !!',
+                status: response.NICE,
+                response: branch
+            }
+        }catch(err){
+            console.log('Las fallas en LstBrnch son: ' + err.message)
+            return {
+                message:'Las fallas en LstBrnch son: ' + err.message ,
+                status:response.WARN
+            }
         }
     }
 }
