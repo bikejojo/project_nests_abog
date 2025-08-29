@@ -110,7 +110,7 @@ export class UserRepository {
                 moduleUser: { select: { modules: { select: { id: true, name: true } } } },
                 menuUser: { select: { menu: { select: { id: true, name: true } } } },
                 permissionsUser: { select: { permissions: { select: { id: true, name: true } } } },
-                persona: true
+                //persona: true
             }
         });
     }
