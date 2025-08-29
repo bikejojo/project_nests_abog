@@ -26,12 +26,14 @@ type Branch_Office {
 }
 
 input CreateBranchOfficeInput {
-  address: String!
-  cityId: Float!
+  """direccion de sucursal"""
+  address: String
+
+  """Id de ciudad"""
+  cityId: Int
   email: String
   name: String!
   phone: String
-  status: Float
 }
 
 input CreateUserInput {
@@ -400,6 +402,9 @@ input createClientsInput {
   """direccion del cliente"""
   address: String
 
+  """CI del clients"""
+  ci: String
+
   """correo del cliente"""
   email: String
 
@@ -423,13 +428,13 @@ type createClientsOutPut {
 }
 
 type createDataBranchOffice {
-  address: String!
-  cityId: Float!
+  address: String
+  cityId: Int
   email: String
   id: ID!
   name: String!
   phone: String
-  status: Float
+  status: Int
 }
 
 input createDocumentsInput {
@@ -560,6 +565,9 @@ input updateClientInput {
 
   """Actualizar Direccion del cliente"""
   address: String
+
+  """CI del clients"""
+  ci: String
 
   """Actualizar Correo del cliente"""
   email: String

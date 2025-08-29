@@ -22,6 +22,9 @@ export class createClientsInput {
 
     @Field(()=> Boolean , {nullable:true, description:"indica si el cliente es interno o externo"})
     isIntern: boolean
+
+    @Field(()=>String, {nullable:true,description:"CI del clients"})
+    ci:string
 }
 
 @ObjectType()

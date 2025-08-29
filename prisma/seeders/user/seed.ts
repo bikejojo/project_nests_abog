@@ -17,7 +17,6 @@ async function main(){
                     type: 1,
                     isActive: true,
                     status: tatus.ACTIVE,
-                    ci: null,
                     email: "admin@admin.com",
                     token: "" ,// or provide a default token value if needed
                     reftoken: ""

@@ -29,6 +29,9 @@ export class updateClientInput{
 
     @Field(()=> Boolean , {nullable:true , description:'Actualizar si el cliente esta activo o no'})
     IsActive: boolean
+
+    @Field(()=>String, {nullable:true,description:"CI del clients"})
+    ci:string
 }
 
 @ObjectType()

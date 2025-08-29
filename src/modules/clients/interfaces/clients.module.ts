@@ -1,7 +1,7 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ClientsResolver } from "./clients.resolver";
-import { ClientsUseCase } from "../domain/service/clients.use-case";
+import { ClientsUseCase, ClientsUseList } from "../domain/service/clients.use-case";
 import { Clients } from "../entities/clients.entities";
 import { AuthModule } from "src/auth/auth.module";
 import { jwtConstants } from "src/auth/constants";
@@ -22,11 +22,13 @@ import { ClientRepository } from "../infraestructura/prisma/clients.repository";
     PrismaService ,
     ClientsResolver ,
     ClientsUseCase ,
+    ClientsUseList,
     ClientRepository , 
     Clients
   ],
   exports: [
     ClientsUseCase ,
+    ClientsUseList,
     ClientRepository ,
   ],
 })

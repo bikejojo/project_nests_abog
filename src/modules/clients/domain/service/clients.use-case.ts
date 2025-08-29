@@ -34,17 +34,17 @@ export class ClientsUseCase{
                         status: tatus.ACTIVE,
                         cityId: 1
 
-                    }, tx); // ← tx como segundo parámetro
+                    }, tx);
 
                     client = await this.clientRepository.createdClients({
                         personId: persona.id,
                         NIT: data.NIT,
                         email: data.email,
                         isActive: status.ACTIVE,
-                        cellphone: data.phone, // Añadido si es requerido
-                        isIntern: status.ACTIVE, // Añadido si es requerido
+                        cellphone: data.phone, 
+                        isIntern: status.ACTIVE, 
                         status: tatus.ACTIVE // Añadido si es requerido
-                    }, tx); // ← tx como segundo parámetro
+                    }, tx);
 
                     return { persona, client };
                 }  
@@ -190,6 +190,16 @@ export class ClientsUseCase{
             }
         }
     }
+    
+}
+
+@Injectable()
+export class ClientsUseList{
+    constructor(
+        private readonly clientRepository: ClientRepository,
+        
+    ){}
+
     async findIdClient(data:any){
         try{
             const clients = await this.clientRepository.findIdClients(data);

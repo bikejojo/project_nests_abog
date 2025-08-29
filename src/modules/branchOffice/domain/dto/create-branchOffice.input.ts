@@ -1,25 +1,22 @@
-import { ObjectType , InputType , Field , ID } from "@nestjs/graphql";
+import { ObjectType , InputType , Field , ID, Int } from "@nestjs/graphql";
 
 @InputType()
 export class CreateBranchOfficeInput {
     @Field()
     name: string;
 
-    @Field()
+    @Field(()=>String,{nullable:true,description:'direccion de sucursal'})
     address: string;
 
-    @Field()
-    cityId: number;
+    @Field(()=>Int , {nullable:true , description:"Id de ciudad"})
+    cityId: number | null;
 
     @Field(() => String , {nullable:true})
     phone?: string | null;
 
     @Field(() => String ,{ nullable: true })
     email?: string | null;
-    
-    @Field({ nullable: true })
-    status?: number;
-    
+        
 }
 
 @ObjectType()
@@ -30,11 +27,11 @@ export class createDataBranchOffice{
     @Field()
     name: string;
 
-    @Field()
+    @Field({nullable:true})
     address: string;
 
-    @Field()
-    cityId: number;
+    @Field(()=>Int,{nullable:true})
+    cityId: number | null;
 
     @Field(()=> String , {nullable:true})
     phone?: string | null;
@@ -42,7 +39,7 @@ export class createDataBranchOffice{
     @Field(() => String ,{ nullable: true })
     email?: string | null;
     
-    @Field({ nullable: true })
+    @Field(()=>Int,{ nullable: true })
     status?: number;
 }
 

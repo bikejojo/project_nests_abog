@@ -9,6 +9,7 @@ import { SucccessResponseStrategy } from "src/common/responses/success-response.
 import { CreateBranchOfficeInput } from "../dto/create-branchOffice.input";
 import { updateBranchOfficeInput } from "../dto/update-branchOffice.input";
 import { deleteBranchOfficeInput } from "../dto/delete-branchOffice.input";
+import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 
 @Injectable()
 export class BranchOfficeUseCase {
@@ -34,10 +35,10 @@ export class BranchOfficeUseCase {
                 return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'Sucursal',status:response.FALL});
             }
 
-            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Creacion',message:'Sucursales', status:response.NICE}); 
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Creacion',message:'Sucursales'}); 
         }catch(err){
             console.log("Fallas en CrBrOff" + err.message);
-            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'CrBrOff', message:err.message , status:response.WARN})
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'CrBrOff', message:err.message })
         }
     }
 
@@ -65,11 +66,11 @@ export class BranchOfficeUseCase {
                 return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'La ID de sucursal' , status: response.FALL })
             }
 
-            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Modificacion',message:'de sucursales',status:response.NICE}) 
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Modificacion',message:'de sucursales'}) 
 
         }catch(err){
             console.log('Fallas en UpdBrchOff y son: '+err.message)
-            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message , status:response.WARN })
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message  })
         }
     }
 
@@ -82,11 +83,11 @@ export class BranchOfficeUseCase {
 
             await this.cityRepository.deleteBranchOffice({id:data.id})
 
-            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({status:response.NICE , type:'Exitoso', message:'Eliminacion de Sucursal.'})
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Exitoso', message:'Eliminacion de Sucursal.'})
             
         }catch(err){
             console.log('Fallas en DelBrchOff y son: '+ err.message);
-            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'DelBrcnOff', message:err.message , status:response.WARN});
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'DelBrcnOff', message:err.message });
         }
     }
 }
@@ -97,28 +98,23 @@ export class branchOfficeList{
         private readonly cityRepository: BranchOfficeRepository
     ){}
 
+    private ResponseContent = new ResponseContext();
+
     async listCityData(){
         try {
             const branch = await this.cityRepository.listCity();
 
             if( !branch ){
-                return {
-                    message: 'Error al traer los datos de ciudades.', 
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:"Ciudad" , message:"No existe la ID"})
             }
 
             if( branch.length === 0 ){
-                return {
-                    message: 'No existen datos de ciudades.' ,
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:"Contenido de ciudades" , status:response.FALL})
             }
 
 
             return {
                 message: 'Retorno valores exitoso. !!',
-                status: response.NICE,
                 response: branch
             }
         }catch(err){

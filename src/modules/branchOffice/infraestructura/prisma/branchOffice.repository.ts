@@ -22,12 +22,12 @@ export class BranchOfficeRepository {
     async createBranchOffices(data:any){
         return await this.prisma.branch_Office.create({
             data:{
-                name:data.name,
+                name: data.name,
                 address: data.address ,
                 cityId: data.cityId ,
                 phone: data.phone ,
                 email: data.email ,
-                status:data.status
+                status: 1
             }
         })
     }
