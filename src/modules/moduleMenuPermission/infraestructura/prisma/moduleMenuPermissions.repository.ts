@@ -8,7 +8,7 @@ export class ModuleMenuPermissionsRepository {
 
     async listAllModuleMenuPermissions(){
         return await this.prisma.module.findMany({
-            include:{
+            /*include:{
                 moduleMenu: {
                     include: {
                         menu: {
@@ -22,7 +22,31 @@ export class ModuleMenuPermissionsRepository {
                         }
                     }
                 }
-            }
+            }*/
+           select:{
+                id:true,
+                name:true,
+                moduleMenu:{
+                    include:{
+                        menu:{
+                            select:{
+                                id:true,
+                                name:true,
+                                menuPermissions:{
+                                    include:{
+                                        permissions:{
+                                            select:{
+                                                id:true,
+                                                name:true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+           }
         })
     }
 

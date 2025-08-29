@@ -159,11 +159,9 @@ type Mutation {
   assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
   createClients(data: createClientsInput!): createClientsOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
-  createLegalEntity(data: createLegalEntityInput!): createLegalEntityOutPut!
   createUser(data: CreateUserInput!): createUserLawyerOutPut!
   createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
   deleteClients(data: deleteClientInput!): deleteClientOutPut!
-  deleteLegalEntity(data: deleteLegalEntityInput!): deleteLegalEntityOutPut!
   deleteUserPerson(data: DeleteUserInput!): DeleteUserOutput!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
@@ -172,7 +170,6 @@ type Mutation {
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updateUserPerson(data: UpdateUserPersonInput!): UpdateUserOutPut!
   updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
-  updatedLegalEntity(data: updateLegalEntityInput!): updateLegalEntityOutPut!
 }
 
 type Permissions {
@@ -443,27 +440,6 @@ input createDocumentsInput {
   type: Float!
 }
 
-input createLegalEntityInput {
-  NIT: String
-  address: String
-  addressLE: String
-  ci: String
-  cityId: Float
-  companyName: String
-  firstName: String
-  lastName: String
-  legalRepresentive: String
-  phone: String
-  registrationDate: DateTime
-  typeCompany: String
-}
-
-type createLegalEntityOutPut {
-  message: String!
-  response: legalEntityPerson
-  status: Float!
-}
-
 type createUserLawyerOutPut {
   message: String
   response: UserResponse
@@ -481,15 +457,6 @@ type deleteClientOutPut {
   status: Float!
 }
 
-input deleteLegalEntityInput {
-  id: ID!
-}
-
-type deleteLegalEntityOutPut {
-  message: String
-  status: Float!
-}
-
 type documentsDataOutPut {
   documents: String
   message: String
@@ -504,34 +471,6 @@ type findIdClientOutPut {
   findClient: clientsData
   message: String!
   status: Float!
-}
-
-type legalEntityData {
-  NIT: Float
-  address: String
-  companyName: String
-  id: Float!
-  legalRepresentive: String
-  registrationDate: DateTime
-  typeCompany: String
-}
-
-type legalEntityPerson {
-  legalEntityDats: legalEntityData
-  personsData: personData
-}
-
-type persLawUserData {
-  personData: personData
-  userData: userData
-}
-
-type personData {
-  address: String!
-  firstName: String!
-  id: Float!
-  lastName: String!
-  phone: String!
 }
 
 type roles {
@@ -602,28 +541,6 @@ type updateDataBranchOffice {
   name: String!
   phone: String
   status: Float
-}
-
-input updateLegalEntityInput {
-  NIT: Float
-  address: String
-  addressLE: String
-  ci: String
-  cityId: Float
-  companyName: String
-  firstName: String
-  id: ID!
-  lastName: String
-  legalRepresentive: String
-  phone: String
-  registrationDate: DateTime
-  typeCompany: String
-}
-
-type updateLegalEntityOutPut {
-  message: String
-  response: legalEntityPerson
-  status: Float!
 }
 
 input updateUserModuleMenuPermissionsInput {

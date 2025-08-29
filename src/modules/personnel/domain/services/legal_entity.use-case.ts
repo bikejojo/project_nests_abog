@@ -10,10 +10,6 @@ import { city } from "src/modules/city/entities/city.entity";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 import { PrismaService } from "src/prisma/prisma.service";
-import { createLegalEntityInput } from "../dto/legal_entity/create-legal_entity.input";
-import { deleteLegalEntityInput } from "../dto/legal_entity/delete-legal_entity.input";
-import { updateLegalEntityInput } from "../dto/legal_entity/update-legal_entity.input";
-
 @Injectable()
 export class LegalEntityUseCase {
     constructor(
@@ -24,7 +20,7 @@ export class LegalEntityUseCase {
 
     private ResponseContext = new ResponseContext();
     
-    async createLegalEntity(data:createLegalEntityInput){
+    async createLegalEntity(data:any){
         let person :any = null;
         let legalEntity :any = null;
 
@@ -79,7 +75,7 @@ export class LegalEntityUseCase {
         }
     }
 
-    async updateLegalEntity(data:updateLegalEntityInput){
+    async updateLegalEntity(data:any){
         try {
             await this.prisma.$transaction(async (prisma)=> {
                 const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({
@@ -132,7 +128,7 @@ export class LegalEntityUseCase {
         }
     }
 
-    async deleteLegalEntity(data:deleteLegalEntityInput){
+    async deleteLegalEntity(data:any){
         try {
             await this.prisma.$transaction(async (prisma) => {
                 const legalEntityId = await this.legalEntityRepoository.findIdLegalEntity({

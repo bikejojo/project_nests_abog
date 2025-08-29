@@ -32,6 +32,9 @@ model User {
   role        Role?     @relation(fields: [roleId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([id])
+  @@index([status])
 }
 
 model auth_log {
@@ -49,8 +52,9 @@ model auth_log {
 model Persona {
   id              Int      @id @default(autoincrement())
   ci              String?
-  firstName       String?
-  lastName        String?
+  //firstName       String?
+  //lastName        String?
+  fullName        String?
   phone           String?
   address         String?
   status          Int      @default(1)
@@ -64,6 +68,11 @@ model Persona {
   operators       Operator[]
   legalEntities   Legal_Entity[]
   providers       Provider[]
+
+  @@index([userId])
+  @@index([id])
+  @@index([fullName])
+  @@index([status])
 }
 
 
@@ -111,6 +120,8 @@ model ModuleUser {
   modules   Module? @relation(fields: [moduleId] , references: [id])
   users     User? @relation(fields: [userId] , references: [id])
   @@unique([moduleId , userId ])
+  @@index([userId])
+  @@index([moduleId])
 }
 model Menu {
   id            Int @id @default(autoincrement())
@@ -121,6 +132,7 @@ model Menu {
   menuUser      MenuUser[]
   menuPermissions MenuPermissions[]
   moduleMenus   ModuleMenu[]
+  
 }
 
 model ModuleMenu {
@@ -132,6 +144,8 @@ model ModuleMenu {
   updatedAt   DateTime @updatedAt
   module      Module @relation(fields: [moduleId], references: [id])
   menu        Menu? @relation(fields: [menuId], references: [id])
+  @@index([moduleId])
+  @@index([menuId])
 }
 
 model Permissions {
@@ -154,6 +168,8 @@ model MenuUser {
   user        User? @relation(fields: [userId], references: [id])
   menu        Menu @relation(fields: [menuId], references: [id])
   @@unique([userId, menuId])
+  @@index([userId])
+  @@index([menuId])
 }
 
 model MenuPermissions {
@@ -165,6 +181,8 @@ model MenuPermissions {
   updatedAt      DateTime @updatedAt
   menu           Menu @relation(fields: [menuId], references: [id])
   permissions    Permissions @relation(fields: [permissionsId], references: [id])
+  @@index([menuId])
+  @@index([permissionsId])
 }
 
 model PermissionsUser {
@@ -176,7 +194,9 @@ model PermissionsUser {
   updatedAt     DateTime @updatedAt
   user          User @relation(fields: [userId], references: [id])
   permissions   Permissions @relation(fields: [permissionsId], references: [id])
-  @@unique([userId, permissionsId]) 
+  @@unique([userId, permissionsId])
+  @@index([userId])
+  @@index([permissionsId])
 }
 //-------------------------------------------------------------------------------------
 
@@ -210,7 +230,7 @@ model Branch_Office {
   email       String?
   cityId      Int?
   city        City? @relation(fields: [cityId], references: [id])
-  status      Int
+  status      Int? @default(1)
   operator    Operator[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
