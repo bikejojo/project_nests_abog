@@ -29,7 +29,7 @@ async function main(){
                     name: branch_Office.description,
                     address: branch_Office.address ,
                     phone: branch_Office.phone ,
-                    cityId : branch_Office.cityId ,
+                    //cityId : branch_Office.cityId ,
                     status:1
                 },
             })

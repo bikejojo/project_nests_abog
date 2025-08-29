@@ -360,8 +360,8 @@ export class actionUserPerson{
                     person = await this.personaRepository.updatePersona(tx,{
                         id: verificationPerson?.id,
                         ci: data.ci ?? verificationPerson?.ci,
-                        firstName: data.firstName ?? verificationPerson?.firstName,
-                        lastName: data.lastName ?? verificationPerson?.lastName,
+                        fullName: data.firstName ?? verificationPerson?.fullName,
+                        //lastName: data.lastName ?? verificationPerson?.lastName,
                         phone:  verificationPerson?.phone,
                         address: verificationPerson?.address,
                         status: verificationPerson?.status,

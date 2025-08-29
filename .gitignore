@@ -4,6 +4,7 @@
 /build
 /public
 endpoint.txt
+/prisma/migrations
 
 # Logs
 logs

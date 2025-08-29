@@ -11,8 +11,8 @@ export class PersonRepository {
         return await prisma.persona.create({
             data:{
                 ci:data.ci ,
-                firstName: data.firstName ,
-                lastName: data.lastName ,
+                fullName: data.firstName ,
+                //lastName: data.lastName ,
                 phone: data.phone,
                 address: data.address , 
                 status: data.status ,
@@ -28,8 +28,8 @@ export class PersonRepository {
                 id:data.id
             },
             data:{
-                firstName: data.firstName ,
-                lastName: data.lastName ,
+                fullName: data.firstName ,
+                //lastName: data.lastName ,
                 phone: data.phone ,
                 address: data.address ,
                 cityId: data.cityId ,

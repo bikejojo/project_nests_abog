@@ -94,8 +94,8 @@ export class ClientsUseCase{
                 async (tx) => {
                     personaUpdate = await this.personRepository.updatePersona(tx,{
                         id: personVerification?.id,
-                        firstName: data.firstName ?? personVerification?.firstName,
-                        lastname: data.lastName ?? personVerification?.lastName,
+                        firstName: data.firstName ?? personVerification?.fullName,
+                        //lastname: data.lastName ?? personVerification?.lastName,
                         phone: data.phone ?? personVerification?.phone,
                         address: data.address ?? personVerification?.address,
                     })
@@ -248,8 +248,8 @@ export class ClientsUseList{
                 status: 201,
                 allClients: allClients.map(client => ({
                     id: client.id ,
-                    firtName: client.person.firstName,
-                    lastName: client.person.lastName,
+                    firtName: client.person.fullName,
+                    //lastName: client.person.lastName,
                     phone: client.person.phone, 
                     address: client.person.address,
                     NIT: client.NIT,
