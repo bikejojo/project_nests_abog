@@ -156,11 +156,11 @@ type Module {
 }
 
 type Mutation {
-  assingUserPermissionMod(data: assingUserDataInput!): assingUserDataOutPut!
   createClients(data: createClientsInput!): createClientsOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
   createUser(data: CreateUserInput!): createUserLawyerOutPut!
   createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
+  deleteBranchOffice(data: deleteBranchOfficeInput!): deleteBranchOfficeOutPut!
   deleteClients(data: deleteClientInput!): deleteClientOutPut!
   deleteUserPerson(data: DeleteUserInput!): DeleteUserOutput!
   login(data: LoginUserInput!): LoginResponse!
@@ -168,7 +168,6 @@ type Mutation {
   refresh: RefreshTokenResponse!
   updateClients(data: updateClientInput!): updateClientOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
-  updateUserPerson(data: UpdateUserPersonInput!): UpdateUserOutPut!
   updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
 }
 
@@ -245,56 +244,8 @@ type RefreshTokenResponse {
   status: Int
 }
 
-type UpdateUserOutPut {
-  """mensaje de respuesta"""
-  message: String!
-
-  """contenido de la respuesta de user"""
-  response: UserContent
-
-  """status de la respuesta"""
-  status: Int!
-}
-
-input UpdateUserPersonInput {
-  """Numero de cedula de identidad"""
-  ci: String
-
-  """Correo del usuario"""
-  email: String
-
-  """Nombre del usuario"""
-  firstName: String
-
-  """Identificador unico del usuario"""
-  id: Int!
-
-  """Apellido del usuario"""
-  lastName: String
-
-  """Password de usuario actualizado"""
-  password: String
-}
-
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-type UserContent {
-  """Numero de cedula de identidad"""
-  ci: String!
-
-  """Correo del usuario"""
-  email: String!
-
-  """Nombre del usuario"""
-  firstName: String!
-
-  """Apellido del usuario"""
-  lastName: String!
-
-  """Identificador unico del usuario"""
-  userId: Int!
-}
 
 type UserResponse {
   email: String!
@@ -326,18 +277,6 @@ type allRols {
 
   """estado del retorno"""
   status: Int
-}
-
-input assingUserDataInput {
-  id: ID!
-  menuIds: [Int]
-  moduleIds: [Int]
-  permissionsIds: [Int]
-}
-
-type assingUserDataOutPut {
-  message: String!
-  status: Float!
 }
 
 type city {
@@ -446,6 +385,19 @@ type createUserLawyerOutPut {
   status: Float!
 }
 
+input deleteBranchOfficeInput {
+  """Se manda la ID de la sucursal para eliminar"""
+  id: Int!
+}
+
+type deleteBranchOfficeOutPut {
+  """respuesta de mensaje"""
+  message: String!
+
+  """codigo del estado que se devuelve."""
+  status: Int!
+}
+
 input deleteClientInput {
   """Identificador unico del cliente"""
   id: Int!
@@ -481,9 +433,8 @@ type roles {
 
 input updateBranchOfficeInput {
   address: String!
-  cityId: Float!
   email: String
-  id: ID!
+  id: Int!
   name: String!
   phone: String
   status: Float
@@ -535,7 +486,6 @@ type updateClientOutPut {
 
 type updateDataBranchOffice {
   address: String!
-  cityId: Float!
   email: String
   id: ID!
   name: String!

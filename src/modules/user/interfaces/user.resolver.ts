@@ -52,10 +52,10 @@ export class UserResolver {
         return await this.actionsUser.createUserPerson(data);
     }
 
-    @Mutation(()=> UpdateUserOutPut)
+    /*@Mutation(()=> UpdateUserOutPut)
     async updateUserPerson(@Args('data') data: UpdateUserPersonInput) {
         return await this.actionsUser.updateUserPerson(data);
-    }
+    }*/
 
     @Mutation(()=> DeleteUserOutput)
     async deleteUserPerson(@Args('data') data: DeleteUserInput) {

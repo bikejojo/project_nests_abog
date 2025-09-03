@@ -59,7 +59,6 @@ export class BranchOfficeUseCase {
                 address: data.address ?? branchOfficeId.address ,
                 phone: data.phone ?? branchOfficeId.phone ,
                 email: data.email ?? branchOfficeId.email ,
-                cityId: data.cityId ?? branchOfficeId.cityId ,
             })
 
             if(!updateBranchOffice){

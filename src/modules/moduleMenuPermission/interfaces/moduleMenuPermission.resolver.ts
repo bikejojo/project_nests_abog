@@ -22,10 +22,10 @@ export class ModuleMenuPermissionResolver {
         return await this.moduleMenuPermissionsList.listAllRols();
     }
 
-    @Mutation(()=> assingUserDataOutPut)
+    /*@Mutation(()=> assingUserDataOutPut)
     async assingUserPermissionMod(@Args('data') data:assingUserDataInput ){
         return await this.moduleMenuPermissionsUseCase.assignmentUserPermiss(data);
-    }
+    }*/
 
     @Mutation(()=> updateUserModuleMenuPermissionsOutPut )
     async updateUserPermissionsMod(@Args('data') data:updateUserModuleMenuPermissionsInput ) {
