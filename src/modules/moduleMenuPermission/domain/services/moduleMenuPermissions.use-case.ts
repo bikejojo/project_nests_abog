@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Res } from "@nestjs/common";
 import { ModuleMenuPermissionsRepository } from "../../infraestructura/prisma/moduleMenuPermissions.repository";
 import { response } from "src/common/enum/typeResp";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
@@ -7,6 +7,9 @@ import { ResponseContext } from "src/common/responses/response-context";
 import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
+import { createRolInput } from "../dto/createRoles.input";
+import { updateRolesInput } from "../dto/updateRoles.input";
+import { deleteRolInput } from "../dto/deleteRoles.input";
 
 @Injectable()
 export class ModuleMenuPermissionsUseCase {
@@ -219,6 +222,77 @@ export class ModuleMenuPermissionList {
                 status: response.WARN,
                 allModuleMenuPermission: null
             }
+        }
+    }
+}
+
+@Injectable()
+export class RolesMutations {
+    private responseContext =  new ResponseContext();
+    constructor(
+        private readonly userRepository:UserRepository ,
+        private readonly moduleMenuPermissionsRepository: ModuleMenuPermissionsRepository ,
+    ){}
+
+    async createRols(data:createRolInput){
+        try{
+           
+            if(data.name == null ){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Atributo mal generado' , message:'atributo viene vacio'})
+            }
+
+            await this.moduleMenuPermissionsRepository.roleCreate({
+                name : data.name
+            })
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Exitoso' , message:'creacion de rol/cargo'});
+        }catch(err){
+            console.log('Se presentaron errrores en CreatRol y son: ' + err.message);
+        }
+    }
+
+    async updateRols(data:updateRolesInput){
+        try{
+            const rolid = data.id;
+            const role = await this.moduleMenuPermissionsRepository.roleFind({id:rolid});
+            
+            if(role == null ){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'ID', message:'No se encontro el objeto'})
+            }
+
+            if(role?.status === 0){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Estado 0', message:'El objeto a actualizar fue eliminado'})
+            }
+
+            await this.moduleMenuPermissionsRepository.roleUpdate({
+                id:role?.id ,
+                name: data.name ?? role?.name 
+            })
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Exito',message:'Actualizacion de Objeto'});
+
+        }catch(err){
+            console.log('Se presentaron errores en UpdatRols y son:' + err.message)
+        }
+    }
+
+    async deleteRols(data:deleteRolInput){
+        try{
+            const rolid = data.id;
+            const role = await this.moduleMenuPermissionsRepository.roleFind({id:rolid});
+            console.log(role)
+            if(role?.id == null ){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'ID', message:'No se encontro el objeto'})
+            }
+
+            await this.moduleMenuPermissionsRepository.roleDelete({
+                id:role?.id 
+            })
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Exito',message:'Eliminacion de Objeto'});
+
+        }catch(err){
+            console.log('Se presentaron errores en DelRols y son: ' + err.message);
         }
     }
 }

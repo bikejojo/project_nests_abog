@@ -4,7 +4,7 @@ import { AuthModule } from "src/auth/auth.module";
 import { jwtConstants } from "src/auth/constants";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ModuleMenuPermissionsRepository } from "../infraestructura/prisma/moduleMenuPermissions.repository";
-import { ModuleMenuPermissionList, ModuleMenuPermissionsUseCase } from "../domain/services/moduleMenuPermissions.use-case";
+import { ModuleMenuPermissionList, ModuleMenuPermissionsUseCase, RolesMutations } from "../domain/services/moduleMenuPermissions.use-case";
 import { ModuleMenuPermissionResolver } from "./moduleMenuPermission.resolver";
 import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 
@@ -22,6 +22,7 @@ import { UserRepository } from "src/modules/user/infraestructura/prisma/user.rep
     ModuleMenuPermissionList,
     ModuleMenuPermissionsRepository,
     UserRepository ,
+    RolesMutations,
     PrismaService
   ],
   exports: [

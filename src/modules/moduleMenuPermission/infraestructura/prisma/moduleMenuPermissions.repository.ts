@@ -144,4 +144,35 @@ export class ModuleMenuPermissionsRepository {
     async roleFind(data:any){
         return await this.prisma.role.findUnique({where:{id:data.id}})
     }
+
+    async roleCreate(data:any){
+        return await this.prisma.role.create({
+            data:{
+                name:data.name,
+                status:1
+            }
+        })
+    }
+
+    async roleUpdate(data:any){
+        return await this.prisma.role.update({
+            where:{
+                id: data.id
+            },
+            data:{
+                name:data.name
+            }
+        })
+    }
+
+    async roleDelete(data:any){
+        return await this.prisma.role.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                status: 0
+            }
+        })
+    }
 }

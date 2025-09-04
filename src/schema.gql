@@ -158,15 +158,18 @@ type Module {
 type Mutation {
   createClients(data: createClientsInput!): createClientsOutPut!
   createDocuments(data: createDocumentsInput!): documentsDataOutPut!
+  createRole(data: createRolInput!): createRolOutPut!
   createUser(data: CreateUserInput!): createUserLawyerOutPut!
   createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
   deleteBranchOffice(data: deleteBranchOfficeInput!): deleteBranchOfficeOutPut!
   deleteClients(data: deleteClientInput!): deleteClientOutPut!
+  deleteRole(data: deleteRolInput!): deleteRolOutPut!
   deleteUserPerson(data: DeleteUserInput!): DeleteUserOutput!
   login(data: LoginUserInput!): LoginResponse!
   logout: LogoutUserOutPut!
   refresh: RefreshTokenResponse!
   updateClients(data: updateClientInput!): updateClientOutPut!
+  updateRole(data: updateRolesInput!): updateRolesOutPut!
   updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
   updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
 }
@@ -379,6 +382,19 @@ input createDocumentsInput {
   type: Float!
 }
 
+input createRolInput {
+  """nombre del cargo/rol"""
+  name: String
+}
+
+type createRolOutPut {
+  """mesnaje de descripcion de la respuesta"""
+  message: String
+
+  """Estado del retorno"""
+  status: Int
+}
+
 type createUserLawyerOutPut {
   message: String
   response: UserResponse
@@ -407,6 +423,19 @@ type deleteClientOutPut {
   deleteClient: clientsData
   message: String!
   status: Float!
+}
+
+input deleteRolInput {
+  """ID del rol"""
+  id: Int
+}
+
+type deleteRolOutPut {
+  """Mensaje de respuesta"""
+  message: String
+
+  """Estado del retorno"""
+  status: Int
 }
 
 type documentsDataOutPut {
@@ -491,6 +520,22 @@ type updateDataBranchOffice {
   name: String!
   phone: String
   status: Float
+}
+
+input updateRolesInput {
+  """ID del roles"""
+  id: Int
+
+  """Nombre a actualizar el valor"""
+  name: String
+}
+
+type updateRolesOutPut {
+  """nombre del mensaje"""
+  message: String
+
+  """numero de estado"""
+  status: Int
 }
 
 input updateUserModuleMenuPermissionsInput {
