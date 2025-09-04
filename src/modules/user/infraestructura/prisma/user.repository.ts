@@ -30,6 +30,7 @@ export class UserRepository {
         const prisma = tx || this.prisma;
         return await prisma.user.create({
             data: {
+                username: data.username ,
                 email: data.email,
                 password: data.password,
                 token: data.token,
