@@ -1,12 +1,18 @@
-import { InputType , Field , ObjectType } from "@nestjs/graphql";
+import { InputType , Field , ObjectType, Int } from "@nestjs/graphql";
 
 @InputType()
 export class CreateUserInput { 
-    @Field(()=>String , {description:"nombre de usuario"}) 
-    firstname: string;
+    @Field(()=>String , {description:"nombre completo de persona"}) 
+    fullName: string;
 
-    @Field(()=>String , {description:"apellido de usuario"})
-    lastname: string
+    @Field(()=>String , {description:"numero de cedula de identidad"})
+    ci: string;
+    
+    @Field(()=>String , {description:"numero de telefono"})
+    phone: string;
+
+    @Field(()=>String , {description:"nombre de usuario"})
+    userName: string;
 
     @Field(()=>String , {description:"correo de usuario"})
     email: string
@@ -14,8 +20,20 @@ export class CreateUserInput {
     @Field(()=>String , {description:"contraseña de usuario"})
     password: string;
 
-    @Field(()=>String , {description:"numero de cedula de identidad"})
-    ci: string;
+    @Field(()=>String , {description:"Sucursal de ID"})
+    branchOfficeId: string;
+    
+    @Field(()=>String , {description:"Rol de ID del cargo"})
+    RolId: string;
+
+    @Field(()=>[Int] , {description:"Lista de IDs de menús asignados"})
+    menuId: number[];
+
+    @Field(()=>[Int] , {description:"Lista de IDs de módulos asignados"})
+    moduleId: number[];
+
+    @Field(()=>[Int] , {description:"Lista de IDs de permisos asignados"})
+    permissionId: number[];
 }
 
 // Tipo para la respuesta del usuario creado
