@@ -8,6 +8,10 @@ export class User {
   @Field(() => ID,{ description: "ID del usuario"})
   id: number;
 
+  @Field({description:"username de usuario"})
+  username: string;
+
+
   @Field({description:"correo de usuario"})
   email: string;
 

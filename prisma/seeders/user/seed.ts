@@ -12,7 +12,7 @@ async function main(){
             const SALT_ROUNDS = 10;
             const users = [
                 {
-                    
+                    username: "admin",
                     password:  await bcrypt.hash("admin123", SALT_ROUNDS), 
                     type: 1,
                     isActive: true,
@@ -36,6 +36,7 @@ async function main(){
 
             const users = [
                 {
+                    username: "admin",
                     password:  await bcrypt.hash("admin123", SALT_ROUNDS), 
                     type: 0,
                     isActive: true,
