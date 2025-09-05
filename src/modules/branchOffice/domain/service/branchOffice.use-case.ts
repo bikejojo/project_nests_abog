@@ -35,6 +35,14 @@ export class BranchOfficeUseCase {
                 return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'Sucursal',status:response.FALL});
             }
 
+            const contentBranch = await this.cityRepository.listCity();
+
+            let branch = contentBranch.map((b) => b.name !== null && b.name.toLocaleLowerCase() === data.name.toLocaleLowerCase());
+
+            if(branch.length === 1){
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({ type:'Error de coincidencia' , message:'en el atributo name salio la coincidencia'});
+            }
+
             return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Creacion',message:'Sucursales'}); 
         }catch(err){
             console.log("Fallas en CrBrOff" + err.message);
@@ -51,6 +59,10 @@ export class BranchOfficeUseCase {
 
             if(!branchOfficeId){
                 return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'La ID de sucursal',status:response.FALL})   
+            }
+
+            if(data.name.length < 6){
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error ingreso de datos' , message:'El nombre contiene pocos caracteres'})
             }
 
             const updateBranchOffice = await this.cityRepository.updateBranchOffices({

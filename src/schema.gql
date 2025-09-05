@@ -37,20 +37,38 @@ input CreateBranchOfficeInput {
 }
 
 input CreateUserInput {
+  """Rol de ID del cargo"""
+  RolId: String!
+
+  """Sucursal de ID"""
+  branchOfficeId: String!
+
   """numero de cedula de identidad"""
   ci: String!
 
   """correo de usuario"""
   email: String!
 
-  """nombre de usuario"""
-  firstname: String!
+  """nombre completo de persona"""
+  fullName: String!
 
-  """apellido de usuario"""
-  lastname: String!
+  """Lista de IDs de menús asignados"""
+  menuId: [Int!]!
+
+  """Lista de IDs de módulos asignados"""
+  moduleId: [Int!]!
 
   """contraseña de usuario"""
   password: String!
+
+  """Lista de IDs de permisos asignados"""
+  permissionId: [Int!]!
+
+  """numero de telefono"""
+  phone: String!
+
+  """nombre de usuario"""
+  userName: String!
 }
 
 type DataCity {

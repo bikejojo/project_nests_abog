@@ -287,8 +287,7 @@ export class actionUserPerson{
 
                     person = await this.personaRepository.createPerson({
                         ci: data.ci,
-                        firstName: data.firstname ,
-                        lastName: data.lastname,
+                        fullName: data.fullName ,
                         phone: '00000000' ,
                         address: 'S/N',
                         status: tatus.ACTIVE,
