@@ -241,6 +241,21 @@ export class RolesMutations {
                 return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Atributo mal generado' , message:'atributo viene vacio'})
             }
 
+            if(data.name.length < 4 ){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Atributo mal generado' , message:'atributo name con pocos caracteres'})
+            }
+
+            const contentRol = this.moduleMenuPermissionsRepository.listRols();
+
+            let result = (await contentRol).filter((c) => c.name !== null && c.name.toLocaleLowerCase() === data.name.toLocaleLowerCase());
+
+            console.log(result.length);
+
+            if(result.length === 1){ 
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Atributo mal generado' , message:'atributo name tiene coincidencia con otro cargo'})
+            }
+
+
             await this.moduleMenuPermissionsRepository.roleCreate({
                 name : data.name
             })
@@ -264,6 +279,10 @@ export class RolesMutations {
                 return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Estado 0', message:'El objeto a actualizar fue eliminado'})
             }
 
+            if(data.name.length < 4 ){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Atributo mal generado' , message:'atributo name con pocos caracteres'})
+            }
+
             await this.moduleMenuPermissionsRepository.roleUpdate({
                 id:role?.id ,
                 name: data.name ?? role?.name 
@@ -280,7 +299,7 @@ export class RolesMutations {
         try{
             const rolid = data.id;
             const role = await this.moduleMenuPermissionsRepository.roleFind({id:rolid});
-            console.log(role)
+
             if(role?.id == null ){
                 return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'ID', message:'No se encontro el objeto'})
             }
@@ -295,4 +314,4 @@ export class RolesMutations {
             console.log('Se presentaron errores en DelRols y son: ' + err.message);
         }
     }
-}
+}   
