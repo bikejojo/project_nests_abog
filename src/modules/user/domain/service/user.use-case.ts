@@ -278,22 +278,21 @@ export class actionUserPerson{
                         rolId: null
                     },tx)
                     
-                    const cityExists = await tx.city.findUnique({
+                    /*const cityExists = await tx.city.findUnique({
                         where: { id: 1 }
                     });
 
                     if (!cityExists) {
                         throw new Error('City with id 1 does not exist');
-                    }
+                    }*/
 
                     person = await this.personaRepository.createPerson({
                         ci: data.ci,
                         fullName: data.fullName ,
-                        phone: '00000000' ,
+                        phone: data.phone ,
                         address: 'S/N',
                         status: tatus.ACTIVE,
                         userId: user.id ,
-                        cityId: cityExists.id,
                     }, tx)
 
                     return {

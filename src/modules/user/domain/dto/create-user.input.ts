@@ -1,5 +1,32 @@
 import { InputType , Field , ObjectType, Int } from "@nestjs/graphql";
 
+
+@InputType()
+class permissionInput {
+    @Field(()=>Int)
+    permissionId:number
+}
+
+@InputType()
+class MenuPermissionss {
+    @Field(()=> Int , {description:"ID del menu"})
+    menuId: number;
+
+    @Field(()=>[permissionInput] , {description:"Lista de permisos asignados al modulo"})
+    permissionIds: permissionInput[];
+    
+}
+
+@InputType()
+class ModulePermission{
+    @Field(()=>Int , {description:"ID de modulo"})
+    moduleId: number;
+
+    @Field(()=>[MenuPermissionss],{description:"menus con permisos asignados"})
+    menus: MenuPermissionss[];
+    
+}
+
 @InputType()
 export class CreateUserInput { 
     @Field(()=>String , {description:"nombre completo de persona"}) 
@@ -26,15 +53,11 @@ export class CreateUserInput {
     @Field(()=>String , {description:"Rol de ID del cargo"})
     RolId: string;
 
-    @Field(()=>[Int] , {description:"Lista de IDs de menús asignados"})
-    menuId: number[];
-
-    @Field(()=>[Int] , {description:"Lista de IDs de módulos asignados"})
-    moduleId: number[];
-
-    @Field(()=>[Int] , {description:"Lista de IDs de permisos asignados"})
-    permissionId: number[];
+    @Field(()=> [ModulePermission] , {description:"Lista de IDs de permisos asignados"})
+    permisos: ModulePermission[];
 }
+
+
 
 // Tipo para la respuesta del usuario creado
 

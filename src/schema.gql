@@ -52,17 +52,11 @@ input CreateUserInput {
   """nombre completo de persona"""
   fullName: String!
 
-  """Lista de IDs de menús asignados"""
-  menuId: [Int!]!
-
-  """Lista de IDs de módulos asignados"""
-  moduleId: [Int!]!
-
   """contraseña de usuario"""
   password: String!
 
   """Lista de IDs de permisos asignados"""
-  permissionId: [Int!]!
+  permisos: [ModulePermission!]!
 
   """numero de telefono"""
   phone: String!
@@ -166,11 +160,27 @@ type MenuPermissions {
   status: Float!
 }
 
+input MenuPermissionss {
+  """ID del menu"""
+  menuId: Int!
+
+  """Lista de permisos asignados al modulo"""
+  permissionIds: [permissionInput!]!
+}
+
 type Module {
   id: ID!
   menuModules: [MenuModule!]
   name: String!
   status: Float!
+}
+
+input ModulePermission {
+  """menus con permisos asignados"""
+  menus: [MenuPermissionss!]!
+
+  """ID de modulo"""
+  moduleId: Int!
 }
 
 type Mutation {
@@ -470,6 +480,10 @@ type findIdClientOutPut {
   findClient: clientsData
   message: String!
   status: Float!
+}
+
+input permissionInput {
+  permissionId: Int!
 }
 
 type roles {

@@ -16,7 +16,6 @@ export class PersonRepository {
                 phone: data.phone,
                 address: data.address , 
                 status: data.status ,
-                cityId:data.cityId ,
                 userId: data.userId ?? null
             }
         })
