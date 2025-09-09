@@ -24,7 +24,6 @@ export class BranchOfficeRepository {
             data:{
                 name: data.name,
                 address: data.address ,
-                cityId: data.cityId ,
                 phone: data.phone ,
                 email: data.email ,
                 status: 1
@@ -48,7 +47,6 @@ export class BranchOfficeRepository {
             data:{
                 name:data.name,
                 address:data.address,
-                cityId:data.cityId,
                 phone:data.phone,
                 email:data.email
             }
@@ -65,5 +63,31 @@ export class BranchOfficeRepository {
                 status:0
             }
         });
+    }
+
+    async createBranchsUser(data:any , tx?:Prisma.TransactionClient){
+        const prisma= tx || this.prisma;
+        return await prisma.branchOfficeUser.create({
+            data:{
+                personId: data.personId,
+                branchOffId: data.branchOffId
+            }
+        })
+    }
+
+    async branchOfficeUsers(data:any ){
+        return await this.prisma.branchOfficeUser.findMany({
+            where:{
+                personId: data.id ,
+                status: 1
+            },
+            select:{
+                branchOffice:{
+                    select:{
+                        name:true
+                    }
+                }
+            }
+        })
     }
 }

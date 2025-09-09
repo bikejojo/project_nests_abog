@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { status } from "src/common/enum/typeStatus";
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -76,16 +77,24 @@ export class ModuleMenuPermissionsRepository {
             }
         })
     }
-    async createModuleUser(data:any){
-        return await this.prisma.moduleUser.createMany({
-            data:data,
+    async createModuleUser(data:any,tx?:Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.moduleUser.createMany({
+            data:{
+                moduleId: data.moduleId ,
+                userId: data.userId
+            },
             skipDuplicates: true
         })
     }
 
-    async createMenuUser(data:any){
-        return await this.prisma.menuUser.createMany({
-            data:data,
+    async createMenuUser(data:any, tx?:Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.menuUser.createMany({
+            data:{
+                userId:data.userId,
+                menuId: data.menuId
+            },
             skipDuplicates: true
         })
     }
@@ -99,9 +108,13 @@ export class ModuleMenuPermissionsRepository {
         })
     }
 
-    async createPermissionsUser(data:any){
-        return await this.prisma.permissionsUser.createMany({
-            data:data,
+    async createPermissionsUser(data:any,tx?:Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.permissionsUser.createMany({
+            data:{
+                userId:data.userId ,
+                permissionsId:data.permissionsId
+            },
             skipDuplicates: true
         })
     }

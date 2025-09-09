@@ -7,9 +7,9 @@ export class CityRepository {
         private readonly prisma: PrismaService
     ){}
 
-    async listCity(){
+    /*async listCity(){
         return await this.prisma.city.findMany(
             {orderBy:{id:'asc'}}
         );
-    }
+    }*/
 }

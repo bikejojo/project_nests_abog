@@ -9,6 +9,7 @@ import { jwtConstants } from "src/auth/constants";
 import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.module";
 import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
 import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
+import { BranchOfficeRepository } from "src/modules/branchOffice/infraestructura/prisma/branchOffice.repository";
 @Module({
   imports: [
     //AuthModule,
@@ -23,6 +24,7 @@ import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermissio
     UserResolver,
     UserRepository,
     ModuleMenuPermissionsRepository,
+    BranchOfficeRepository,
     PrismaService,
     UserUseCase,
     actionUserPerson,

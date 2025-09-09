@@ -32,11 +32,11 @@ export class CreateUserInput {
     @Field(()=>String , {description:"nombre completo de persona"}) 
     fullName: string;
 
-    @Field(()=>String , {description:"numero de cedula de identidad"})
-    ci: string;
+    @Field(()=> Int , {description:"numero de cedula de identidad"})
+    ci: number;
     
-    @Field(()=>String , {description:"numero de telefono"})
-    phone: string;
+    @Field(()=>Int , {description:"numero de telefono"})
+    phone: number;
 
     @Field(()=>String , {description:"nombre de usuario"})
     userName: string;
@@ -47,11 +47,11 @@ export class CreateUserInput {
     @Field(()=>String , {description:"contraseña de usuario"})
     password: string;
 
-    @Field(()=>String , {description:"Sucursal de ID"})
-    branchOfficeId: string;
+    @Field(()=>[Int] , {description:"Sucursal de ID"})
+    branchOfficeId: number[];
     
-    @Field(()=>String , {description:"Rol de ID del cargo"})
-    RolId: string;
+    @Field(()=>Int , {description:"Rol de ID del cargo"})
+    RolId: number;
 
     @Field(()=> [ModulePermission] , {description:"Lista de IDs de permisos asignados"})
     permisos: ModulePermission[];

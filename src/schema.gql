@@ -38,13 +38,13 @@ input CreateBranchOfficeInput {
 
 input CreateUserInput {
   """Rol de ID del cargo"""
-  RolId: String!
+  RolId: Int!
 
   """Sucursal de ID"""
-  branchOfficeId: String!
+  branchOfficeId: [Int!]!
 
   """numero de cedula de identidad"""
-  ci: String!
+  ci: Int!
 
   """correo de usuario"""
   email: String!
@@ -59,7 +59,7 @@ input CreateUserInput {
   permisos: [ModulePermission!]!
 
   """numero de telefono"""
-  phone: String!
+  phone: Int!
 
   """nombre de usuario"""
   userName: String!
@@ -116,6 +116,46 @@ type Legal_Entity {
   """nombre de referencia de tipo de compania"""
   typeCompany: String!
   updatedAt: DateTime!
+}
+
+type ListAllUserData {
+  """Nombre del usuario"""
+  branchOffice: [String!]!
+
+  """Numero de CI"""
+  ci: String!
+
+  """correo de usuario"""
+  email: String!
+
+  """Nombre del usuario"""
+  fullName: String!
+
+  """ID de los usuarios"""
+  id: Int!
+
+  """Numero de telefono"""
+  phone: String!
+
+  """Nombre del usuario"""
+  role: String!
+
+  """Nombre del usuario"""
+  status: Int!
+
+  """Nombre del usuario"""
+  username: String!
+}
+
+type ListUserOutPut {
+  """Mensaje de respuesta"""
+  message: String!
+
+  """Listado de los usuarios"""
+  response: [ListAllUserData!]!
+
+  """Estado de la respuesta"""
+  status: Int!
 }
 
 type LoginResponse {
@@ -262,6 +302,7 @@ type Query {
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
   allRoles: allRols!
   findIdClients(data: findIdClientInput!): findIdClientOutPut!
+  userAllLists: ListUserOutPut!
 }
 
 type RefreshTokenResponse {

@@ -12,6 +12,7 @@ import { UpdateUserOutPut, UpdateUserPersonInput } from "../domain/dto/update-us
 import { DeleteUserInput, DeleteUserOutput } from "../domain/dto/delete-user.input";
 import { RefreshTokenResponse } from "../domain/dto/refresh-token.input";
 import { RefreshAuthGuard } from "src/guards/refresh-auth.guard";
+import { ListUserOutPut } from "../domain/dto/ListAll-user.input";
 
 @Resolver(() => User)
 //@UseGuards(GqlAuthGuard ,RolesGuard)
@@ -60,5 +61,10 @@ export class UserResolver {
     @Mutation(()=> DeleteUserOutput)
     async deleteUserPerson(@Args('data') data: DeleteUserInput) {
         return await this.actionsUser.deleteUserPerson(data)
+    }
+
+    @Query(()=>ListUserOutPut )
+    async userAllLists(){
+        return await this.loginUser.userAll();
     }
 }

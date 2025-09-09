@@ -16,9 +16,9 @@ export class CityUseCase {
         this.responseContext = new ResponseContext();
     }
 
-    async listCityData(){
+    /*async listCityData(){
         try {
-            const city = await this.cityRepository.listCity();
+            //const city = await this.cityRepository.listCity();
             
             if( !city ){
                 return this.responseContext.setStrategy(new DataResponseStrategy()).executeStrategy({type:'ID de ciudad',status:response.FALL});
@@ -34,5 +34,5 @@ export class CityUseCase {
             console.log('Las fallas en LstCity son: ' + err.message)
             return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'LstCity',message:err.message , status:response.WARN , content: null});
         }
-    }
+    }*/
 }

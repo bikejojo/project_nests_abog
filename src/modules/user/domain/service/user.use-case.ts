@@ -17,6 +17,7 @@ import { assingRolUserInput } from "../dto/assign-user.input";
 import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { Prisma } from "@prisma/client";
+import { BranchOfficeRepository } from "src/modules/branchOffice/infraestructura/prisma/branchOffice.repository";
 
 @Injectable()
 export class UserUseCase {
@@ -27,6 +28,7 @@ export class UserUseCase {
         private authService: AuthService ,
         private userRepository: UserRepository ,
         private rolRepository: ModuleMenuPermissionsRepository ,
+        private branchOffice: BranchOfficeRepository,
     ) {
         this.responseContext = new ResponseContext()
     }
@@ -244,6 +246,38 @@ export class UserUseCase {
             return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'assgRolUsr' , message:err.message , status:response.WARN});
         }
     }
+
+    async userAll(){
+        try{
+            const user = await this.userRepository.allUser();
+            //const branch = await this.
+            if(!user){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Sin Usuarios' , message:'No se encontrol algun usuario existente'})
+            }
+
+            const  response = await Promise.all(user.map( async (users) => {
+                const branch = await this.branchOffice.branchOfficeUsers({ id: users.persona?.id });
+                return {
+                    id: users.id,
+                    ci: users.persona?.ci,
+                    email: users.email,
+                    fullName: users.persona?.fullName,
+                    phone: users.persona?.phone,
+                    username: users.username,
+                    role: users.role?.name,
+                    branchOffice: branch.map(off => off.branchOffice?.name),
+                    status: users.status
+                }
+            }))
+
+            console.log('123',response)
+
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:"Exitoso" , name:"respuesta que se devuelve d la lista de usuarios" , content:response})
+        }catch(err){
+            console.log('Error que se presenta en UsAll: ' + err.message);
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'UseAll' , message:err.message});
+        }
+    }
 }
 
 @Injectable()
@@ -254,6 +288,8 @@ export class actionUserPerson{
         private readonly prisma:PrismaService,
         private readonly userRepository: UserRepository ,
         private readonly personaRepository: PersonRepository ,
+        private readonly moduleMenuPermissions: ModuleMenuPermissionsRepository,
+        private readonly branchOffices: BranchOfficeRepository,
     ){
         this.responseContext = new ResponseContext();
     }
@@ -263,6 +299,9 @@ export class actionUserPerson{
         let person:any  = null;
 
         try{
+
+            if(data.RolId == null ){ return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Array Falso' , message:'No esta siendo relacionado a ninguna oficina.'})  }
+            
             const result  = await this.prisma.$transaction(
                 async (tx) => {
                     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -278,35 +317,53 @@ export class actionUserPerson{
                         rolId: null
                     },tx)
                     
-                    /*const cityExists = await tx.city.findUnique({
-                        where: { id: 1 }
-                    });
-
-                    if (!cityExists) {
-                        throw new Error('City with id 1 does not exist');
-                    }*/
-
                     person = await this.personaRepository.createPerson({
-                        ci: data.ci,
+                        ci: data.ci.toString(),
                         fullName: data.fullName ,
-                        phone: data.phone ,
+                        phone: data.phone.toString() ,
                         address: 'S/N',
                         status: tatus.ACTIVE,
                         userId: user.id ,
-                    }, tx)
+                    }, tx);
 
+                    await Promise.all(
+                        data.branchOfficeId.map(branchId =>
+                            this.branchOffices.createBranchsUser({ personId: person.id, branchOffId: branchId }, tx)
+                        )
+                    );
+                    
+                    await Promise.all(
+                        data.permisos.map(modulePerson =>
+                            (async () => {
+                                await this.moduleMenuPermissions.createModuleUser({ userId: user.id, moduleId: modulePerson.moduleId }, tx);
+                                    await Promise.all(
+                                        modulePerson.menus.map(menuPerm =>
+                                            (async () => {
+                                                await this.moduleMenuPermissions.createMenuUser({ userId: user.id, menuId: menuPerm.menuId }, tx);
+                                                    await Promise.all(
+                                                        menuPerm.permissionIds.map(perm =>
+                                                            this.moduleMenuPermissions.createPermissionsUser({ userId: user.id, permissionsId: perm.permissionId }, tx)
+                                                        )
+                                                    );
+                                                })()
+                                            )
+                                        );
+                                    })()
+                                )
+                            );
+
+                    
                     return {
                         user: { ...user, person: person },
                         person,
                         success: true,
                         executionTime: Date.now()
                     };
-                },{ maxWait: 10000, timeout: 5000 }
+                },{ maxWait: 10000, timeout: 15000 }
             );
             return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({
                 type: 'Usuario',
                 message: 'creado correctamente',
-                status: response.NICE,
                 content: result.user
             });
         }catch(err){
@@ -319,7 +376,6 @@ export class actionUserPerson{
             return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({
             type: 'Error',
             message: 'al crear usuario: ' + err.message,
-            status: response.WARN,
             content: null
         });
         }

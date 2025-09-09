@@ -154,4 +154,30 @@ export class UserRepository {
             }
         })
     }
+    
+    async allUser(){
+        return await this.prisma.user.findMany({
+            select:{
+                id:true,
+                email:true,
+                username:true,
+                roleId:true,
+                status:true,
+                role:{
+                    select:{
+                        name:true
+                    }
+                },
+                persona:{
+                    select:{
+                        id:true,
+                        ci:true,
+                        fullName:true,
+                        phone:true,
+                    }
+                },
+                
+            }
+        })
+    } 
 }

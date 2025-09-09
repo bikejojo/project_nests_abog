@@ -53,22 +53,19 @@ model auth_log {
 model Persona {
   id              Int      @id @default(autoincrement())
   ci              String?
-  //firstName       String?
-  //lastName        String?
   fullName        String?
   phone           String?
   address         String?
   status          Int      @default(1)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  cityId          Int?
   userId          Int?     @unique
   user            User?    @relation(fields: [userId], references: [id])
-  city            City?    @relation(fields: [cityId], references: [id])
   clients         Clients[]
   operators       Operator[]
   legalEntities   Legal_Entity[]
   providers       Provider[]
+  branchOfficeUser BranchOfficeUser[]
 
   @@index([userId])
   @@index([id])
@@ -216,11 +213,17 @@ model Legal_Entity {
   persona           Persona @relation(fields: [personId] , references: [id])
 }
 
-model City {
+model BranchOfficeUser {
   id          Int @id   @default(autoincrement())
-  description String  @unique
-  person      Persona[]
-  branchOffice Branch_Office[]
+  personId    Int?
+  branchOffId Int?
+  status      Int           @default(1)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  person      Persona?       @relation(fields: [personId],references: [id])
+  branchOffice Branch_Office? @relation(fields: [branchOffId],references: [id])
+  @@index([personId])
+  @@index([branchOffId])
 }
 
 model Branch_Office {
@@ -229,10 +232,9 @@ model Branch_Office {
   address     String?
   phone       String?
   email       String?
-  cityId      Int?
-  city        City? @relation(fields: [cityId], references: [id])
   status      Int? @default(1)
   operator    Operator[]
+  branchOfficeUsers BranchOfficeUser[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 }
