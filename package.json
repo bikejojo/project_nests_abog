@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
 
-    "seed_city": "ts-node prisma/seeders/city/seed.ts",
+    
     "seed_branch": "ts-node prisma/seeders/branchOffice/seed.ts",    
     "seed_rols": "ts-node prisma/seeders/rols/seed.ts",    
     "seed_user": "ts-node prisma/seeders/user/seed.ts",

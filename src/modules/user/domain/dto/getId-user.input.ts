@@ -17,5 +17,5 @@ export class getUserOutPut {
     status:number;
 
     @Field(()=>ListAllUserData , {description:"contenido del retorno", nullable:true})
-    response:ListAllUserData
+    response:ListAllUserData | null
 }
