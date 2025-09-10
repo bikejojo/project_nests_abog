@@ -3,14 +3,14 @@ import { Branch_Office } from "../../entities/branchOffice.entities";
 
 @ObjectType()
 export class allBranchOfficeData {
-    @Field(()=>Int , {description:'Identificador unico de la sucursal'})
-    id: number
+    @Field(()=>Int , {description:'Identificador unico de la sucursal',nullable:true})
+    id: number | null
 
-    @Field(()=>String , {description:'Nombre de la sucursal'})
-    name: string
+    @Field(()=>String , {description:'Nombre de la sucursal',nullable:true})
+    name: string | null
 
-    @Field(()=> Int , {description:'Estado de la sucursal, 1 activo, 0 inactivo'})
-    status: number
+    @Field(()=> Int , {description:'Estado de la sucursal, 1 activo, 0 inactivo',nullable:true})
+    status: number | null
     
 }
 

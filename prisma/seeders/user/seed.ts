@@ -27,12 +27,12 @@ async function main(){
 
             const persona = await prisma.persona.create({
                 data: {
-                ci: "111",
-                fullName: "pepe",
-                phone: "12345678",
-                address: "S/n",
-                status: 1,
-                userId: user.id // 👈 aquí ya tienes el id real
+                    ci: "111",
+                    fullName: "pepe",
+                    phone: "12345678",
+                    address: "S/n",
+                    status: 1,
+                    userId: user.id // 👈 aquí ya tienes el id real
                 }
             });
 

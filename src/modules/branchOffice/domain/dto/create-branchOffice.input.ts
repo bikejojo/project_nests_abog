@@ -28,7 +28,7 @@ export class createDataBranchOffice{
     name: string;
 
     @Field({nullable:true})
-    address: string;
+    address: string | null;
 
     @Field(()=>Int,{nullable:true})
     cityId: number | null;
@@ -40,7 +40,7 @@ export class createDataBranchOffice{
     email?: string | null;
     
     @Field(()=>Int,{ nullable: true })
-    status?: number;
+    status?: number | null;
 }
 
 @ObjectType()
