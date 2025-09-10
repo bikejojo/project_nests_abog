@@ -57,7 +57,26 @@ export class UserRepository {
 
     async findIdUsers(data:any){
         return await this.prisma.user.findUnique({
-            where:{id:data.id}
+            where:{id:data.id},
+            select:{
+                id:true,
+                email:true,
+                username:true,
+                role:{
+                    select:{
+                        name:true,
+                    }
+                },
+                status:true,
+                persona:{
+                    select:{
+                        id:true,
+                        fullName:true,
+                        ci:true,
+                        phone:true,
+                    }
+                }
+            }
         })
     }
 

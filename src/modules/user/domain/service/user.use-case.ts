@@ -18,6 +18,7 @@ import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermissio
 import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
 import { Prisma } from "@prisma/client";
 import { BranchOfficeRepository } from "src/modules/branchOffice/infraestructura/prisma/branchOffice.repository";
+import { getUserInput } from "../dto/getId-user.input";
 
 @Injectable()
 export class UserUseCase {
@@ -211,7 +212,7 @@ export class UserUseCase {
             user: {
                 id: user.id,
                 email: user.email,
-                type: user.type
+            
             }
         };
         }catch(err){
@@ -233,7 +234,7 @@ export class UserUseCase {
                 return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Falla' , message:'No existe User',status:response.FALL});
             }
 
-            if(!existUser.roleId){
+            if(!existUser.role){
                 return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error' , message:'Asignacion erronea' , status: response.FALL})
             }
 
@@ -276,6 +277,34 @@ export class UserUseCase {
         }catch(err){
             console.log('Error que se presenta en UsAll: ' + err.message);
             return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'UseAll' , message:err.message});
+        }
+    }
+
+    async userGetById(data:getUserInput){
+        try {
+            const userData = await this.userRepository.findIdUsers({id:data.id});
+
+            if(!userData){
+                return this.responseContext.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:"Error User",message:"Tiene un contenido NULL en el vector."});
+            }
+
+            const branch = await this.branchOffice.branchOfficeUsers({id:userData.persona?.id})
+
+            let response = {
+                id: userData?.id,
+                email:userData?.email,
+                username: userData?.username,
+                status: userData?.status,
+                ci:userData.persona?.ci,
+                fullName:userData.persona?.fullName,
+                phone:userData.persona?.phone,
+                role:userData.role?.name,
+                branchOffice: branch.map(p => p.branchOffice?.name)
+            }
+            //console.log(response);
+            return this.responseContext.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:"SUCCESS",message:"Retorno exitoso del contenido" , content:response})
+        }catch(err){
+            return this.responseContext.setStrategy(new WarningResponseStrategy()).executeStrategy({name:"GetUserById" , message:err.message});
         }
     }
 }

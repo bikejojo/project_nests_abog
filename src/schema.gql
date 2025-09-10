@@ -302,6 +302,7 @@ type Query {
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
   allRoles: allRols!
   findIdClients(data: findIdClientInput!): findIdClientOutPut!
+  getUserById(data: getUserInput!): getUserOutPut!
   userAllLists: ListUserOutPut!
 }
 
@@ -521,6 +522,22 @@ type findIdClientOutPut {
   findClient: clientsData
   message: String!
   status: Float!
+}
+
+input getUserInput {
+  """Id de usuario"""
+  id: Int!
+}
+
+type getUserOutPut {
+  """mensaje de descripcion del retorno"""
+  message: String!
+
+  """contenido del retorno"""
+  response: ListAllUserData
+
+  """estado del retorno"""
+  status: Int!
 }
 
 input permissionInput {
