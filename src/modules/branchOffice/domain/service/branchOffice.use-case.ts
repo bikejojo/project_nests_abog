@@ -2,6 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { BranchOfficeRepository } from "../../infraestructura/prisma/branchOffice.repository";
 import { status } from "src/common/enum/typeStatus";
 import { response } from "src/common/enum/typeResp";
+import { ResponseContext } from "src/common/responses/response-context";
+import { WarningResponseStrategy } from "src/common/responses/warning-response.strategy";
+import { DataResponseStrategy } from "src/common/responses/data-response.strategy";
+import { SucccessResponseStrategy } from "src/common/responses/success-response.strategy";
+import { CreateBranchOfficeInput } from "../dto/create-branchOffice.input";
+import { updateBranchOfficeInput } from "../dto/update-branchOffice.input";
+import { deleteBranchOfficeInput } from "../dto/delete-branchOffice.input";
+import { ErrorResponseStrategy } from "src/common/responses/error-response.strategy";
 
 @Injectable()
 export class BranchOfficeUseCase {
@@ -9,40 +17,11 @@ export class BranchOfficeUseCase {
         private readonly cityRepository: BranchOfficeRepository
     ){}
 
-    async listCityData(){
-        try {
-            const branch = await this.cityRepository.listCity();
+    private ResponseContent = new ResponseContext();
 
-            if( !branch ){
-                return {
-                    message: 'Error al traer los datos de ciudades.', 
-                    status: response.FALL
-                }
-            }
+  
 
-            if( branch.length === 0 ){
-                return {
-                    message: 'No existen datos de ciudades.' ,
-                    status: response.FALL
-                }
-            }
-
-
-            return {
-                message: 'Retorno valores exitoso. !!',
-                status: response.NICE,
-                allBranchOffice: branch
-            }
-        }catch(err){
-            console.log('Las fallas en LstBrnch son: ' + err.message)
-            return {
-                message:'Las fallas en LstBrnch son: ' + err.message ,
-                status:response.WARN
-            }
-        }
-    }
-
-    async createdBranchOffice(data:any){
+    async createdBranchOffice(data:CreateBranchOfficeInput){
         try{
             const branchOffice = await this.cityRepository.createBranchOffices({
                 cityId: data.cityId ,
@@ -53,67 +32,107 @@ export class BranchOfficeUseCase {
             })
 
             if(!branchOffice){
-                return {
-                    message: 'No se creo con exito la sucursal' ,
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'Sucursal',status:response.FALL});
             }
 
-            return {
-                message:'Exito en crear la sucursal',
-                status:response.NICE ,
-                dataBranchOffice:branchOffice
+            const contentBranch = await this.cityRepository.listCity();
+
+            let branch = contentBranch.map((b) => b.name !== null && b.name.toLocaleLowerCase() === data.name.toLocaleLowerCase());
+
+            if(branch.length === 1){
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({ type:'Error de coincidencia' , message:'en el atributo name salio la coincidencia'});
             }
+
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Creacion',message:'Sucursales'}); 
         }catch(err){
             console.log("Fallas en CrBrOff" + err.message);
-            return {
-                message:'Fallas en CrBrOff' + err.message ,
-                status: response.WARN ,
-            }
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'CrBrOff', message:err.message })
         }
     }
 
 
-    async updatedBranchOffice(data:any){
+    async updatedBranchOffice(data:updateBranchOfficeInput){
         try{ 
             const branchOfficeId = await this.cityRepository.findIdBranchOffices({
                 id:data.id
             })
 
             if(!branchOfficeId){
-                return {
-                    message:'Valores null',
-                    status: response.FALL
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:'La ID de sucursal',status:response.FALL})   
             }
 
-            const updateBranchOffice = this.cityRepository.updateBranchOffices({
-                id:branchOfficeId.id,
-                name: data.name ,
-                address: data.address ,
-                phone: data.phone ,
-                email: data.email ,
-                cityId: data.cityId
+            if(data.name.length < 6){
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:'Error ingreso de datos' , message:'El nombre contiene pocos caracteres'})
+            }
+
+            const updateBranchOffice = await this.cityRepository.updateBranchOffices({
+                id:branchOfficeId.id ,
+                name: data.name ?? branchOfficeId.name ,
+                address: data.address ?? branchOfficeId.address ,
+                phone: data.phone ?? branchOfficeId.phone ,
+                email: data.email ?? branchOfficeId.email ,
             })
 
             if(!updateBranchOffice){
-                return {
-                    message:'Valores nulos en sucursales.',
-                    status: response.FALL ,
-                    
-                }
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({ type:'La ID de sucursal' , status: response.FALL })
             }
 
-            return {
-                message:'Actualizacion correcta de sucursal',
-                status:response.NICE ,
-                dataBranchOffice: updateBranchOffice
-            }
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({type:'Modificacion',message:'de sucursales'}) 
+
         }catch(err){
             console.log('Fallas en UpdBrchOff y son: '+err.message)
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({ name:'UpdBrchOff', message:err.message  })
+        }
+    }
+
+    async deleteBranchOffice(data:deleteBranchOfficeInput){
+        try{
+            const branchOfficeId = await this.cityRepository.findIdBranchOffices({id:data.id})
+            if(!branchOfficeId){
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type: 'El ID de branchOffice no existe' , status: response.FALL});
+            }
+
+            await this.cityRepository.deleteBranchOffice({id:data.id})
+
+            return this.ResponseContent.setStrategy(new SucccessResponseStrategy()).executeStrategy({ type:'Exitoso', message:'Eliminacion de Sucursal.'})
+            
+        }catch(err){
+            console.log('Fallas en DelBrchOff y son: '+ err.message);
+            return this.ResponseContent.setStrategy(new WarningResponseStrategy()).executeStrategy({name:'DelBrcnOff', message:err.message });
+        }
+    }
+}
+
+@Injectable()
+export class branchOfficeList{
+    constructor(
+        private readonly cityRepository: BranchOfficeRepository
+    ){}
+
+    private ResponseContent = new ResponseContext();
+
+    async listCityData(){
+        try {
+            const branch = await this.cityRepository.listCity();
+
+            if( !branch ){
+                return this.ResponseContent.setStrategy(new ErrorResponseStrategy()).executeStrategy({type:"Ciudad" , message:"No existe la ID"})
+            }
+
+            if( branch.length === 0 ){
+                return this.ResponseContent.setStrategy(new DataResponseStrategy()).executeStrategy({type:"Contenido de ciudades" , status:response.FALL})
+            }
+
+
             return {
-                message: 'Fallas en UpdBrchOff y son: '+err.message ,
-                status: response.WARN
+                message: 'Retorno valores exitoso. !!',
+                response: branch
+            }
+        }catch(err){
+            console.log('Las fallas en LstBrnch son: ' + err.message)
+            return {
+                message:'Las fallas en LstBrnch son: ' + err.message ,
+                status:response.WARN
             }
         }
     }

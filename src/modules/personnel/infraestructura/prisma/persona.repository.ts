@@ -1,40 +1,59 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class PersonRepository {
     constructor(private readonly prisma:PrismaService){}
 
-    async createPerson(data:any){
-        return await this.prisma.persona.create({
+    async createPerson(data: any, tx?: Prisma.TransactionClient){
+        const prisma = tx || this.prisma;
+        return await prisma.persona.create({
             data:{
                 ci:data.ci ,
-                firstName: data.firstName ,
-                lastName: data.lastName ,
+                fullName: data.fullName ,
+                //lastName: data.lastName ,
                 phone: data.phone,
                 address: data.address , 
                 status: data.status ,
-                createdAt: data.createdAt ,
-                updatedAt: data.updatedAt
+                userId: data.userId ?? null
             }
         })
     }
 
-    async updatePersona(data:any){
-        return await this.prisma.persona.update({
+    async updatePersona(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.persona.update({
             where:{
                 id:data.id
             },
             data:{
+                fullName: data.firstName ,
+                //lastName: data.lastName ,
+                phone: data.phone ,
+                address: data.address ,
+                
+            }
+        })
+    }
 
+    async deletePersona(prisma: Prisma.TransactionClient,data:any){
+        return await prisma.persona.update({
+            where:{
+                id:data.id
+            },
+            data:{
+                status:0
             }
         })
     }
 
     async findedPersona(data:any){
-        return await this.prisma.persona.findFirst({
+        return await this.prisma.persona.findUnique({
             where:{
                 id:data.id
+            },
+            include:{
+                user:true
             }
         })
     }

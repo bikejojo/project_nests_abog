@@ -21,10 +21,10 @@ install_dependencies:
     - npm install
     
 lint:
-  stage: lint
+  stage: lint 
   image: node:18
   script:
-    - npm run lint
+    - npm run lint -- --max-warnings 1000
 
 build:
   stage: build

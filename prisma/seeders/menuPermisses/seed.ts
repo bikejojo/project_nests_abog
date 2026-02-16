@@ -6,8 +6,8 @@ async function main(){
     await prisma.moduleMenu.deleteMany({});
     await prisma.menuPermissions.deleteMany({});
     await prisma.module.deleteMany({});
-    await prisma.permissions.deleteMany({});
     await prisma.menu.deleteMany({});
+    await prisma.permissions.deleteMany({});
     
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Menu_id_seq" RESTART WITH 1`);
     await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Module_id_seq" RESTART WITH 1`);
@@ -18,83 +18,77 @@ async function main(){
     const permisosPorMenu: Record<string, Record<string, string[]>> = {
         "EMPRESA" : {
             "Usuario": [
-                "Crear usuario",
-                "Editar usuario",
-                "Eliminar usuario"
+                "Crear Usuario",
+                "Editar Usuario",
+                "Eliminar Usuario",
+                "Listar Usuario",
+            ],
+            "Permisos":[
+                "Crear Permiso",
+                "Editar Permiso",
+                "Eliminar Permiso",
+                "Listar Permiso",
+                "Asignar Permiso",
             ],
             "Sucursal":[
-                "Crear sucursal",
-                "Editar sucursal",
-                "Eliminar sucursal",
-            ],
-            "Cargos":[
-                "Crear carog",
-                "Editar cargo",
-                "Eliminar cargo",
-            ],
-            "Abogados":[
-                "Crear abogado",
-                "Editar abogado",
-                "Eliminar abogado",
+                "Crear Sucursal",
+                "Editar Sucursal",
+                "Eliminar Sucursal",
             ]
         },
 
         "PERSONAS" :{
-            "Juez":[
-                "Crear juez",
-                "Editar juez",
-                "Eliminar juez",
-                "Listar jueces",
-            ],
-            "Abogado":[
-                "Crear abogado",
-                "Editar abogado",
-                "Eliminar abogado",
-                "Listar abogado",
+            "Operador":[
+                "Crear Persona",
+                "Editar Persona",
+                "Eliminar Persona",
+                "Listar Persona",
+                "Inactiva Persona",
             ],
             "Cliente":[
-                "Crear cliente",
-                "Editar cliente",
-                "Eliminar cliente",
-                "Listar clientes",
+                "Crear Cliente",
+                "Editar Cliente",
+                "Eliminar Cliente",
+                "Listar Cliente",
+                "Inactiva Cliente",
             ],
         } ,
     
         "PROCESOS JUDICIALES":{
             "Penal":[
-                "Crear proceso penal",
-                "Listar procesos penales",
+                "Crear Proceso Penal",
+                "Listar Proceso Penal",
             ],
             "Civil":[
-                "Crear proceso civil",
-                "Listar procesos civiles",
+                "Crear Proceso Civil",
+                "Listar Proceso Civil",
             ],
             "Laboral":[
-                "Crear proceso laboral",
-                "Listar procesos laborales",
+                "Crear Proceso Laboral",
+                "Listar Proceso Laboral",
             ],
             "Tributario":[
-                "Crear proceso tributario",
-                "Listar procesos tributarios",
+                "Crear Proceso Tributario",
+                "Listar Proceso Tirbutario",
             ],
             "Administrativo":[
-                "Crear proceso administrativo",
-                "Listar procesos administrativos",
+                "Crear Proceso Administrativo",
+                "Listar Proceso Administrativo",
             ],
             "Ambiental":[
-                "Crear proceso ambiental",
-                "Listar procesos ambientales",
+                "Crear Proceso Ambiental",
+                "Listar Proceso Ambiental",
             ] ,
             "ACTUADOS":[
-                "Registrar actuado",
-                "Listar actuados",
+                "Registrar Proceso Actuados",
+                "Listar Proceso Actuados",
             ]
         },
 
         "REPORTES":{
            "Reportes": [
-                "Ver reportes",
-                "exportar reportes",
+                "Ver Reporte",
+                "exportar Reporte",
             ]
         },
     };

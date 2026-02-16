@@ -3,28 +3,26 @@ import { Persona } from "./persona.entity";
 
 @ObjectType()
 export class Legal_Entity {
-    @Field(()=>ID)
+    @Field(()=>ID,{description:"ID de la entidad legal"})
     id: number
 
-    @Field()
+    @Field({description:"numero de NIT de la entidad legal"})
     NIT: number
 
-    @Field()
+    @Field({description:"nombre de la entidad legal"})
     companyName: string
 
-    @Field()
+    @Field({description:"direccion de la entidad legal"})
     address: string
 
-    @Field()
+    @Field({description:"fecha de registro de la entidad legal"})
     registrationDate: Date
 
-    @Field()
-    legalRepresentive: string
-
-    @Field()
+ 
+    @Field({description:"nombre de referencia de tipo de compania"})
     typeCompany: string
 
-    @Field()
+    @Field({description:"estado de la entidad legal en el sistema como activo o inactivo"})
     status:number
 
     @Field()

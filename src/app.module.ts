@@ -9,13 +9,14 @@ import { GraphQLModule } from '@nestjs/graphql';
 const { graphqlUploadExpress } = require('graphql-upload');
 import { ApolloDriver , ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { PersonModule } from './modules/personnel/interfaces/persona/persona.module';
-import { LawyerModule } from './modules/personnel/interfaces/lawyer/lawyer.module';
+import { PersonModule } from './modules/personnel/interfaces/persona/persona.module'
 import { CityModule } from './modules/city/interfaces/city.module';
 import { BranchOfficeModule } from './modules/branchOffice/interfaces/branchOffice.module';
 import { DocumentsModule } from './modules/documents/interfaces/documents.module';
 import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/interfaces/moduleMenuPermissions.module';
-
+import { LegalEntityModule } from './modules/personnel/interfaces/legal_entity/legal_entity.module';
+import { clientsModule } from './modules/clients/interfaces/clients.module';
+import { ClientMiddleware } from './common/midleware/client.midleware';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -23,15 +24,20 @@ import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/inter
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      playground: true,
+      playground: true, // Desactiva el antiguo Playground
+      introspection: true, // Necesario para Apollo Sandbox
+      csrfPrevention: false,
+      context: ({ req, res }) => ({ req, res }),
+      path: '/graphql',
     }),
     AuthModule,
     UserModule,
-    LawyerModule,
     BranchOfficeModule ,
     CityModule ,
+    clientsModule,
     DocumentsModule,
     PersonModule,
+    LegalEntityModule,
     PrismaModule,
     ModuleMenuPermissionModule
   ],
@@ -42,7 +48,10 @@ import { ModuleMenuPermissionModule } from './modules/moduleMenuPermission/inter
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
+      .apply(ClientMiddleware)
+      .forRoutes('*')
+    consumer
       .apply(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 5 }))
-      .forRoutes('graphql');
+      .forRoutes('/graphql');    
   }
 }

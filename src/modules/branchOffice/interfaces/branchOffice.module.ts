@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { BranchOfficeUseCase } from "../domain/service/branchOffice.use-case";
+import { branchOfficeList, BranchOfficeUseCase } from "../domain/service/branchOffice.use-case";
 import { BranchOfficeRepository } from "../infraestructura/prisma/branchOffice.repository";
 import { branchOfficeResolver } from "./branchOffice.resolver";
 import { AuthModule } from "src/auth/auth.module";
@@ -19,7 +19,8 @@ import { jwtConstants } from "src/auth/constants";
     PrismaService ,
     branchOfficeResolver,
     BranchOfficeRepository,
-    BranchOfficeUseCase
+    BranchOfficeUseCase,
+    branchOfficeList,
   ],
   exports: [
     BranchOfficeUseCase ,

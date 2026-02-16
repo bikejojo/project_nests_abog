@@ -9,6 +9,6 @@ export class CityResolver {
 
     @Query(()=>AllCityDataOutPut)
     async allCityData(){
-        return await this.cityUseCase.listCityData();
+        //return await this.cityUseCase.listCityData();
     }
 }

@@ -1,9 +1,9 @@
-import { InputType , Field , ObjectType , ID } from "@nestjs/graphql";
+import { InputType , Field , ObjectType , ID, Int } from "@nestjs/graphql";
 
 @InputType()
 export class updateBranchOfficeInput {
 
-    @Field(()=> ID)
+    @Field(()=> Int)
     id:number
 
     @Field()
@@ -12,13 +12,10 @@ export class updateBranchOfficeInput {
     @Field()
     address: string;
 
-    @Field()
-    cityId: number;
-
-    @Field( {nullable:true})
+    @Field(()=> String, {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(()=> String, { nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
@@ -37,22 +34,20 @@ export class updateDataBranchOffice{
     @Field()
     address: string;
 
-    @Field()
-    cityId: number;
-
-    @Field( {nullable:true})
+    @Field(()=> String, {nullable:true})
     phone?: string | null;
 
-    @Field({ nullable: true })
+    @Field(()=> String, { nullable: true })
     email?: string | null;
     
     @Field({ nullable: true })
     status?: number;
 }
 
+@ObjectType()
 export class updateBranchOfficeOutPut {
     
-    @Field()
+    @Field(()=> String, {nullable:true})
     message:string | null
 
     @Field()

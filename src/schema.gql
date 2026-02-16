@@ -3,9 +3,12 @@
 # ------------------------------------------------------
 
 type AllCityDataOutPut {
-  allCity: [DataCity!]
+  """Mensaje de la operacion"""
   message: String!
-  status: Float!
+  response: [DataCity!]
+
+  """Estado de la operacion"""
+  status: Int!
 }
 
 type AllModuleMenuPermissionDataOutPut {
@@ -18,20 +21,56 @@ type Branch_Office {
   address: String!
   id: ID!
   name: String!
-  phone: String!
+  phone: String
   status: Int
 }
 
-input CreateUserInput {
-  branchOfficeId: Float!
-  lawyerId: String
+input CreateBranchOfficeInput {
+  """direccion de sucursal"""
+  address: String
+
+  """Id de ciudad"""
+  cityId: Int
+  email: String
   name: String!
+  phone: String
+}
+
+input CreateUserInput {
+  """Rol de ID del cargo"""
+  RolId: Int!
+
+  """Sucursal de ID"""
+  branchOfficeId: [Int!]!
+
+  """numero de cedula de identidad"""
+  ci: Int!
+
+  """correo de usuario"""
+  email: String!
+
+  """nombre completo de persona"""
+  fullName: String!
+
+  """contraseña de usuario"""
   password: String!
+
+  """Lista de IDs de permisos asignados"""
+  permisos: [ModulePermission!]!
+
+  """numero de telefono"""
+  phone: Int!
+
+  """nombre de usuario"""
+  userName: String!
 }
 
 type DataCity {
-  description: String!
-  id: Float!
+  """Nombre de la ciudad"""
+  description: String
+
+  """Identificador unico de la ciudad"""
+  id: Int!
 }
 
 """
@@ -39,46 +78,84 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Judge {
-  createdAt: DateTime!
-  description: String
-  id: ID!
-  isActive: Boolean!
-  isIntern: Boolean!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
+input DeleteUserInput {
+  """ID de usuario a eliminar"""
+  id: Int!
 }
 
-type Lawyer {
-  createdAt: DateTime!
-  id: ID!
-  isActive: Boolean!
-  isFiscal: Boolean!
-  isIntern: Boolean!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
-  status: Float!
-  updatedAt: DateTime!
-  userId: Float!
+type DeleteUserOutput {
+  """Mensaje de confirmacion o error"""
+  message: String
+
+  """Indica el estado de la operacion de borrado"""
+  success: Boolean!
 }
 
 type Legal_Entity {
+  """numero de NIT de la entidad legal"""
   NIT: Float!
+
+  """direccion de la entidad legal"""
   address: String!
+
+  """nombre de la entidad legal"""
   companyName: String!
   createdAt: DateTime!
+
+  """ID de la entidad legal"""
   id: ID!
-  legalRepresentive: String!
   personId: Float!
   persona: Persona!
+
+  """fecha de registro de la entidad legal"""
   registrationDate: DateTime!
+
+  """estado de la entidad legal en el sistema como activo o inactivo"""
   status: Float!
+
+  """nombre de referencia de tipo de compania"""
   typeCompany: String!
   updatedAt: DateTime!
+}
+
+type ListAllUserData {
+  """Nombre del usuario"""
+  branchOffice: [String!]!
+
+  """Numero de CI"""
+  ci: String!
+
+  """correo de usuario"""
+  email: String!
+
+  """Nombre del usuario"""
+  fullName: String!
+
+  """ID de los usuarios"""
+  id: Int!
+
+  """Numero de telefono"""
+  phone: String!
+
+  """Nombre del usuario"""
+  role: String!
+
+  """Nombre del usuario"""
+  status: Int!
+
+  """Nombre del usuario"""
+  username: String!
+}
+
+type ListUserOutPut {
+  """Mensaje de respuesta"""
+  message: String!
+
+  """Listado de los usuarios"""
+  response: [ListAllUserData!]!
+
+  """Estado de la respuesta"""
+  status: Int!
 }
 
 type LoginResponse {
@@ -98,68 +175,209 @@ type LogoutUserOutPut {
   status: Float!
 }
 
-type Mutation {
-  createDocuments(data: createDocumentsInput!): documentsDataOutPut!
-  createLawyerPer(data: createLawyerInput!): createLawyerOutPut!
-  createUserLawyer(data: CreateUserInput!): createUserLawyerOutPut!
-  login(data: LoginUserInput!): LoginResponse!
-  logout: LogoutUserOutPut!
-  updatedLawyer(data: updatelawyerInput!): updateLawyerOutPut!
+type Menu {
+  id: ID!
+  moduleMenus: [MenuModule!]
+  name: String!
+  status: Float
 }
 
-type Natural_Person {
-  createdAt: DateTime!
-  description: String!
+type MenuModule {
   id: ID!
-  personId: Float!
-  persona: Persona!
-  registrationDate: DateTime!
+  menu: Menu
+  menuId: ID!
+  module: Module
+  moduleId: ID!
   status: Float!
-  updatedAt: DateTime!
+}
+
+type MenuPermissions {
+  id: ID!
+  menu: Menu
+  menuId: ID!
+  permissions: Permissions
+  permissionsId: ID!
+  status: Float!
+}
+
+input MenuPermissionss {
+  """ID del menu"""
+  menuId: Int!
+
+  """Lista de permisos asignados al modulo"""
+  permissionIds: [permissionInput!]!
+}
+
+type Module {
+  id: ID!
+  menuModules: [MenuModule!]
+  name: String!
+  status: Float!
+}
+
+input ModulePermission {
+  """menus con permisos asignados"""
+  menus: [MenuPermissionss!]!
+
+  """ID de modulo"""
+  moduleId: Int!
+}
+
+type Mutation {
+  createClients(data: createClientsInput!): createClientsOutPut!
+  createDocuments(data: createDocumentsInput!): documentsDataOutPut!
+  createRole(data: createRolInput!): createRolOutPut!
+  createUser(data: CreateUserInput!): createUserLawyerOutPut!
+  createdBranchOffice(data: CreateBranchOfficeInput!): createBranchOfficeOutPut!
+  deleteBranchOffice(data: deleteBranchOfficeInput!): deleteBranchOfficeOutPut!
+  deleteClients(data: deleteClientInput!): deleteClientOutPut!
+  deleteRole(data: deleteRolInput!): deleteRolOutPut!
+  deleteUserPerson(data: DeleteUserInput!): DeleteUserOutput!
+  login(data: LoginUserInput!): LoginResponse!
+  logout: LogoutUserOutPut!
+  refresh: RefreshTokenResponse!
+  updateClients(data: updateClientInput!): updateClientOutPut!
+  updateRole(data: updateRolesInput!): updateRolesOutPut!
+  updateUserPermissionsMod(data: updateUserModuleMenuPermissionsInput!): updateUserModuleMenuPermissionsOutPut!
+  updatedBranchOffice(data: updateBranchOfficeInput!): updateBranchOfficeOutPut!
+}
+
+type Permissions {
+  id: ID!
+  menuPermissions: [MenuPermissions!]
+  name: String!
+  status: Float
+}
+
+type PersonResponse {
+  address: String!
+  ci: String!
+  cityId: Float!
+  firstName: String!
+  id: String!
+  lastName: String!
+  phone: String!
+  status: Float!
+  userId: String!
 }
 
 type Persona {
+  City: city
+
+  """direccion de domicilio de la persona"""
   address: String!
+
+  """numero de cedula de identidad"""
   ci: String
-  createdAt: DateTime!
+
+  """ID de la ciudad donde vive ela persona"""
+  cityId: Float!
+  createdAt: DateTime
+
+  """nombre de la persona"""
   firstName: String
+
+  """ID de la persona"""
   id: ID!
-  judges: Judge
+
+  """apellido de la persona"""
   lastName: String
-  lawyers: Lawyer
   legal_Entity: Legal_Entity
-  natural_persons: Natural_Person
+
+  """numero de telefono de la persona"""
   phone: String
+
+  """estado de la persona en el base de datos como activo o inactivo"""
   status: Float!
-  updatedAt: DateTime!
+  updatedAt: DateTime
+
+  """ID de user de la persona"""
+  userId: Float!
 }
 
 type Query {
   allBranchOffice: allBranchOfficeOutPut!
   allCityData: AllCityDataOutPut!
-  allLawyersStatus: allStatusPersLawyerOutPut!
+  allClients: allClientOutPut!
   allModuloMenuPermissions: AllModuleMenuPermissionDataOutPut!
-  sayHello: String!
+  allRoles: allRols!
+  findIdClients(data: findIdClientInput!): findIdClientOutPut!
+  getUserById(data: getUserInput!): getUserOutPut!
+  userAllLists: ListUserOutPut!
+}
+
+type RefreshTokenResponse {
+  """token"""
+  accessToken: String
+
+  """mensaje de respuesta"""
+  message: String
+
+  """estado"""
+  status: Int
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
+type UserResponse {
+  email: String!
+  id: String!
+  isActive: Boolean!
+  person: PersonResponse
+  status: Float!
+  token: String
+  type: Float!
+}
+
 type allBranchOfficeOutPut {
-  allBranchOffice: [Branch_Office!]
+  """Mensaje de la operacion"""
   message: String!
+  response: [Branch_Office!]
   status: Float!
 }
 
-type allStatus {
-  fullName: String!
-  id: ID!
-  status: Float!
+type allClientOutPut {
+  allClients: [clientsData!]
+  message: String!
+  status: Int!
 }
 
-type allStatusPersLawyerOutPut {
-  allPersLaw: [allStatus!]
+type allRols {
+  """mensaje de retorno"""
   message: String
+  response: [roles!]
+
+  """estado del retorno"""
+  status: Int
+}
+
+type city {
+  """nombre de la ciudad"""
+  description: String
+  id: ID!
+}
+
+type clientsData {
+  """NIT de cliente"""
+  NIT: String
+
+  """direccion del cliente"""
+  address: String
+
+  """nombre del cliente"""
+  firtName: String
+
+  """Identificador unico del cliente"""
+  id: Int!
+
+  """apellido del cliente"""
+  lastName: String
+
+  """numero de telefono del cliente"""
+  phone: String
+
+  """estado de la base de datos"""
   status: Int
 }
 
@@ -180,32 +398,114 @@ type contentPermissions {
   permissionsName: String
 }
 
+type createBranchOfficeOutPut {
+  dataBranchOffice: createDataBranchOffice
+  message: String
+  status: Float!
+}
+
+input createClientsInput {
+  """numero de NIT del cliente"""
+  NIT: String
+
+  """direccion del cliente"""
+  address: String
+
+  """CI del clients"""
+  ci: String
+
+  """correo del cliente"""
+  email: String
+
+  """nombre del cliente"""
+  firtName: String
+
+  """indica si el cliente es interno o externo"""
+  isIntern: Boolean
+
+  """apellido del cliente"""
+  lastName: String
+
+  """numero de telefono del cliente"""
+  phone: String
+}
+
+type createClientsOutPut {
+  createClient: clientsData
+  message: String!
+  status: Float!
+}
+
+type createDataBranchOffice {
+  address: String
+  cityId: Int
+  email: String
+  id: ID!
+  name: String!
+  phone: String
+  status: Int
+}
+
 input createDocumentsInput {
   file: Upload
   id: ID!
   type: Float!
 }
 
-input createLawyerInput {
-  address: String
-  ci: String!
-  cityId: String
-  firstName: String!
-  isFiscal: Boolean!
-  isInterno: Boolean!
-  lastName: String!
-  phone: String
+input createRolInput {
+  """nombre del cargo/rol"""
+  name: String
 }
 
-type createLawyerOutPut {
-  lawyesData: lawyerData
-  message: String!
-  status: Float!
+type createRolOutPut {
+  """mesnaje de descripcion de la respuesta"""
+  message: String
+
+  """Estado del retorno"""
+  status: Int
 }
 
 type createUserLawyerOutPut {
   message: String
+  response: UserResponse
   status: Float!
+}
+
+input deleteBranchOfficeInput {
+  """Se manda la ID de la sucursal para eliminar"""
+  id: Int!
+}
+
+type deleteBranchOfficeOutPut {
+  """respuesta de mensaje"""
+  message: String!
+
+  """codigo del estado que se devuelve."""
+  status: Int!
+}
+
+input deleteClientInput {
+  """Identificador unico del cliente"""
+  id: Int!
+}
+
+type deleteClientOutPut {
+  deleteClient: clientsData
+  message: String!
+  status: Float!
+}
+
+input deleteRolInput {
+  """ID del rol"""
+  id: Int
+}
+
+type deleteRolOutPut {
+  """Mensaje de respuesta"""
+  message: String
+
+  """Estado del retorno"""
+  status: Int
 }
 
 type documentsDataOutPut {
@@ -214,36 +514,138 @@ type documentsDataOutPut {
   status: String
 }
 
-type lawyerData {
-  id: ID!
-  isFiscal: Boolean!
-  isIntern: Boolean!
-  registratioDate: DateTime!
+input findIdClientInput {
+  id: Float!
 }
 
-type updateLawyerData {
-  id: ID!
-}
-
-type updateLawyerOutPut {
-  lawyerData: updateLawyerData
+type findIdClientOutPut {
+  findClient: clientsData
   message: String!
   status: Float!
 }
 
-input updatelawyerInput {
+input getUserInput {
+  """Id de usuario"""
+  id: Int!
+}
+
+type getUserOutPut {
+  """mensaje de descripcion del retorno"""
+  message: String!
+
+  """contenido del retorno"""
+  response: ListAllUserData
+
+  """estado del retorno"""
+  status: Int!
+}
+
+input permissionInput {
+  permissionId: Int!
+}
+
+type roles {
+  """el nombre del rol"""
+  description: String
+  id: Int!
+}
+
+input updateBranchOfficeInput {
+  address: String!
+  email: String
+  id: Int!
+  name: String!
+  phone: String
+  status: Float
+}
+
+type updateBranchOfficeOutPut {
+  dataBranchOffice: updateDataBranchOffice
+  message: String
+  status: Float!
+}
+
+input updateClientInput {
+  """Actualizar si el cliente esta activo o no"""
+  IsActive: Boolean
+
+  """Actualizar Numero de NIT del cliente"""
+  NIT: String
+
+  """Actualizar Direccion del cliente"""
   address: String
+
+  """CI del clients"""
+  ci: String
+
+  """Actualizar Correo del cliente"""
+  email: String
+
+  """Actualizar Nombre del cliente"""
   firstName: String
-  id: ID!
-  isFiscal: Boolean
+
+  """Identificador unico del cliente"""
+  id: Int!
+
+  """Actualizar si el cliente es interno o externo"""
   isIntern: Boolean
+
+  """Actualizar Apellido del cliente"""
   lastName: String
+
+  """Actualizar Numero de telefono del cliente"""
   phone: String
 }
 
-type userData {
-  ci: String!
-  id: Float!
+type updateClientOutPut {
+  message: String!
+  status: Float!
+  updateClient: clientsData
+}
+
+type updateDataBranchOffice {
+  address: String!
+  email: String
+  id: ID!
   name: String!
-  token: String!
+  phone: String
+  status: Float
+}
+
+input updateRolesInput {
+  """ID del roles"""
+  id: Int
+
+  """Nombre a actualizar el valor"""
+  name: String
+}
+
+type updateRolesOutPut {
+  """nombre del mensaje"""
+  message: String
+
+  """numero de estado"""
+  status: Int
+}
+
+input updateUserModuleMenuPermissionsInput {
+  id: ID!
+  menuIds: [Int]
+  moduleIds: [Int]
+  permissionsIds: [Int]
+}
+
+type updateUserModuleMenuPermissionsOutPut {
+  message: String!
+  status: Float!
+}
+
+type userData {
+  ci: String
+  id: ID!
+  menu: [Menu]
+  module: [Module]
+  name: String
+  permissions: [Permissions]
+  token: String
 }

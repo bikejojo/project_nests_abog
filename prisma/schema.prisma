@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
+  //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -16,22 +16,77 @@ datasource db {
 
 // ======== USER MODEL ========
 model User {
-  id        Int   @id @default(autoincrement())
-  email     String?   
-  name      String
-  ci        String?
-  password  String
-  token     String  // Optional token for password reset
-  type      Int?   @default(1)// ABOGADO 1  ADMIN 0
-  isActive  Boolean
-  status    Int   // 0: Inactivo, 1: Activo
-  lawyer    Lawyer?
-  menuUser  MenuUser?
+  id          Int      @id @default(autoincrement())
+  email       String?  @unique
+  username    String?
+  password    String
+  token       String?
+  reftoken    String?
+  type        Int?     @default(1) // CLIENT 2 OPERADOR 1 ADMIN 0
+  isActive    Boolean
+  status      Int      // 0: Inactivo, 1: Activo
+  persona     Persona? 
+  menuUser    MenuUser[]
+  moduleUser  ModuleUser[]
   permissionsUser PermissionsUser[]
-  roleId   Int?
-  role     Role? @relation(fields: [roleId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  roleId      Int?
+  role        Role?     @relation(fields: [roleId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([id])
+  @@index([status])
+}
+
+model auth_log {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  message     String?
+  action      String?
+  origin      String?
+  timestamp   DateTime @default(now())
+  ipAddress   String?
+
+  //user        User     @relation(fields: [userId], references: [id])
+}
+
+model Persona {
+  id              Int      @id @default(autoincrement())
+  ci              String?
+  fullName        String?
+  phone           String?
+  address         String?
+  status          Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  userId          Int?     @unique
+  user            User?    @relation(fields: [userId], references: [id])
+  clients         Clients[]
+  operators       Operator[]
+  legalEntities   Legal_Entity[]
+  providers       Provider[]
+  branchOfficeUser BranchOfficeUser[]
+
+  @@index([userId])
+  @@index([id])
+  @@index([fullName])
+  @@index([status])
+}
+
+
+model Operator {
+  id                Int      @id @default(autoincrement())
+  registrationDate  DateTime
+  isActive          Boolean  @default(true)
+  isIntern          Boolean  @default(true)
+  status            Int      @default(1)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  personId          Int
+  branchOfficeId    Int?
+  person            Persona  @relation(fields: [personId], references: [id])
+  
+  branch_office     Branch_Office? @relation(fields: [branchOfficeId], references: [id])
 }
 
 model Role {
@@ -42,24 +97,40 @@ model Role {
   updatedAt   DateTime @updatedAt
   users       User[]
 }
+
 model Module {
   id          Int @id @default(autoincrement())
   name        String?
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  moduleMenu  ModuleMenu[] 
+  moduleMenu  ModuleMenu[]
+  modeloUsers ModuleUser[] 
 }
 
+model ModuleUser {
+  id        Int @id @default(autoincrement())
+  status    Int @default(1)
+  moduleId  Int? 
+  userId    Int? 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  modules   Module? @relation(fields: [moduleId] , references: [id])
+  users     User? @relation(fields: [userId] , references: [id])
+  @@unique([moduleId , userId ])
+  @@index([userId])
+  @@index([moduleId])
+}
 model Menu {
   id            Int @id @default(autoincrement())
   name          String?
   status        Int @default(1)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  menuUser      MenuUser?
+  menuUser      MenuUser[]
   menuPermissions MenuPermissions[]
   moduleMenus   ModuleMenu[]
+  
 }
 
 model ModuleMenu {
@@ -70,7 +141,9 @@ model ModuleMenu {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   module      Module @relation(fields: [moduleId], references: [id])
-  menu        Menu @relation(fields: [menuId], references: [id])
+  menu        Menu? @relation(fields: [menuId], references: [id])
+  @@index([moduleId])
+  @@index([menuId])
 }
 
 model Permissions {
@@ -85,13 +158,16 @@ model Permissions {
 
 model MenuUser {
   id          Int @id @default(autoincrement())
-  userId      Int? @unique
-  menuId      Int? @unique
+  userId      Int
+  menuId      Int
   status      Int @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User? @relation(fields: [userId], references: [id])
-  menu        Menu? @relation(fields: [menuId], references: [id])
+  menu        Menu @relation(fields: [menuId], references: [id])
+  @@unique([userId, menuId])
+  @@index([userId])
+  @@index([menuId])
 }
 
 model MenuPermissions {
@@ -103,78 +179,24 @@ model MenuPermissions {
   updatedAt      DateTime @updatedAt
   menu           Menu @relation(fields: [menuId], references: [id])
   permissions    Permissions @relation(fields: [permissionsId], references: [id])
+  @@index([menuId])
+  @@index([permissionsId])
 }
 
 model PermissionsUser {
   id            Int @id @default(autoincrement())
-  userId        Int
+  userId        Int 
   permissionsId Int
   status        Int @default(1)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User @relation(fields: [userId], references: [id])
   permissions   Permissions @relation(fields: [permissionsId], references: [id])
+  @@unique([userId, permissionsId])
+  @@index([userId])
+  @@index([permissionsId])
 }
 //-------------------------------------------------------------------------------------
-
-model Persona {
-  id              Int @id @default(autoincrement())
-  ci              String?
-  firstName       String?
-  lastName        String?
-  phone           String?
-  address         String?
-  status          Int @default(1)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  cityId          Int?
-  city            City?  @relation(fields: [cityId] , references: [id])
-  lawyers         Lawyer[]
-  judges          Judge[]
-  natural_persons Natural_Person[]
-  legal_entity    Legal_Entity[]
-}
-
-model Lawyer {
-  id                Int @id @default(autoincrement())
-  registrationDate  DateTime
-  isActive          Boolean @default(true)
-  isFiscal          Boolean @default(false)
-  isIntern          Boolean @default(true)
-  status            Int @default(1)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime  @updatedAt
-  userId            Int? @unique
-  personId          Int
-  branchOfficeId    Int?
-  persona           Persona @relation(fields: [personId] , references: [id])
-  user              User? @relation(fields: [userId] ,references: [id])
-  branch_office     Branch_Office? @relation(fields: [branchOfficeId] , references: [id])
-}
-
-model Judge {
-  id        Int @id @default(autoincrement())
-  registratioDate DateTime
-  description     String?
-  isActive        Boolean @default(true)
-  isIntern        Boolean @default(true)
-  status          Int     @default(1)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  personId        Int
-  persona         Persona @relation(fields: [personId] , references: [id])
-}
-
-model Natural_Person {
-  id  Int @id @default(autoincrement())
-  registrationDate  DateTime  @default(now())
-  description       String?
-  status            Int @default(1)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  personId          Int
-  persona           Persona @relation(fields: [personId] , references: [id])
-}
 
 model Legal_Entity {
   id  Int @id @default(autoincrement())
@@ -191,11 +213,17 @@ model Legal_Entity {
   persona           Persona @relation(fields: [personId] , references: [id])
 }
 
-model City {
+model BranchOfficeUser {
   id          Int @id   @default(autoincrement())
-  description String  @unique
-  person      Persona[]
-  branchOffice Branch_Office[]
+  personId    Int?
+  branchOffId Int?
+  status      Int           @default(1)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  person      Persona?       @relation(fields: [personId],references: [id])
+  branchOffice Branch_Office? @relation(fields: [branchOffId],references: [id])
+  @@index([personId])
+  @@index([branchOffId])
 }
 
 model Branch_Office {
@@ -204,53 +232,38 @@ model Branch_Office {
   address     String?
   phone       String?
   email       String?
-  cityId      Int?
-  city        City? @relation(fields: [cityId], references: [id])
-  status      Int
-  lawyer      Lawyer[]
+  status      Int? @default(1)
+  operator    Operator[]
+  branchOfficeUsers BranchOfficeUser[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 }
 //-------------------------------------------------------------------
 
 model Provider {
-  id Int @id @default(autoincrement())
-  firstName String
-  lastName  String
-  NIT       String
-  phone     String
-  email     String
-  address   String
+  id          Int @id @default(autoincrement())
+  NIT         String?
+  cellphone   String?
+  email       String
   typeProvider  String?
-  isActive  Boolean
-  status    Int
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  isActive    Boolean
+  status      Int
+  personId    Int
+  person      Persona? @relation(fields: [personId] , references: [id])
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
 }
 
 model Clients {
-  id Int @id @default(autoincrement())
-  firstName String
-  lastName  String
-  phone     String
+  id        Int      @id @default(autoincrement())
   email     String
+  cellphone String?
   NIT       String
+  isIntern  Boolean
   isActive  Boolean
   status    Int
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
-} 
-
-model External_personal {
-  id        Int @id @default(autoincrement())
-  firstName String?
-  lastName  String?
-  phone     String?
-  email     String?
-  type      Int
-  description String
-  status    Int
-  dateOfBirth DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  personId  Int
+  person    Persona  @relation(fields: [personId], references: [id])
+  createdAt DateTime @default(now())  // Corregido
+  updatedAt DateTime @updatedAt       // Corregido
 }

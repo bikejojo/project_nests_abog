@@ -6,12 +6,6 @@ export class Provider {
     id: number
 
     @Field()
-    firstName: string
-
-    @Field()
-    lastName: string
-
-    @Field()
     NIT: string
 
     @Field()
@@ -19,9 +13,6 @@ export class Provider {
 
     @Field()
     email: string
-
-    @Field()
-    address: string
 
     @Field()
     typeProvider: string

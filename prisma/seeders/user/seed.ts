@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { status } from "../../../src/common/enum/typeStatus";
+import { status, tatus } from "../../../src/common/enum/typeStatus";
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -12,14 +12,14 @@ async function main(){
             const SALT_ROUNDS = 10;
             const users = [
                 {
-                    name: "admin",
+                    username: "admin",
                     password:  await bcrypt.hash("admin123", SALT_ROUNDS), 
                     type: 1,
                     isActive: true,
-                    status: status.ACTIVE,
-                    ci: null,
+                    status: tatus.ACTIVE,
                     email: "admin@admin.com",
-                    token: "" // or provide a default token value if needed
+                    token: "" ,// or provide a default token value if needed
+                    reftoken: ""
                 }
             ]
 
@@ -36,12 +36,11 @@ async function main(){
 
             const users = [
                 {
-                    name: "admin",
+                    username: "admin",
                     password:  await bcrypt.hash("admin123", SALT_ROUNDS), 
-                    type: 1,
+                    type: 0,
                     isActive: true,
-                    status: status.ACTIVE,
-                    ci: null,
+                    status: tatus.ACTIVE,
                     email: "admin@admin.com",
                     token: "" // or provide a default token value if needed
                 }

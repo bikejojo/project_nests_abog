@@ -44,7 +44,7 @@ export class ProviderUseCase {
 
     async updateProvider(data:any){
         try {
-            const providerModel = this.providerRepository.findIdProvider(data.id);
+            const providerModel =await this.providerRepository.findIdProvider(data.id);
             if(!providerModel){
                 return {
                     message: 'No existe el objeto.',
@@ -133,6 +133,6 @@ export class ProviderUseCase {
     }
 
     async allProviderStatus(){
-        return this.providerRepository.allStatusProvider;
+        return await this.providerRepository.allStatusProvider;
     }
 }

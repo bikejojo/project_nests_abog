@@ -4,26 +4,31 @@ import { AuthModule } from "src/auth/auth.module";
 import { jwtConstants } from "src/auth/constants";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ModuleMenuPermissionsRepository } from "../infraestructura/prisma/moduleMenuPermissions.repository";
-import { ModuleMenuPermissionsUseCase } from "../domain/services/moduleMenuPermissions.use-case";
+import { ModuleMenuPermissionList, ModuleMenuPermissionsUseCase, RolesMutations } from "../domain/services/moduleMenuPermissions.use-case";
 import { ModuleMenuPermissionResolver } from "./moduleMenuPermission.resolver";
+import { UserRepository } from "src/modules/user/infraestructura/prisma/user.repository";
 
 @Module({
   imports: [
     AuthModule,
     JwtModule.register({
         secret: jwtConstants.secret,
-        signOptions: { expiresIn: '60s' }, // Adjust the expiration time as needed
+        signOptions: { expiresIn: '1h' }, // Adjust the expiration time as needed
     }),
   ],
   providers: [
     ModuleMenuPermissionResolver,
     ModuleMenuPermissionsUseCase,
+    ModuleMenuPermissionList,
     ModuleMenuPermissionsRepository,
+    UserRepository ,
+    RolesMutations,
     PrismaService
   ],
   exports: [
     ModuleMenuPermissionsUseCase,
     ModuleMenuPermissionsRepository,
+    UserRepository,
   ],
 })
 

@@ -3,16 +3,18 @@ import { AuthModule } from "src/auth/auth.module";
 import { UserResolver } from "./user.resolver";
 import { UserRepository } from "../infraestructura/prisma/user.repository";
 import { PrismaService } from "src/prisma/prisma.service";
-import { UserUseCase } from "../domain/service/user.use-case";
+import { actionUserPerson, UserUseCase } from "../domain/service/user.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constants";
 import { PersonModule } from "src/modules/personnel/interfaces/persona/persona.module";
-import { LawyerModule } from "src/modules/personnel/interfaces/lawyer/lawyer.module";
+import { PersonRepository } from "src/modules/personnel/infraestructura/prisma/persona.repository";
+import { ModuleMenuPermissionsRepository } from "src/modules/moduleMenuPermission/infraestructura/prisma/moduleMenuPermissions.repository";
+import { BranchOfficeRepository } from "src/modules/branchOffice/infraestructura/prisma/branchOffice.repository";
 @Module({
   imports: [
-    AuthModule,
-    forwardRef(() => PersonModule),
-     forwardRef(() => LawyerModule),
+    //AuthModule,
+    forwardRef(() => AuthModule),
+    //forwardRef(() => PersonModule),
     JwtModule.register({
         secret: jwtConstants.secret,
         signOptions: { expiresIn: '1d' } // Adjust the expiration time as needed
@@ -21,8 +23,12 @@ import { LawyerModule } from "src/modules/personnel/interfaces/lawyer/lawyer.mod
   providers: [
     UserResolver,
     UserRepository,
+    ModuleMenuPermissionsRepository,
+    BranchOfficeRepository,
     PrismaService,
-    UserUseCase
+    UserUseCase,
+    actionUserPerson,
+    PersonRepository
   ],
   exports: [
     UserUseCase,

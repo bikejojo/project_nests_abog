@@ -1,12 +1,12 @@
-import { ObjectType , Field , ID  } from "@nestjs/graphql";
+import { ObjectType , Field , ID, Int  } from "@nestjs/graphql";
 import { clientsData } from "./create-clients.input";
 
 @ObjectType()
 export class allClientOutPut {
-    @Field()
+    @Field(()=>String)
     message: string
 
-    @Field()
+    @Field(()=>Int)
     status: number
     
     @Field(()=>[clientsData],{nullable:true})
